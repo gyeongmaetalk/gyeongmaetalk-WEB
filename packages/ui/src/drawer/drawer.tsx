@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 
 import { useOutsideClick } from "@gyeongmaetalk/hooks";

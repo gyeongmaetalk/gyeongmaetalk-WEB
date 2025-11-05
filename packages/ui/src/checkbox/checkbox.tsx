@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@gyeongmaetalk/utils";
 
 import { Check } from "lucide-react";
