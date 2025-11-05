@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "@gyeongmaetalk/utils";
 
 type LabelProps = React.LabelHTMLAttributes<HTMLLabelElement>;
