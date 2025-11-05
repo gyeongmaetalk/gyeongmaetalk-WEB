@@ -6,6 +6,7 @@ import pluginReact from "eslint-plugin-react";
 import globals from "globals";
 
 export default defineConfig([
+  pluginReact.configs.flat.recommended,
   ...baseConfig,
   {
     ignores: [
@@ -22,5 +23,4 @@ export default defineConfig([
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     languageOptions: { globals: globals.browser },
   },
-  pluginReact.configs.flat.recommended,
 ]);

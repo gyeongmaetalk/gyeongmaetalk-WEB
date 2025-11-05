@@ -30,6 +30,7 @@ export const config = [
   },
   {
     rules: {
+      "react/react-in-jsx-scope": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/consistent-type-imports": "warn",
       "no-unused-vars": "off",

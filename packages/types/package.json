@@ -1,9 +1,5 @@
 {
   "name": "@gyeongmaetalk/types",
-  "scripts": {
-    "dev": "tsc --watch",
-    "build": "tsc"
-  },
   "exports": {
     ".": "./src/index.ts"
   },

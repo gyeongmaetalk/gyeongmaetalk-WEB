@@ -18,7 +18,7 @@ function HeaderContainer({
   return (
     <header
       className={cn(
-        "max-w-mobile top-ios-top fixed left-0 right-0 z-[99999] mx-auto flex h-11 items-center bg-white px-4 py-2.5",
+        "max-w-mobile top-ios-top fixed right-0 left-0 z-[99999] mx-auto flex h-11 items-center bg-white px-4 py-2.5",
         className,
         isScrolled && "border-b-line-normal-neutral border-b-1"
       )}
