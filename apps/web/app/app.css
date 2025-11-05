@@ -22,6 +22,8 @@
   --spacing-ios-top: env(safe-area-inset-top);
 
   --aspect-image: 3 / 2;
+
+  --color-toast: #7a8088;
 }
 
 @layer base {
