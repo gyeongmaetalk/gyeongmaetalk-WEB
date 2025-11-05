@@ -1,0 +1,7 @@
+.github
+.husky
+.next
+node_modules
+public
+.react-router
+icons

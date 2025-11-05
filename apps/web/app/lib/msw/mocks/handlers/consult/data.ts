@@ -1,0 +1,26 @@
+export const reservedCouselData = [
+  {
+    state: "reserved",
+    hasReview: false,
+    matchCounselorResponse: {
+      counselorId: 1,
+      counselFormId: 1,
+      counselorName: "이정훈",
+      score: 4.6,
+      reviewCount: 123,
+      description: "10년간 경매 실전 경험을 기반으로 실수 없는 낙찰을 도와 드립니다.",
+      experience: 10,
+      counselCount: 120,
+      license: "경매지도사 자격증",
+      specialization: "아파트, 실거주 가능 분석, 지분경매, 권리분석",
+    },
+    counselDate: "2021-12-31",
+    counselTime: "12:00:00",
+    cellPhone: "01012345678",
+    purpose: "실거주를 위한 집을 사고 싶어요.",
+    area: "수도권",
+    serviceType: "낙찰부터 명도까지 전반적으로 도와주세요.",
+    interest: "아파트 경매",
+    participantType: "개인,감면 등의 목적을 이유로 개인 사업자를 고려중이에요.",
+  },
+];
