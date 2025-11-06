@@ -12,5 +12,4 @@ export default function WithSidebarLayout({ children }: WithSidebarLayoutProps) 
       {children}
     </SidebarProvider>
   );
-  return <div>WithSidebarLayout</div>;
 }
