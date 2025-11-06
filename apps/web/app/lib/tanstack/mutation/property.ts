@@ -1,7 +1,6 @@
+import type { HTTPError } from "@gyeongmaetalk/lib/ky";
+import { useMutation, type UseMutationOptions } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
-import { useMutation, type UseMutationOptions } from "@tanstack/react-query";
-
-import type { HTTPError } from "ky";
 
 import type {
   ConfirmPaymentResponse,

@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import {
   Button,
   Drawer,
@@ -13,7 +14,6 @@ import {
 } from "@gyeongmaetalk/ui";
 
 import { REVIEW } from "~/constants";
-import { queryClient } from "~/lib/tanstack";
 import { useReportReview } from "~/lib/tanstack/mutation/review";
 import { errorToast, successToast } from "~/utils/toast";
 

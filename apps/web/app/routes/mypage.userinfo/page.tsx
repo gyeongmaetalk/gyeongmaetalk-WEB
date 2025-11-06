@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
 
 import { AUTH } from "~/constants/auth";
-import { queryClient } from "~/lib/tanstack";
 import { useUpdateUserInfo } from "~/lib/tanstack/mutation/auth";
 import { useGetMyInfo } from "~/lib/tanstack/query/auth";
 import { type UpdateUserInfoForm, updateUserInfoFormSchema } from "~/routes/mypage.userinfo/schema";
@@ -141,7 +141,7 @@ const UserInfoPage = () => {
         />
       </form>
 
-      <div className="fixed bottom-0 left-0 right-0 flex flex-col gap-2 px-4 pb-6">
+      <div className="fixed right-0 bottom-0 left-0 flex flex-col gap-2 px-4 pb-6">
         <Button type="submit" disabled={isSubmitDisabled} form="user-info-form">
           수정
         </Button>

@@ -1,8 +1,9 @@
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
+
 import { Loader2 } from "lucide-react";
 import { Navigate } from "react-router";
 
 import { REVIEW } from "~/constants";
-import { queryClient } from "~/lib/tanstack";
 import { getReviewById } from "~/services/review";
 
 import type { Route } from "./+types/route";

@@ -1,10 +1,10 @@
-import { Button, Checkbox, Label,Textarea, Textfield } from "@gyeongmaetalk/ui";
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
+import { Button, Checkbox, Label, Textarea, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
 
 import { QNA } from "~/constants";
-import { queryClient } from "~/lib/tanstack";
 import { useRequestQna } from "~/lib/tanstack/mutation/qna";
 import { infoToast, successToast } from "~/utils/toast";
 import { errorToast } from "~/utils/toast";

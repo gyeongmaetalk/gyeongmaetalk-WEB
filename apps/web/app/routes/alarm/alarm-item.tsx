@@ -1,10 +1,10 @@
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { cn } from "@gyeongmaetalk/utils";
 
 import { useNavigate } from "react-router";
 
 import { Bubble, Company } from "~/components/icons";
 import { FCM, NotificationType } from "~/constants";
-import { queryClient } from "~/lib/tanstack";
 import { useReadNotification } from "~/lib/tanstack/mutation/fcm";
 import type { NotificationItem } from "~/types/fcm";
 import { getTimeDisplay } from "~/utils/format";

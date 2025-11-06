@@ -1,7 +1,6 @@
+import type { HTTPError } from "@gyeongmaetalk/lib/ky";
+import { useQuery } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
-import { useQuery } from "@tanstack/react-query";
-
-import type { HTTPError } from "ky";
 
 import { FCM } from "~/constants";
 import { useRefreshTokenStore } from "~/lib/zustand/user";

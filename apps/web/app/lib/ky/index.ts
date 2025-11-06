@@ -1,6 +1,5 @@
+import { instance } from "@gyeongmaetalk/lib/ky";
 import type { BaseResponse } from "@gyeongmaetalk/types";
-
-import ky from "ky";
 
 import type { UserResponse } from "~/models/auth";
 import { baseUrl } from "~/utils/env";
@@ -8,12 +7,8 @@ import { baseUrl } from "~/utils/env";
 import { resetUserQueries } from "../tanstack";
 import { useAccessTokenStore, useRefreshTokenStore } from "../zustand/user";
 
-const API_TIMEOUT = 10000; // 10초
-
-export const api = ky.create({
+export const api = instance.extend({
   prefixUrl: baseUrl,
-  timeout: API_TIMEOUT,
-  retry: 0,
   hooks: {
     beforeRequest: [
       async (request) => {
@@ -32,19 +27,18 @@ export const api = ky.create({
 
           if (refreshToken) {
             try {
-              const refreshResponse = await ky
+              const refreshResponse = await instance
                 .post<BaseResponse<UserResponse>>(baseUrl + "/auth/refresh", {
                   headers: { RefreshToken: refreshToken },
-                  retry: 0,
                 })
-                .json();
+                .json<BaseResponse<UserResponse>>();
 
               useRefreshTokenStore.setState({ refreshToken: refreshResponse.result.refreshToken });
               useAccessTokenStore.setState({ accessToken: refreshResponse.result.accessToken });
 
               // 새로운 토큰으로 기존 요청 재시도
               request.headers.set("Authorization", `Bearer ${refreshResponse.result.accessToken}`);
-              return ky(request);
+              return instance(request);
             } catch (error) {
               console.error("Refresh 실패", error);
               useAccessTokenStore.setState({ accessToken: null });

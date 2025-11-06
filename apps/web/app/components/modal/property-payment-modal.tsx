@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button } from "@gyeongmaetalk/ui";
 import {
   ANONYMOUS,
@@ -13,7 +14,6 @@ import { X } from "lucide-react";
 import { useNavigate } from "react-router";
 
 import { PROPERTY } from "~/constants";
-import { queryClient } from "~/lib/tanstack";
 import { useConfirmPurchase, useReadyPurchase } from "~/lib/tanstack/mutation/property";
 import { errorToast, successToast } from "~/utils/toast";
 

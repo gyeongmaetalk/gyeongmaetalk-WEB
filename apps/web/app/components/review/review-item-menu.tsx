@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 import { useOutsideClick } from "@gyeongmaetalk/hooks";
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { cn } from "@gyeongmaetalk/utils";
 
 import { useNavigate } from "react-router";
 
 import { REVIEW } from "~/constants";
-import { queryClient } from "~/lib/tanstack";
 import { useRemoveReview } from "~/lib/tanstack/mutation/review";
 import { getReviewById } from "~/services/review";
 import { errorToast, successToast } from "~/utils/toast";
@@ -89,7 +89,7 @@ const ReviewItemMenu = ({ reviewId, isMyReview }: ReviewItemMenuProps) => {
       </button>
       <div
         className={cn(
-          "font-body1-normal-regular border-cool-neutral-97 shadow-input absolute right-0 top-full mt-2 flex w-[140px] flex-col rounded-[12px] border bg-white p-2",
+          "font-body1-normal-regular border-cool-neutral-97 shadow-input absolute top-full right-0 mt-2 flex w-[140px] flex-col rounded-[12px] border bg-white p-2",
           isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         )}
       >

@@ -1,7 +1,6 @@
+import type { HTTPError } from "@gyeongmaetalk/lib/ky";
+import { useInfiniteQuery, useQuery } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-
-import type { HTTPError } from "ky";
 
 import { PROPERTY } from "~/constants";
 import type { PropertyDetailResponse } from "~/models/property";

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button } from "@gyeongmaetalk/ui";
 import {
   ANONYMOUS,
@@ -12,7 +13,6 @@ import {
 import { X } from "lucide-react";
 
 import { COUNSEL } from "~/constants";
-import { queryClient } from "~/lib/tanstack";
 import { useConfirmSubscription, useReadySubscribe } from "~/lib/tanstack/mutation/property";
 import { errorToast, successToast } from "~/utils/toast";
 

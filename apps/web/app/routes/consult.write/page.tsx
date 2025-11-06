@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import {
   Button,
   Checkbox,
@@ -24,7 +25,6 @@ import PageLayout from "~/components/layout/page-layout";
 import Modal from "~/components/modal";
 import StarRating from "~/components/star-rating";
 import { REVIEW } from "~/constants";
-import { queryClient } from "~/lib/tanstack";
 import { useCreateReview, useUpdateReview } from "~/lib/tanstack/mutation/review";
 import { useGetCounselInfo } from "~/lib/tanstack/query/counsel";
 import type { ReviewDetailResponse } from "~/models/review";
@@ -280,7 +280,7 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
                     <button
                       type="button"
                       onClick={() => onRemoveImage(index)}
-                      className="bg-label-neutral absolute right-1 top-1 flex items-center justify-center rounded-full p-1"
+                      className="bg-label-neutral absolute top-1 right-1 flex items-center justify-center rounded-full p-1"
                       aria-label={`이미지 ${index + 1} 삭제`}
                     >
                       <Close className="size-4 text-white" />

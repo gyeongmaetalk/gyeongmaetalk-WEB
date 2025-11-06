@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { useOutsideClick } from "@gyeongmaetalk/hooks";
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button } from "@gyeongmaetalk/ui";
 
 import { useNavigate } from "react-router";
@@ -9,7 +10,6 @@ import complete from "~/assets/complete.png";
 import Image from "~/components/image";
 import Modal from "~/components/modal";
 import { PROPERTY } from "~/constants";
-import { queryClient } from "~/lib/tanstack";
 import { useRequestBid } from "~/lib/tanstack/mutation/property";
 import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
 

@@ -38,6 +38,9 @@ importers:
       '@gyeongmaetalk/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      lucide-react:
+        specifier: ^0.552.0
+        version: 0.552.0(react@19.2.0)
       next:
         specifier: 16.0.1
         version: 16.0.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -142,6 +145,9 @@ importers:
       '@gyeongmaetalk/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
+      '@gyeongmaetalk/lib':
+        specifier: workspace:*
+        version: link:../../packages/lib
       '@gyeongmaetalk/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -160,12 +166,6 @@ importers:
       '@react-router/serve':
         specifier: ^7.5.3
         version: 7.9.5(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.2)
-      '@tanstack/react-query':
-        specifier: ^5.81.5
-        version: 5.90.6(react@19.2.0)
-      '@tanstack/react-query-devtools':
-        specifier: ^5.90.2
-        version: 5.90.2(@tanstack/react-query@5.90.6(react@19.2.0))(react@19.2.0)
       '@tosspayments/tosspayments-sdk':
         specifier: ^2.4.0
         version: 2.4.1
@@ -175,9 +175,6 @@ importers:
       isbot:
         specifier: ^5.1.27
         version: 5.1.32
-      ky:
-        specifier: ^1.8.1
-        version: 1.14.0
       lucide-react:
         specifier: ^0.539.0
         version: 0.539.0(react@19.2.0)
@@ -351,6 +348,28 @@ importers:
       typescript:
         specifier: 5.8.2
         version: 5.8.2
+
+  packages/lib:
+    dependencies:
+      '@tanstack/react-query':
+        specifier: ^5.81.5
+        version: 5.90.6(react@19.2.0)
+      '@tanstack/react-query-devtools':
+        specifier: ^5.90.2
+        version: 5.90.2(@tanstack/react-query@5.90.6(react@19.2.0))(react@19.2.0)
+      ky:
+        specifier: ^1.8.1
+        version: 1.14.0
+      react:
+        specifier: ^19.2.0
+        version: 19.2.0
+    devDependencies:
+      '@gyeongmaetalk/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/react':
+        specifier: ^19.2.2
+        version: 19.2.2
 
   packages/tailwind-config:
     dependencies:
