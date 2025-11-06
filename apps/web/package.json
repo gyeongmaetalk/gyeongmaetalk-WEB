@@ -11,7 +11,7 @@
     "dev:svg": "run-s icons icons:watch",
     "dev:remix": "react-router dev",
     "dev": "run-p dev:*",
-    "lint": "pnpm dlx eslint --fix",
+    "lint": "eslint --fix \"**/*.{ts,tsx,md}\"",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
