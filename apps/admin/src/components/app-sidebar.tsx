@@ -79,7 +79,7 @@ export function AppSidebar() {
           </SidebarGroup>
         </SidebarContent>
       </Sidebar>
-      {!open && <SidebarTrigger className="m-2" />}
+      {!open && <SidebarTrigger className="absolute m-2" variant="default" />}
     </>
   );
 }

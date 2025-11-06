@@ -44,24 +44,26 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="mt-6 space-y-4" aria-label="로그인 폼">
-      <Textfield
-        id="email"
-        name="email"
-        aria-label="이메일"
-        placeholder="이메일"
-        type="email"
-        required
-      />
-      <Textfield
-        id="password"
-        name="password"
-        aria-label="비밀번호"
-        placeholder="비밀번호"
-        type="password"
-        required
-        errorText={error}
-      />
+    <form onSubmit={onSubmit} className="space-y-4" aria-label="로그인 폼">
+      <div className="space-y-2">
+        <Textfield
+          id="email"
+          name="email"
+          aria-label="이메일"
+          placeholder="이메일"
+          type="email"
+          required
+        />
+        <Textfield
+          id="password"
+          name="password"
+          aria-label="비밀번호"
+          placeholder="비밀번호"
+          type="password"
+          required
+          errorText={error}
+        />
+      </div>
       <Button type="submit" aria-label="로그인" className="w-full">
         로그인
       </Button>

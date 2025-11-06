@@ -1,14 +1,17 @@
 import { CounselStatus } from "@/constants/counsel";
 import type { Reservation } from "@/types";
 
+const date = new Date("2025-11-06T10:00:00.000Z");
+const now = date.getTime();
+
 export const mockReservations: Reservation[] = [
   {
     reservationId: "rv-001",
     status: CounselStatus.COUNSEL_BEFORE,
     customerName: "김철수",
     customerPhone: "010-1234-5678",
-    requestedAtIso: new Date().toISOString(),
-    scheduledAtIso: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
+    requestedAtIso: date.toISOString(),
+    scheduledAtIso: new Date(now + 1000 * 60 * 60 * 24).toISOString(),
     auctionPurpose: "투자",
     interestRegions: ["서울 강남구", "경기 성남시"],
     serviceScopes: ["사전권리분석", "입찰대행"],
@@ -22,8 +25,8 @@ export const mockReservations: Reservation[] = [
     status: CounselStatus.COUNSEL_AFTER,
     customerName: "이영희",
     customerPhone: "010-2222-3333",
-    requestedAtIso: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-    scheduledAtIso: new Date(Date.now() + 1000 * 60 * 60 * 48).toISOString(),
+    requestedAtIso: new Date(now - 1000 * 60 * 60).toISOString(),
+    scheduledAtIso: new Date(now + 1000 * 60 * 60 * 48).toISOString(),
     auctionPurpose: "거주",
     interestRegions: ["서울 마포구"],
     serviceScopes: ["사전권리분석", "명도지원"],
@@ -36,8 +39,8 @@ export const mockReservations: Reservation[] = [
     status: CounselStatus.SUBSCRIBE,
     customerName: "박민수",
     customerPhone: "010-4444-5555",
-    requestedAtIso: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-    scheduledAtIso: new Date(Date.now() + 1000 * 60 * 60 * 72).toISOString(),
+    requestedAtIso: new Date(now - 1000 * 60 * 60 * 5).toISOString(),
+    scheduledAtIso: new Date(now + 1000 * 60 * 60 * 72).toISOString(),
     auctionPurpose: "법인투자",
     interestRegions: ["인천 연수구"],
     serviceScopes: ["사전권리분석"],

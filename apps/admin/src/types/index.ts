@@ -2,15 +2,6 @@ import type { CounselStatus } from "@/constants/counsel";
 
 export type ReservationId = string;
 
-export type ReservationStatus = "pending" | "approved" | "rejected" | "completed";
-
-export const RESERVATION_STATUS_LABEL: Record<ReservationStatus, string> = {
-  pending: "대기",
-  approved: "승인",
-  rejected: "거절",
-  completed: "완료",
-};
-
 export interface Reservation {
   reservationId: ReservationId;
   status: CounselStatus;

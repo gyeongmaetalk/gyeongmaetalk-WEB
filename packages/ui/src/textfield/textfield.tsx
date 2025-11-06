@@ -13,6 +13,7 @@ interface TextfieldProps extends React.ComponentProps<"input"> {
   successText?: string;
   helperText?: string;
   additionalText?: string;
+  containerClassName?: string;
 }
 
 function Textfield({
@@ -21,6 +22,7 @@ function Textfield({
   successText,
   helperText,
   additionalText,
+  containerClassName,
   ...props
 }: TextfieldProps) {
   const {
@@ -81,11 +83,14 @@ function Textfield({
           "placeholder:text-label-assistive focus-within:border-primary font-body1-normal-regular border-cool-neutral-50/16 shadow-input flex flex-1 items-center gap-2 rounded-[12px] border p-3 transition-colors outline-none focus-within:border-2",
           errorText && "focus-within:border-status-negative/43 border-status-negative/28",
           restProps.disabled && "bg-cool-neutral-50/8",
-          className
+          containerClassName
         )}
       >
         <input
-          className="peer disabled:placeholder:text-label-disable disabled:text-label-alternative flex-1 outline-none"
+          className={cn(
+            "peer disabled:placeholder:text-label-disable disabled:text-label-alternative flex-1 outline-none",
+            className
+          )}
           value={currentValue}
           onChange={onChange}
           onFocus={() => setIsFocused(true)}
