@@ -1,0 +1,48 @@
+import { CounselStatus } from "@/constants/counsel";
+import type { Reservation } from "@/types";
+
+export const mockReservations: Reservation[] = [
+  {
+    reservationId: "rv-001",
+    status: CounselStatus.COUNSEL_BEFORE,
+    customerName: "김철수",
+    customerPhone: "010-1234-5678",
+    requestedAtIso: new Date().toISOString(),
+    scheduledAtIso: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
+    auctionPurpose: "투자",
+    interestRegions: ["서울 강남구", "경기 성남시"],
+    serviceScopes: ["사전권리분석", "입찰대행"],
+    interestTopics: ["권리분석", "대출/자금"],
+    ownershipPlan: "개인",
+    isSoleProprietorPlanned: false,
+    additionalNote: "첫 투자, 예산 3억",
+  },
+  {
+    reservationId: "rv-002",
+    status: CounselStatus.COUNSEL_AFTER,
+    customerName: "이영희",
+    customerPhone: "010-2222-3333",
+    requestedAtIso: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+    scheduledAtIso: new Date(Date.now() + 1000 * 60 * 60 * 48).toISOString(),
+    auctionPurpose: "거주",
+    interestRegions: ["서울 마포구"],
+    serviceScopes: ["사전권리분석", "명도지원"],
+    interestTopics: ["명도", "배당/세금"],
+    ownershipPlan: "공동",
+    isSoleProprietorPlanned: false,
+  },
+  {
+    reservationId: "rv-003",
+    status: CounselStatus.SUBSCRIBE,
+    customerName: "박민수",
+    customerPhone: "010-4444-5555",
+    requestedAtIso: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
+    scheduledAtIso: new Date(Date.now() + 1000 * 60 * 60 * 72).toISOString(),
+    auctionPurpose: "법인투자",
+    interestRegions: ["인천 연수구"],
+    serviceScopes: ["사전권리분석"],
+    interestTopics: ["법인전략"],
+    ownershipPlan: "법인",
+    isSoleProprietorPlanned: true,
+  },
+];
