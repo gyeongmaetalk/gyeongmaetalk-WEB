@@ -8,7 +8,7 @@ import type { Reservation } from "@/types";
 import { cn } from "@gyeongmaetalk/utils";
 
 import ConsultFilter, { type ConsultFilterValue } from "./consult-filter";
-import StatusChip from "./status-chip";
+import ConsultStatusChip from "./consult-status-chip";
 
 const STATUS = [CounselStatus.COUNSEL_BEFORE, CounselStatus.COUNSEL_AFTER, CounselStatus.SUBSCRIBE];
 
@@ -115,7 +115,7 @@ export default function ConsultTable() {
                     <td className="px-4 py-3">{formatDate(r.scheduledAtIso)}</td>
                     <td className="px-4 py-3">{formatDate(r.requestedAtIso)}</td>
                     <td className="px-4 py-3">
-                      <StatusChip status={r.status} />
+                      <ConsultStatusChip status={r.status} />
                     </td>
                     <td className="px-4 py-3">{r.auctionPurpose}</td>
                     <td className="truncate px-4 py-3" title={r.interestRegions.join(", ")}>

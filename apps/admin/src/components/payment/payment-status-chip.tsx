@@ -1,13 +1,13 @@
-import type { CounselStatus } from "@/constants/counsel";
-import { COUNSEL_STATUS_LABEL } from "@/constants/counsel";
+import type { PaymentStatus } from "@/constants/payment";
+import { PAYMENT_STATUS_LABEL } from "@/constants/payment";
 import { cn } from "@gyeongmaetalk/utils";
 
-interface StatusChipProps {
-  status: CounselStatus;
+interface PaymentStatusChipProps {
+  status: PaymentStatus;
 }
 
-export default function StatusChip({ status }: StatusChipProps) {
-  const currentStatus = COUNSEL_STATUS_LABEL[status];
+export default function PaymentStatusChip({ status }: PaymentStatusChipProps) {
+  const currentStatus = PAYMENT_STATUS_LABEL[status];
 
   return (
     <span

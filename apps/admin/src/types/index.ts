@@ -1,6 +1,8 @@
 import type { CounselStatus } from "@/constants/counsel";
+import type { PaymentMethod, PaymentStatus, PaymentType } from "@/constants/payment";
 
 export type ReservationId = string;
+export type PaymentId = string;
 
 export interface Reservation {
   reservationId: ReservationId;
@@ -16,4 +18,15 @@ export interface Reservation {
   ownershipPlan: "개인" | "공동" | "법인";
   isSoleProprietorPlanned: boolean;
   additionalNote?: string;
+}
+
+export interface Payment {
+  paymentId: PaymentId;
+  type: PaymentType;
+  status: PaymentStatus;
+  amount: number;
+  paidAtIso: string;
+  userName: string;
+  userPhone: string;
+  paymentMethod: PaymentMethod;
 }
