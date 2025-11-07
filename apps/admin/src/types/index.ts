@@ -1,8 +1,11 @@
 import type { CounselStatus } from "@/constants/counsel";
+import type { InquiryStatus } from "@/constants/inquiry";
 import type { PaymentMethod, PaymentStatus, PaymentType } from "@/constants/payment";
 
 export type ReservationId = string;
 export type PaymentId = string;
+export type InquiryId = string;
+export type FaqId = string;
 
 export interface Reservation {
   reservationId: ReservationId;
@@ -29,4 +32,24 @@ export interface Payment {
   userName: string;
   userPhone: string;
   paymentMethod: PaymentMethod;
+}
+
+export interface Inquiry {
+  inquiryId: InquiryId;
+  userName: string;
+  userPhone: string;
+  title: string;
+  content: string;
+  status: InquiryStatus;
+  createdAtIso: string;
+  answerContent?: string;
+  answeredAtIso?: string;
+}
+
+export interface Faq {
+  faqId: FaqId;
+  question: string;
+  answer: string;
+  createdAtIso: string;
+  updatedAtIso: string;
 }
