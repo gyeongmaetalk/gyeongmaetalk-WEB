@@ -1,0 +1,112 @@
+import type { Property } from "@/types";
+
+const date = new Date("2025-11-06T10:00:00.000Z");
+const now = date.getTime();
+
+export const mockProperties: Property[] = [
+  {
+    propertyId: "prop-001",
+    name: "서울 강남구 역삼동 아파트",
+    area: 84.5,
+    appraisedPrice: 850000000,
+    minPrice: 680000000,
+    address: "서울특별시 강남구 역삼동 123-45",
+    caseNumber: "2024타경12345",
+    caseTitle: "채권최고액 10억원",
+    courtName: "서울중앙지방법원",
+    registrationDate: new Date(now - 1000 * 60 * 60 * 24 * 60).toISOString(),
+    commencementDate: new Date(now - 1000 * 60 * 60 * 24 * 30).toISOString(),
+    scheduleInfos: [
+      {
+        round: 1,
+        date: new Date(now + 1000 * 60 * 60 * 24 * 7).toISOString(),
+        price: 680000000,
+        result: "예정",
+      },
+      {
+        round: 2,
+        date: new Date(now + 1000 * 60 * 60 * 24 * 21).toISOString(),
+        price: 612000000,
+        result: "예정",
+      },
+    ],
+    debtor: "홍길동",
+    creditor: "신한은행",
+    owner: "홍길동",
+    tenant: "없음",
+    expertComment:
+      "강남구 역삼동에 위치한 우수한 입지의 아파트입니다. 역세권으로 접근성이 좋고, 주변 상권이 발달되어 있어 투자 가치가 높습니다.",
+    images: [],
+    buildingType: "아파트",
+    updateDate: new Date(now - 1000 * 60 * 60 * 24).toISOString(),
+    purchased: false,
+  },
+  {
+    propertyId: "prop-002",
+    name: "서울 마포구 상암동 오피스텔",
+    area: 45.2,
+    appraisedPrice: 320000000,
+    minPrice: 256000000,
+    address: "서울특별시 마포구 상암동 456-78",
+    caseNumber: "2024타경67890",
+    caseTitle: "채권최고액 5억원",
+    courtName: "서울중앙지방법원",
+    registrationDate: new Date(now - 1000 * 60 * 60 * 24 * 45).toISOString(),
+    commencementDate: new Date(now - 1000 * 60 * 60 * 24 * 20).toISOString(),
+    scheduleInfos: [
+      {
+        round: 1,
+        date: new Date(now + 1000 * 60 * 60 * 24 * 14).toISOString(),
+        price: 256000000,
+        result: "예정",
+      },
+    ],
+    debtor: "김철수",
+    creditor: "국민은행",
+    owner: "김철수",
+    tenant: "이영희",
+    expertComment:
+      "상암동 DMC 지역에 위치한 오피스텔로, 최근 개발이 활발한 지역입니다. 향후 가치 상승이 기대됩니다.",
+    images: [],
+    buildingType: "오피스텔",
+    updateDate: new Date(now - 1000 * 60 * 60 * 12).toISOString(),
+    purchased: false,
+  },
+  {
+    propertyId: "prop-003",
+    name: "경기 성남시 분당구 정자동 상가",
+    area: 120.8,
+    appraisedPrice: 1200000000,
+    minPrice: 960000000,
+    address: "경기도 성남시 분당구 정자동 789-12",
+    caseNumber: "2024타경11111",
+    caseTitle: "채권최고액 15억원",
+    courtName: "수원지방법원",
+    registrationDate: new Date(now - 1000 * 60 * 60 * 24 * 90).toISOString(),
+    commencementDate: new Date(now - 1000 * 60 * 60 * 24 * 60).toISOString(),
+    scheduleInfos: [
+      {
+        round: 1,
+        date: new Date(now - 1000 * 60 * 60 * 24 * 30).toISOString(),
+        price: 960000000,
+        result: "유찰",
+      },
+      {
+        round: 2,
+        date: new Date(now - 1000 * 60 * 60 * 24 * 10).toISOString(),
+        price: 864000000,
+        result: "낙찰",
+      },
+    ],
+    debtor: "박민수",
+    creditor: "우리은행",
+    owner: "박민수",
+    tenant: "다수",
+    expertComment:
+      "분당구 정자동 상권에 위치한 상가로, 유동인구가 많고 상권이 활발합니다. 임대 수익률이 우수합니다.",
+    images: [],
+    buildingType: "상가",
+    updateDate: new Date(now - 1000 * 60 * 60 * 24 * 10).toISOString(),
+    purchased: true,
+  },
+];

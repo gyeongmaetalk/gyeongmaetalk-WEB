@@ -1,13 +1,14 @@
 import { useState } from "react";
 
 import { Badge, Button, DragCarousel, DragCarouselItem } from "@gyeongmaetalk/ui";
+import { formatPrice } from "@gyeongmaetalk/utils";
 
 import { useNavigate } from "react-router";
 
 import Image from "~/components/image";
 import PropertyPaymentModal from "~/components/modal/property-payment-modal";
 import type { PropertyListItemProps } from "~/types/property";
-import { formatArea, formatDate, formatPrice } from "~/utils/format";
+import { formatArea, formatDate } from "~/utils/format";
 
 export default function AgencyRecommendItem({
   id,

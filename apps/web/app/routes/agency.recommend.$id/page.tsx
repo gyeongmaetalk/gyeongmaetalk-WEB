@@ -1,4 +1,5 @@
 import { Badge } from "@gyeongmaetalk/ui";
+import { formatPrice } from "@gyeongmaetalk/utils";
 
 import { Copy, Loader2 } from "lucide-react";
 import { Navigate, useParams } from "react-router";
@@ -11,7 +12,7 @@ import RequestBidButton from "~/routes/agency.recommend._index/request-bid-butto
 import GyeongmaeMap from "~/routes/agency.recommend.$id/gyeongmae-map";
 // TODO: 내,외부 이미지 로직 반영되면 추가하기
 // import ListingCarousel from "~/routes/agency.recommend.$id/listing-carousel";
-import { formatArea, formatDate, formatPrice } from "~/utils/format";
+import { formatArea, formatDate } from "~/utils/format";
 import { errorToast, successToast } from "~/utils/toast";
 
 const AgencyRecommendDetailPage = () => {
