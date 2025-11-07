@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import { mockProperties } from "@/mock/properties";
@@ -8,7 +8,7 @@ import type { Property } from "@/types";
 import { Button, Textarea, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 
 import { type PropertyForm, propertyFormSchema } from "./schema";
 
@@ -27,7 +27,6 @@ const DEFAULT_VALUES: PropertyForm = {
   courtName: "",
   registrationDate: "",
   commencementDate: "",
-  status: "",
   debtor: "",
   creditor: "",
   owner: "",
@@ -48,12 +47,10 @@ export default function PropertyDetailPage() {
   });
 
   const {
-    register,
     handleSubmit,
     formState: { isSubmitting, errors },
     reset,
-    watch,
-    setValue,
+    control,
   } = form;
 
   const { fields, append, remove } = useFieldArray({
@@ -61,36 +58,49 @@ export default function PropertyDetailPage() {
     name: "scheduleInfos",
   });
 
+  // 데이터 로드 여부를 추적하여 중복 reset 방지
+  const hasLoadedData = useRef(false);
+  const currentIdRef = useRef(id);
+
   useEffect(() => {
-    if (!isNew) {
-      // TODO: API 호출로 매물 데이터 가져오기
-      const property = mockProperties.find((p) => p.propertyId === id);
-      if (property) {
-        reset({
-          name: property.name,
-          buildingType: property.buildingType,
-          area: property.area.toString(),
-          address: property.address,
-          appraisedPrice: property.appraisedPrice.toString(),
-          minPrice: property.minPrice.toString(),
-          caseNumber: property.caseNumber,
-          caseTitle: property.caseTitle,
-          courtName: property.courtName,
-          registrationDate: property.registrationDate.split("T")[0],
-          commencementDate: property.commencementDate.split("T")[0],
-          status: property.status,
-          debtor: property.debtor,
-          creditor: property.creditor,
-          owner: property.owner,
-          tenant: property.tenant,
-          expertComment: property.expertComment,
-          scheduleInfos: property.scheduleInfos.map((schedule) => ({
-            ...schedule,
-            date: schedule.date.split("T")[0],
-            price: schedule.price,
-          })),
-        });
-      }
+    // id가 변경되었으면 플래그 초기화
+    if (currentIdRef.current !== id) {
+      hasLoadedData.current = false;
+      currentIdRef.current = id;
+    }
+
+    // 새 매물이거나 이미 데이터를 로드한 경우에는 실행하지 않음
+    if (isNew || hasLoadedData.current) {
+      return;
+    }
+
+    // TODO: API 호출로 매물 데이터 가져오기
+    const property = mockProperties.find((p) => p.propertyId === id);
+    if (property) {
+      reset({
+        name: property.name,
+        buildingType: property.buildingType,
+        area: property.area.toString(),
+        address: property.address,
+        appraisedPrice: property.appraisedPrice.toString(),
+        minPrice: property.minPrice.toString(),
+        caseNumber: property.caseNumber,
+        caseTitle: property.caseTitle,
+        courtName: property.courtName,
+        registrationDate: property.registrationDate.split("T")[0],
+        commencementDate: property.commencementDate.split("T")[0],
+        debtor: property.debtor,
+        creditor: property.creditor,
+        owner: property.owner,
+        tenant: property.tenant,
+        expertComment: property.expertComment,
+        scheduleInfos: property.scheduleInfos.map((schedule) => ({
+          ...schedule,
+          date: schedule.date.split("T")[0],
+          price: schedule.price,
+        })),
+      });
+      hasLoadedData.current = true;
     }
   }, [id, isNew, reset]);
 
@@ -125,7 +135,6 @@ export default function PropertyDetailPage() {
       commencementDate: data.commencementDate
         ? new Date(data.commencementDate + "T00:00:00").toISOString()
         : new Date().toISOString(),
-      status: data.status?.trim() || "진행중",
       scheduleInfos: data.scheduleInfos.map((schedule, index) => ({
         round: index + 1,
         date: new Date(schedule.date + "T00:00:00").toISOString(),
@@ -192,12 +201,19 @@ export default function PropertyDetailPage() {
               <label htmlFor="name" className="text-sm font-medium">
                 매물명 *
               </label>
-              <Textfield
-                id="name"
-                {...register("name")}
-                placeholder="매물명을 입력하세요"
-                disabled={isSubmitting}
-                aria-invalid={errors.name ? "true" : "false"}
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="name"
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="매물명을 입력하세요"
+                    disabled={isSubmitting}
+                    aria-invalid={errors.name ? "true" : "false"}
+                  />
+                )}
               />
               {errors.name && (
                 <p className="text-sm text-red-500" role="alert">
@@ -209,12 +225,19 @@ export default function PropertyDetailPage() {
               <label htmlFor="buildingType" className="text-sm font-medium">
                 건물 유형 *
               </label>
-              <Textfield
-                id="buildingType"
-                {...register("buildingType")}
-                placeholder="예: 아파트, 오피스텔, 상가"
-                disabled={isSubmitting}
-                aria-invalid={errors.buildingType ? "true" : "false"}
+              <Controller
+                name="buildingType"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="buildingType"
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="예: 아파트, 오피스텔, 상가"
+                    disabled={isSubmitting}
+                    aria-invalid={errors.buildingType ? "true" : "false"}
+                  />
+                )}
               />
               {errors.buildingType && (
                 <p className="text-sm text-red-500" role="alert">
@@ -226,14 +249,21 @@ export default function PropertyDetailPage() {
               <label htmlFor="area" className="text-sm font-medium">
                 면적 (㎡) *
               </label>
-              <Textfield
-                id="area"
-                type="number"
-                step="0.01"
-                {...register("area")}
-                placeholder="면적을 입력하세요"
-                disabled={isSubmitting}
-                aria-invalid={errors.area ? "true" : "false"}
+              <Controller
+                name="area"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="area"
+                    type="number"
+                    step="0.01"
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="면적을 입력하세요"
+                    disabled={isSubmitting}
+                    aria-invalid={errors.area ? "true" : "false"}
+                  />
+                )}
               />
               {errors.area && (
                 <p className="text-sm text-red-500" role="alert">
@@ -245,12 +275,19 @@ export default function PropertyDetailPage() {
               <label htmlFor="address" className="text-sm font-medium">
                 주소 *
               </label>
-              <Textfield
-                id="address"
-                {...register("address")}
-                placeholder="주소를 입력하세요"
-                disabled={isSubmitting}
-                aria-invalid={errors.address ? "true" : "false"}
+              <Controller
+                name="address"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="address"
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="주소를 입력하세요"
+                    disabled={isSubmitting}
+                    aria-invalid={errors.address ? "true" : "false"}
+                  />
+                )}
               />
               {errors.address && (
                 <p className="text-sm text-red-500" role="alert">
@@ -269,16 +306,22 @@ export default function PropertyDetailPage() {
               <label htmlFor="appraisedPrice" className="text-sm font-medium">
                 감정가 (원) *
               </label>
-              <Textfield
-                id="appraisedPrice"
-                {...register("appraisedPrice")}
-                onChange={(e) => {
-                  const numericValue = e.target.value.replace(/\D/g, "");
-                  setValue("appraisedPrice", numericValue, { shouldValidate: true });
-                }}
-                placeholder="감정가를 입력하세요"
-                disabled={isSubmitting}
-                aria-invalid={errors.appraisedPrice ? "true" : "false"}
+              <Controller
+                name="appraisedPrice"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="appraisedPrice"
+                    value={field.value}
+                    onChange={(e) => {
+                      const numericValue = e.target.value.replace(/\D/g, "");
+                      field.onChange(numericValue);
+                    }}
+                    placeholder="감정가를 입력하세요"
+                    disabled={isSubmitting}
+                    aria-invalid={errors.appraisedPrice ? "true" : "false"}
+                  />
+                )}
               />
               {errors.appraisedPrice && (
                 <p className="text-sm text-red-500" role="alert">
@@ -290,16 +333,22 @@ export default function PropertyDetailPage() {
               <label htmlFor="minPrice" className="text-sm font-medium">
                 최저가 (원) *
               </label>
-              <Textfield
-                id="minPrice"
-                {...register("minPrice")}
-                onChange={(e) => {
-                  const numericValue = e.target.value.replace(/\D/g, "");
-                  setValue("minPrice", numericValue, { shouldValidate: true });
-                }}
-                placeholder="최저가를 입력하세요"
-                disabled={isSubmitting}
-                aria-invalid={errors.minPrice ? "true" : "false"}
+              <Controller
+                name="minPrice"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="minPrice"
+                    value={field.value}
+                    onChange={(e) => {
+                      const numericValue = e.target.value.replace(/\D/g, "");
+                      field.onChange(numericValue);
+                    }}
+                    placeholder="최저가를 입력하세요"
+                    disabled={isSubmitting}
+                    aria-invalid={errors.minPrice ? "true" : "false"}
+                  />
+                )}
               />
               {errors.minPrice && (
                 <p className="text-sm text-red-500" role="alert">
@@ -318,12 +367,19 @@ export default function PropertyDetailPage() {
               <label htmlFor="caseNumber" className="text-sm font-medium">
                 사건번호 *
               </label>
-              <Textfield
-                id="caseNumber"
-                {...register("caseNumber")}
-                placeholder="사건번호를 입력하세요"
-                disabled={isSubmitting}
-                aria-invalid={errors.caseNumber ? "true" : "false"}
+              <Controller
+                name="caseNumber"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="caseNumber"
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="사건번호를 입력하세요"
+                    disabled={isSubmitting}
+                    aria-invalid={errors.caseNumber ? "true" : "false"}
+                  />
+                )}
               />
               {errors.caseNumber && (
                 <p className="text-sm text-red-500" role="alert">
@@ -335,55 +391,72 @@ export default function PropertyDetailPage() {
               <label htmlFor="caseTitle" className="text-sm font-medium">
                 사건명
               </label>
-              <Textfield
-                id="caseTitle"
-                {...register("caseTitle")}
-                placeholder="사건명을 입력하세요"
-                disabled={isSubmitting}
+              <Controller
+                name="caseTitle"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="caseTitle"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    placeholder="사건명을 입력하세요"
+                    disabled={isSubmitting}
+                  />
+                )}
               />
             </div>
             <div className="space-y-2">
               <label htmlFor="courtName" className="text-sm font-medium">
                 법원명
               </label>
-              <Textfield
-                id="courtName"
-                {...register("courtName")}
-                placeholder="법원명을 입력하세요"
-                disabled={isSubmitting}
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="status" className="text-sm font-medium">
-                현재 상태
-              </label>
-              <Textfield
-                id="status"
-                {...register("status")}
-                placeholder="예: 진행중, 완료"
-                disabled={isSubmitting}
+              <Controller
+                name="courtName"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="courtName"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    placeholder="법원명을 입력하세요"
+                    disabled={isSubmitting}
+                  />
+                )}
               />
             </div>
             <div className="space-y-2">
               <label htmlFor="registrationDate" className="text-sm font-medium">
                 접수일
               </label>
-              <Textfield
-                id="registrationDate"
-                type="date"
-                {...register("registrationDate")}
-                disabled={isSubmitting}
+              <Controller
+                name="registrationDate"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="registrationDate"
+                    type="date"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    disabled={isSubmitting}
+                  />
+                )}
               />
             </div>
             <div className="space-y-2">
               <label htmlFor="commencementDate" className="text-sm font-medium">
                 개시결정일
               </label>
-              <Textfield
-                id="commencementDate"
-                type="date"
-                {...register("commencementDate")}
-                disabled={isSubmitting}
+              <Controller
+                name="commencementDate"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="commencementDate"
+                    type="date"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    disabled={isSubmitting}
+                  />
+                )}
               />
             </div>
           </div>
@@ -397,44 +470,72 @@ export default function PropertyDetailPage() {
               <label htmlFor="debtor" className="text-sm font-medium">
                 채무자
               </label>
-              <Textfield
-                id="debtor"
-                {...register("debtor")}
-                placeholder="채무자를 입력하세요"
-                disabled={isSubmitting}
+              <Controller
+                name="debtor"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="debtor"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    placeholder="채무자를 입력하세요"
+                    disabled={isSubmitting}
+                  />
+                )}
               />
             </div>
             <div className="space-y-2">
               <label htmlFor="creditor" className="text-sm font-medium">
                 채권자
               </label>
-              <Textfield
-                id="creditor"
-                {...register("creditor")}
-                placeholder="채권자를 입력하세요"
-                disabled={isSubmitting}
+              <Controller
+                name="creditor"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="creditor"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    placeholder="채권자를 입력하세요"
+                    disabled={isSubmitting}
+                  />
+                )}
               />
             </div>
             <div className="space-y-2">
               <label htmlFor="owner" className="text-sm font-medium">
                 소유자
               </label>
-              <Textfield
-                id="owner"
-                {...register("owner")}
-                placeholder="소유자를 입력하세요"
-                disabled={isSubmitting}
+              <Controller
+                name="owner"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="owner"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    placeholder="소유자를 입력하세요"
+                    disabled={isSubmitting}
+                  />
+                )}
               />
             </div>
             <div className="space-y-2">
               <label htmlFor="tenant" className="text-sm font-medium">
                 임차인
               </label>
-              <Textfield
-                id="tenant"
-                {...register("tenant")}
-                placeholder="임차인을 입력하세요"
-                disabled={isSubmitting}
+              <Controller
+                name="tenant"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="tenant"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    placeholder="임차인을 입력하세요"
+                    disabled={isSubmitting}
+                  />
+                )}
               />
             </div>
           </div>
@@ -474,30 +575,50 @@ export default function PropertyDetailPage() {
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">매각기일</label>
-                  <Textfield
-                    type="date"
-                    {...register(`scheduleInfos.${index}.date`)}
-                    disabled={isSubmitting}
+                  <Controller
+                    name={`scheduleInfos.${index}.date`}
+                    control={control}
+                    render={({ field }) => (
+                      <Textfield
+                        type="date"
+                        value={field.value || ""}
+                        onChange={field.onChange}
+                        disabled={isSubmitting}
+                      />
+                    )}
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">최저가 (원)</label>
-                  <Textfield
-                    value={watch(`scheduleInfos.${index}.price`)?.toString() || ""}
-                    onChange={(e) => {
-                      const numValue = parseInt(e.target.value.replace(/\D/g, ""), 10) || 0;
-                      setValue(`scheduleInfos.${index}.price`, numValue, { shouldValidate: true });
-                    }}
-                    placeholder="최저가를 입력하세요"
-                    disabled={isSubmitting}
+                  <Controller
+                    name={`scheduleInfos.${index}.price`}
+                    control={control}
+                    render={({ field }) => (
+                      <Textfield
+                        value={field.value?.toString() || ""}
+                        onChange={(e) => {
+                          const numValue = parseInt(e.target.value.replace(/\D/g, ""), 10) || 0;
+                          field.onChange(numValue);
+                        }}
+                        placeholder="최저가를 입력하세요"
+                        disabled={isSubmitting}
+                      />
+                    )}
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">결과</label>
-                  <Textfield
-                    {...register(`scheduleInfos.${index}.result`)}
-                    placeholder="예: 예정, 유찰, 낙찰"
-                    disabled={isSubmitting}
+                  <Controller
+                    name={`scheduleInfos.${index}.result`}
+                    control={control}
+                    render={({ field }) => (
+                      <Textfield
+                        value={field.value || ""}
+                        onChange={field.onChange}
+                        placeholder="예: 예정, 유찰, 낙찰"
+                        disabled={isSubmitting}
+                      />
+                    )}
                   />
                 </div>
               </div>
@@ -509,11 +630,18 @@ export default function PropertyDetailPage() {
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">전문가 코멘트</h3>
           <div className="space-y-2">
-            <Textarea
-              {...register("expertComment")}
-              placeholder="전문가 코멘트를 입력하세요"
-              rows={4}
-              disabled={isSubmitting}
+            <Controller
+              name="expertComment"
+              control={control}
+              render={({ field }) => (
+                <Textarea
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  placeholder="전문가 코멘트를 입력하세요"
+                  rows={4}
+                  disabled={isSubmitting}
+                />
+              )}
             />
           </div>
         </div>
