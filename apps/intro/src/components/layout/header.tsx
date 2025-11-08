@@ -6,6 +6,7 @@ import LogoIcon from "@/assets/logo-icon.svg";
 import LogoText from "@/assets/logo-text.svg";
 import { StoreType } from "@/constants/store";
 import { useScroll } from "@/hooks/use-scroll";
+import { useOutsideClick } from "@gyeongmaetalk/hooks";
 import { cn } from "@gyeongmaetalk/utils";
 
 import LinkButton from "../button/link-button";
@@ -13,6 +14,8 @@ import LinkButton from "../button/link-button";
 export default function Header() {
   const isScrolled = useScroll();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const [downloadMenuRef] = useOutsideClick<HTMLDivElement>(() => setIsMenuOpen(false));
 
   return (
     <header
@@ -37,12 +40,14 @@ export default function Header() {
         </button>
 
         <div
+          ref={downloadMenuRef}
           id="download-menu"
           role="menu"
           aria-label="다운로드 옵션"
-          className={`absolute top-10 right-0 flex flex-col rounded-lg bg-white p-3 md:hidden ${
+          className={cn(
+            "absolute top-10 right-0 flex flex-col rounded-lg bg-white p-3 md:hidden",
             isMenuOpen ? "block" : "hidden"
-          }`}
+          )}
         >
           <LinkButton
             type={StoreType.APP_STORE}
