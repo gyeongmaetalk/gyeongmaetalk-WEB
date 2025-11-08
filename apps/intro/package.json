@@ -9,24 +9,27 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
-    "@gyeongmaetalk/ui": "workspace:*",
     "@gyeongmaetalk/hooks": "workspace:*",
+    "@gyeongmaetalk/lib": "workspace:*",
+    "@gyeongmaetalk/ui": "workspace:*",
     "@gyeongmaetalk/utils": "workspace:*",
+    "lucide-react": "^0.553.0",
+    "next": "16.0.1",
     "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "next": "16.0.1"
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
     "@gyeongmaetalk/eslint-config": "workspace:*",
-    "@gyeongmaetalk/typescript-config": "workspace:*",
-    "@gyeongmaetalk/types": "workspace:*",
     "@gyeongmaetalk/tailwind-config": "workspace:*",
-    "typescript": "^5",
+    "@gyeongmaetalk/types": "workspace:*",
+    "@gyeongmaetalk/typescript-config": "workspace:*",
+    "@svgr/webpack": "^8.1.0",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
+    "eslint": "^9",
     "tailwindcss": "^4",
-    "eslint": "^9"
+    "typescript": "^5"
   }
 }
