@@ -6,12 +6,13 @@ import Back from "~/components/icons/Back";
 
 interface CalendarProps {
   selectedDate: Date | null;
-  onDateSelect: (date: Date) => void;
+  onDateSelect(date: Date): void;
 }
 
 const today = new Date();
 const daysOfWeek = ["월", "화", "수", "목", "금", "토", "일"];
 const DAYS_IN_WEEK = 7;
+const maxSelectableDate = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
 
 const getDaysInMonth = (date: Date): (Date | null)[] => {
   const year = date.getFullYear();
@@ -57,11 +58,18 @@ const isPastDate = (date: Date): boolean => {
   return date.getTime() < today.getTime() && !isToday(date);
 };
 
+const isAfterMaxSelectableDate = (date: Date): boolean => {
+  return date.getTime() > maxSelectableDate.getTime();
+};
+
 const Calendar = ({ onDateSelect, selectedDate }: CalendarProps) => {
   const [currentDate, setCurrentDate] = useState(today);
 
   const isPreviousMonthDisabled =
     currentDate.getMonth() <= today.getMonth() && currentDate.getFullYear() <= today.getFullYear();
+  const isNextMonthDisabled =
+    new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1).getTime() >
+    maxSelectableDate.getTime();
   const days = getDaysInMonth(currentDate);
 
   const onPreviousMonth = () => {
@@ -95,8 +103,13 @@ const Calendar = ({ onDateSelect, selectedDate }: CalendarProps) => {
           />
         </button>
         <h2 className="font-headline2-bold">{formatMonthYear(currentDate)}</h2>
-        <button onClick={onNextMonth} aria-label="다음 달">
-          <Back className="text-label-alternative rotate-180" />
+        <button onClick={onNextMonth} aria-label="다음 달" disabled={isNextMonthDisabled}>
+          <Back
+            className={cn(
+              "rotate-180",
+              isNextMonthDisabled ? "text-label-disable" : "text-label-alternative"
+            )}
+          />
         </button>
       </div>
 
@@ -115,12 +128,12 @@ const Calendar = ({ onDateSelect, selectedDate }: CalendarProps) => {
           <button
             key={`${currentDate.getFullYear()}-${currentDate.getMonth()}-${index}`}
             onClick={() => date && onDateClick(date)}
-            disabled={!date || isPastDate(date)}
+            disabled={!date || isPastDate(date) || isAfterMaxSelectableDate(date)}
             className={cn(
               "aspect-square rounded-md py-1.5 transition-colors",
               date && isToday(date) && "text-primary-normal",
               date && isSelected(date) && "bg-primary-normal font-semi-bold text-white",
-              date && isPastDate(date) && "text-label-disable"
+              date && (isPastDate(date) || isAfterMaxSelectableDate(date)) && "text-label-disable"
             )}
             aria-label={
               date
