@@ -30,7 +30,7 @@ export default function SignupPage() {
 
   const navigate = useNavigate();
 
-  const { formState, watch, register, handleSubmit, setValue } = useForm<SignupForm>({
+  const { formState, watch, handleSubmit, setValue } = useForm<SignupForm>({
     resolver: zodResolver(signupFormSchema),
     defaultValues: DEFAULT_VALUES,
   });
@@ -118,7 +118,13 @@ export default function SignupPage() {
         회원가입을 완료하세요!
       </header>
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        <Textfield label="이름" required placeholder="이름을 입력해주세요." {...register("name")} />
+        <Textfield
+          label="이름"
+          required
+          placeholder="이름을 입력해주세요."
+          value={name}
+          onChange={(e) => setValue("name", e.target.value)}
+        />
         <Textfield
           label="생년월일"
           required
