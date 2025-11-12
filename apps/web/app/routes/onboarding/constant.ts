@@ -1,7 +1,7 @@
-import onboardingStep1 from "~/assets/onboarding/onboarding-step1.png";
-import onboardingStep2 from "~/assets/onboarding/onboarding-step2.png";
-import onboardingStep3 from "~/assets/onboarding/onboarding-step3.png";
-import onboardingStep4 from "~/assets/onboarding/onboarding-step4.png";
+import onboardingStep1 from "~/assets/onboarding/onboarding-step1.webp";
+import onboardingStep2 from "~/assets/onboarding/onboarding-step2.webp";
+import onboardingStep3 from "~/assets/onboarding/onboarding-step3.webp";
+import onboardingStep4 from "~/assets/onboarding/onboarding-step4.webp";
 
 export const ONBOARDING_STEPS = [
   {
