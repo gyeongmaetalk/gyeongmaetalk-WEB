@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import type { MyInfoResponse } from "~/models/auth";
+
 type Token = string | null;
 
 interface RefreshTokenStore {
@@ -26,6 +28,26 @@ export const useRefreshTokenStore = create<RefreshTokenStore>()(
     }),
     {
       name: "refresh-token",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
+
+type User = Omit<MyInfoResponse, "cellPhone" | "birth">;
+
+interface UserStore {
+  user: User | null;
+  setUser: (user: User) => void;
+}
+
+export const useUserStore = create<UserStore>()(
+  persist(
+    (set) => ({
+      user: null,
+      setUser: (user: User) => set({ user }),
+    }),
+    {
+      name: "user",
       storage: createJSONStorage(() => localStorage),
     }
   )

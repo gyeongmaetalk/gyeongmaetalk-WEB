@@ -8,13 +8,13 @@ import Divider from "~/components/divider";
 import { Apple, Back, Kakao } from "~/components/icons";
 import { AuthProvider, WebviewEvent } from "~/constants";
 import { useWebView } from "~/hooks/use-webview";
-import { useGetMyInfo } from "~/lib/tanstack/query/auth";
+import { useUserStore } from "~/lib/zustand/user";
 import LogoutModal from "~/routes/mypage._index/logout-modal";
 
 const MyPagePage = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: myInfo, isError } = useGetMyInfo();
+  const user = useUserStore((state) => state.user);
 
   const { postMessage } = useWebView();
 
@@ -22,24 +22,14 @@ const MyPagePage = () => {
     postMessage(WebviewEvent.OPEN_SERVICE_INTRODUCTION);
   };
 
-  if (isError) {
-    return (
-      <div className="flex h-full items-center">
-        <p className="font-label1-normal-regular text-label-neutral mx-auto">
-          오류가 발생했습니다.
-        </p>
-      </div>
-    );
-  }
-
-  const isKakao = myInfo?.loginType === AuthProvider.KAKAO.toUpperCase();
+  const isKakao = user?.loginType === AuthProvider.KAKAO.toUpperCase();
 
   return (
     <div className="flex flex-col">
       {/* 회원 로그인 정보 */}
       <div className="flex h-24 flex-row items-center justify-between px-4 pt-6 pb-[15px]">
         <div className="flex flex-row items-center gap-1">
-          {myInfo && (
+          {user && (
             <div
               className={cn(
                 "bg-kakao flex size-6 items-center justify-center rounded-[4px]",
@@ -53,12 +43,12 @@ const MyPagePage = () => {
               )}
             </div>
           )}
-          <Link className="font-headline1-bold ml-1" to={myInfo ? "/mypage/userinfo" : "/login"}>
-            {myInfo ? `${myInfo.name} 님` : "로그인 및 회원가입"}
+          <Link className="font-headline1-bold ml-1" to={user ? "/mypage/userinfo" : "/login"}>
+            {user ? `${user.name} 님` : "로그인 및 회원가입"}
           </Link>
           <Back className="h-3 w-[7px] -scale-x-100" />
         </div>
-        {myInfo?.auctionStatus && (
+        {user && user.auctionStatus && (
           <div className="flex h-5 items-center rounded-[6px] bg-[#e5f6fe] px-[6px]">
             <div className="font-caption2-medium text-primary-normal">경매 진행 중</div>
           </div>
@@ -70,7 +60,7 @@ const MyPagePage = () => {
 
       <div className="px-4 pt-[15px] pb-6">
         {/* 후기 및 알림 */}
-        {myInfo && (
+        {user && (
           <div className="flex flex-col gap-2">
             <div className="font-label2-medium text-cool-neutral-50">후기 및 알림</div>
             <Link
@@ -98,7 +88,7 @@ const MyPagePage = () => {
           >
             자주 묻는 질문
           </Link>
-          {myInfo && (
+          {user && (
             <Link
               className="font-body1-normal-regular text-label-normal cursor-pointer py-3"
               to="/inquiry"
@@ -133,7 +123,7 @@ const MyPagePage = () => {
           <Divider className="bg-cool-neutral-98 my-4" />
 
           {/* 로그아웃 */}
-          {myInfo && (
+          {user && (
             <>
               <button
                 className="font-body1-normal-regular text-label-normal cursor-pointer py-3 text-start"

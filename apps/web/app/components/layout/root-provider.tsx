@@ -4,6 +4,7 @@ import { Toaster } from "@gyeongmaetalk/ui";
 import { Outlet } from "react-router";
 
 import MswProvider from "./msw-provider";
+import UserProvider from "./user-provider";
 
 const naverMapKey = import.meta.env.VITE_NAVER_MAP_KEY;
 const naverMapScriptUrl = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${naverMapKey}&submodules=geocoder`;
@@ -12,7 +13,9 @@ const RootProvider = () => {
   return (
     <TanstackProvider>
       <script type="text/javascript" src={naverMapScriptUrl} />
-      <Outlet />
+      <UserProvider>
+        <Outlet />
+      </UserProvider>
       <MswProvider />
       <Toaster position="bottom-center" duration={3000} closeButton />
     </TanstackProvider>

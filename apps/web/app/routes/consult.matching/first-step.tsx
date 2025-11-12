@@ -2,26 +2,24 @@ import { useState } from "react";
 
 import { Button } from "@gyeongmaetalk/ui";
 
-import complete from "~/assets/complete.png";
+import complete from "~/assets/complete.webp";
 import ConsultantCard from "~/components/card/consultant-card";
 import FloatingContainer from "~/components/container/floating-container";
 import Image from "~/components/image";
 import { WithCloseHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import CancelApplyConsult from "~/components/modal/cancel-apply-consult";
-import { useGetMyInfo } from "~/lib/tanstack/query/auth";
 import type { MatchCounselResponse } from "~/models/counsel";
 
 import type { Mode } from "./page";
 
 interface FirstStepProps {
   consultant: MatchCounselResponse;
+  name: string;
   onChangeMode: (mode: Mode) => void;
 }
 
-const FirstStep = ({ consultant, onChangeMode }: FirstStepProps) => {
-  const { data: myInfo } = useGetMyInfo();
-
+const FirstStep = ({ consultant, name, onChangeMode }: FirstStepProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onMakeReservation = () => {
@@ -37,7 +35,7 @@ const FirstStep = ({ consultant, onChangeMode }: FirstStepProps) => {
         <div className="flex flex-col items-center gap-4 text-center">
           <Image src={complete} alt="complete" className="size-[52px]" />
           <p className="text-cool-neutral-10 font-heading2-bold">
-            {myInfo?.name ?? "OO"}님께 딱 맞는
+            {name}님께 딱 맞는
             <br />
             <span className="text-primary-normal">경매 전문 상담사</span>를 찾아드렸어요.
           </p>

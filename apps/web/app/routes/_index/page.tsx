@@ -11,7 +11,6 @@ import Dot from "~/components/icons/Dot";
 import { DefaultHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import { CounselStatus, SortType } from "~/constants";
-import useScroll from "~/hooks/use-scroll";
 import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
 import { useGetReviews } from "~/lib/tanstack/query/review";
 import { HOME_SECTION_TITLES } from "~/routes/_index/constant";
@@ -46,20 +45,14 @@ export default function HomePage() {
 
   const status = counselStatus ? counselStatus.status : CounselStatus.NONE;
 
-  const isScrolled = useScroll();
-
   return (
-    <PageLayout
-      header={<DefaultHeader className={isScrolled ? "bg-white" : "bg-transparent"} />}
-      showNav
-      mainClassName="mt-0"
-    >
+    <PageLayout header={<DefaultHeader />} showNav mainClassName="mt-0">
       <div
         className="flex h-full flex-col bg-gray-300 bg-cover bg-center bg-no-repeat pt-[calc(2.75rem+var(--spacing-ios-top))]"
         style={{ backgroundImage: `url(${homeBg})` }}
       >
         <TitleSection status={status} />
-        <div className="flex h-full flex-col gap-18 rounded-t-[20px] rounded-b-none bg-[#FFF] px-4 py-6 shadow-[0_0_16px_0_rgba(8,89,193,0.2)]">
+        <div className="flex h-full flex-col gap-18 rounded-t-[20px] rounded-b-none bg-white py-6 shadow-[0_0_16px_0_rgba(8,89,193,0.2)]">
           {status === CounselStatus.COUNSEL_AFTER && (
             <SectionField title={HOME_SECTION_TITLES.RESERVATION}>
               <div className="flex cursor-pointer flex-row items-center gap-2 rounded-[12px] bg-[rgba(0_119_255_/0.05)] p-4">

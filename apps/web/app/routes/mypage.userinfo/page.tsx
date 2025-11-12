@@ -141,7 +141,7 @@ const UserInfoPage = () => {
         />
       </form>
 
-      <div className="fixed right-0 bottom-0 left-0 flex flex-col gap-2 px-4 pb-6">
+      <div className="bottom-ios-bottom fixed right-0 left-0 flex flex-col gap-2 px-4 pb-6">
         <Button type="submit" disabled={isSubmitDisabled} form="user-info-form">
           수정
         </Button>
@@ -155,13 +155,13 @@ const UserInfoPage = () => {
 
 export default UserInfoPage;
 
-// 날짜를 숫자로 변환: "2097-07-26" -> "20970726"
+// 날짜를 숫자로 변환: "1997-07-26" -> "19970726"
 export const formatBirthToNumber = (birth: string | undefined) => {
   if (!birth) return "";
   return birth.replace(/-/g, "");
 };
 
-// 날짜를 표시 형식으로 변환: "20970726" -> "2097-07-26"
+// 날짜를 표시 형식으로 변환: "19970726" -> "1997-07-26"
 export const formatBirthToDisplay = (birth: string) => {
   if (!birth) return "";
   // 숫자만 추출

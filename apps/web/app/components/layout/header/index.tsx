@@ -1,9 +1,9 @@
 import { cn } from "@gyeongmaetalk/utils";
 
+import { ChevronLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 
-import { Alarm, Back, Close, LogoIcon, LogoText, Share } from "~/components/icons";
-import useScroll from "~/hooks/use-scroll";
+import { Alarm, Close, LogoIcon, LogoText, Share } from "~/components/icons";
 
 // 기본 헤더 컨테이너
 function HeaderContainer({
@@ -13,14 +13,11 @@ function HeaderContainer({
   children: React.ReactNode;
   className?: string;
 }) {
-  const isScrolled = useScroll();
-
   return (
     <header
       className={cn(
-        "max-w-mobile top-ios-top fixed right-0 left-0 z-[99999] mx-auto flex h-11 items-center bg-white px-4 py-2.5",
-        className,
-        isScrolled && "border-b-line-normal-neutral border-b-1"
+        "max-w-mobile top-ios-top fixed right-0 left-0 z-99999 mx-auto flex h-11 items-center px-4 py-2.5",
+        className
       )}
     >
       {children}
@@ -56,7 +53,7 @@ function HeaderLogo() {
 function HeaderBackButton({ onClick }: { onClick?: () => void }) {
   const navigate = useNavigate();
 
-  return <Back onClick={() => onClick?.() || navigate(-1)} className="cursor-pointer" />;
+  return <ChevronLeft onClick={() => onClick?.() || navigate(-1)} className="cursor-pointer" />;
 }
 
 // 헤더 타이틀
@@ -68,7 +65,9 @@ function HeaderTitle({
   position?: "left" | "center";
 }) {
   return (
-    <div className={cn(position === "center" ? "font-headline2-bold" : "font-title3-bold")}>
+    <div
+      className={cn("shrink-0", position === "center" ? "font-headline2-bold" : "font-title3-bold")}
+    >
       {children}
     </div>
   );

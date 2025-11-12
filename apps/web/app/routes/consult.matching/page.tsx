@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Navigate, useLocation } from "react-router";
 
+import { useUserStore } from "~/lib/zustand/user";
 import type { MatchCounselResponse, ReserveConsultResponse } from "~/models/counsel";
 import FirstStep from "~/routes/consult.matching/first-step";
 import LastStep from "~/routes/consult.matching/last-step";
@@ -13,9 +14,11 @@ const ConsultMatchingPage = () => {
   const [mode, setMode] = useState<Mode>(null);
   const [reservationResult, setReservationResult] = useState<ReserveConsultResponse | null>(null);
 
+  const user = useUserStore((state) => state.user);
+
   const { state }: { state: MatchCounselResponse } = useLocation();
 
-  if (!state) {
+  if (!state || !user) {
     return <Navigate to="/" replace />;
   }
 
@@ -31,7 +34,7 @@ const ConsultMatchingPage = () => {
     case "complete":
       return <LastStep consultant={state} reservationResult={reservationResult} />;
     default:
-      return <FirstStep consultant={state} onChangeMode={setMode} />;
+      return <FirstStep consultant={state} name={user.name} onChangeMode={setMode} />;
   }
 };
 

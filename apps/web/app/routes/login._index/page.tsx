@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Button } from "@gyeongmaetalk/ui";
 
 import { Apple, Kakao as KakaoIcon, LogoIcon, LogoText } from "~/components/icons";
@@ -5,13 +7,16 @@ import { AuthProvider } from "~/constants";
 import { baseUrl } from "~/utils/env";
 
 const LoginPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const onLogin = (provider: AuthProvider) => {
+    setIsLoading(true);
     window.location.href = `${baseUrl}/oauth2/authorization/${provider}`;
   };
 
   return (
     <div className="flex h-full flex-col">
-      <section className="flex-2 flex flex-col items-center justify-center">
+      <section className="flex flex-2 flex-col items-center justify-center">
         <div className="flex items-center gap-1.5">
           <LogoIcon className="h-11" />
           <LogoText className="h-9" />
@@ -26,6 +31,7 @@ const LoginPage = () => {
           <Button
             className="font-headline2-bold flex items-center gap-1 bg-black text-white hover:bg-black/85 active:bg-black/75"
             onClick={() => onLogin(AuthProvider.APPLE)}
+            disabled={isLoading}
           >
             <Apple className="size-5" />
             <span className="font-body1-normal-medium">Apple로 계속하기</span>
@@ -33,6 +39,7 @@ const LoginPage = () => {
           <Button
             className="font-headline2-bold bg-kakao hover:bg-kakao/85 active:bg-kakao/75 flex items-center gap-1 text-black/85"
             onClick={() => onLogin(AuthProvider.KAKAO)}
+            disabled={isLoading}
           >
             <KakaoIcon className="size-5" />
             <span className="font-body1-normal-medium">카카오로 계속하기</span>

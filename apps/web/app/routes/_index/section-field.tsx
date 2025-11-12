@@ -17,7 +17,7 @@ export default function SectionField({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between px-4">
         <div className="text-label-strong font-headline1-bold">{title}</div>
         <div
           className="text-label-alternative font-label1-normal-medium cursor-pointer"

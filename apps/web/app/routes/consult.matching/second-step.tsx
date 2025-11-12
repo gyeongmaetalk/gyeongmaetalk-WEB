@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button } from "@gyeongmaetalk/ui";
 
 import { Loader2 } from "lucide-react";
@@ -11,6 +12,7 @@ import Image from "~/components/image";
 import { Header } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import CancelApplyConsult from "~/components/modal/cancel-apply-consult";
+import { COUNSEL } from "~/constants";
 import { useReserveConsult } from "~/lib/tanstack/mutation/counsel";
 import { useGetAvailableTimes } from "~/lib/tanstack/query/counsel";
 import type { MatchCounselResponse, ReserveConsultResponse } from "~/models/counsel";
@@ -39,8 +41,9 @@ const SecondStep = ({ consultant, onChangeMode, setReservationResult }: SecondSt
   });
 
   const { mutateAsync: reserveConsult, isPending } = useReserveConsult({
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setReservationResult(data.result);
+      await queryClient.invalidateQueries({ queryKey: [COUNSEL.COUNSEL_STATUS] });
       onChangeMode("complete");
     },
     onError: (error) => {
@@ -120,11 +123,12 @@ const SecondStep = ({ consultant, onChangeMode, setReservationResult }: SecondSt
               </>
             )}
           </div>
-          <div className="mt-6 pb-6 pt-2">
+          <div className="mt-6 pt-2 pb-6">
             <Button
               onClick={onReservation}
               className="w-full"
               disabled={reservationDisabled || isPending}
+              loading={isPending}
             >
               예약 하기
             </Button>

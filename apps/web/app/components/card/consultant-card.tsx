@@ -31,7 +31,7 @@ const getStatusColor = (status: ConsultantCardProps["status"]) => {
 
 const ConsultantCard = ({ status, consultant }: ConsultantCardProps) => {
   return (
-    <section className="shadow-card from-primary-normal/50 flex flex-col items-center gap-4 rounded-[12px] bg-gradient-to-tr to-[#13DBFF]/20 p-[1px]">
+    <section className="shadow-card from-primary-normal/50 flex flex-col items-center gap-4 rounded-[12px] bg-linear-to-tr to-[#13DBFF]/20 p-px">
       <div className="flex w-full flex-col gap-2 rounded-[12px] bg-white p-4">
         {status && (
           <div

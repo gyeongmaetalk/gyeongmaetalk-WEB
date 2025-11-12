@@ -10,7 +10,7 @@ import FloatingContainer from "~/components/container/floating-container";
 import Modal from "~/components/modal";
 import SuggestLogin from "~/components/modal/suggest-login";
 import { useMatchCounsel } from "~/lib/tanstack/mutation/counsel";
-import { useGetMyInfo } from "~/lib/tanstack/query/auth";
+import { useUserStore } from "~/lib/zustand/user";
 import { type ApplyConsultForm } from "~/routes/consult.apply/schema";
 import { errorToast } from "~/utils/toast";
 
@@ -22,7 +22,7 @@ interface LastStepProps {
 }
 
 const LastStep = ({ form }: LastStepProps) => {
-  const { data: myInfo } = useGetMyInfo();
+  const user = useUserStore((state) => state.user);
 
   const [name, setName] = useState(form.getValues("name"));
   const [innerOption, setInnerOption] = useState("");
@@ -65,7 +65,7 @@ const LastStep = ({ form }: LastStepProps) => {
 
   const onComplete = form.handleSubmit(
     async (data) => {
-      if (!myInfo) return setIsShowLoginModal(true);
+      if (!user) return setIsShowLoginModal(true);
 
       const selectedValue = name === "개인" ? `개인,${innerOption}` : name;
 
@@ -129,11 +129,11 @@ const LastStep = ({ form }: LastStepProps) => {
           완료
         </Button>
       </FloatingContainer>
-      {(form.formState.isSubmitting || form.formState.isSubmitSuccessful) && (
+      {(form.formState.isSubmitting || form.formState.isSubmitSuccessful) && user && (
         <Modal className="flex flex-col items-center justify-center gap-7 bg-transparent">
           <Loader2 className="size-20 animate-spin text-white" />
           <Modal.Content className="font-heading1-bold text-white">
-            ‘{myInfo?.name ?? "사용자"}’님에게 적합한
+            ‘{user.name}’님에게 적합한
             <br />
             경매 전문가를 찾고 있어요
           </Modal.Content>
