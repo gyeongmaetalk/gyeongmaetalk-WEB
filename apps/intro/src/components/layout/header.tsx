@@ -5,8 +5,7 @@ import { useState } from "react";
 import LogoIcon from "@/assets/logo-icon.svg";
 import LogoText from "@/assets/logo-text.svg";
 import { StoreType } from "@/constants/store";
-import { useScroll } from "@/hooks/use-scroll";
-import { useOutsideClick } from "@gyeongmaetalk/hooks";
+import { useOutsideClick, useScroll } from "@gyeongmaetalk/hooks";
 import { cn } from "@gyeongmaetalk/utils";
 
 import LinkButton from "../button/link-button";

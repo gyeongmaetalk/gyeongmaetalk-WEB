@@ -1,4 +1,6 @@
+import { useScroll } from "@gyeongmaetalk/hooks";
 import { DragCarousel, DragCarouselItem } from "@gyeongmaetalk/ui";
+import { cn } from "@gyeongmaetalk/utils";
 
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router";
@@ -45,8 +47,14 @@ export default function HomePage() {
 
   const status = counselStatus ? counselStatus.status : CounselStatus.NONE;
 
+  const isScrolled = useScroll();
+
   return (
-    <PageLayout header={<DefaultHeader />} showNav mainClassName="mt-0">
+    <PageLayout
+      header={<DefaultHeader className={cn(isScrolled ? "bg-white" : "bg-transparent")} />}
+      showNav
+      mainClassName="mt-0"
+    >
       <div
         className="flex h-full flex-col bg-gray-300 bg-cover bg-center bg-no-repeat pt-[calc(2.75rem+var(--spacing-ios-top))]"
         style={{ backgroundImage: `url(${homeBg})` }}
