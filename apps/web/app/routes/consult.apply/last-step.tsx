@@ -135,7 +135,7 @@ const LastStep = ({ form }: LastStepProps) => {
           <Modal.Content className="font-heading1-bold text-white">
             ‘{myInfo?.name ?? "사용자"}’님에게 적합한
             <br />
-            경매 전문를 찾고 있어요
+            경매 전문가를 찾고 있어요
           </Modal.Content>
         </Modal>
       )}

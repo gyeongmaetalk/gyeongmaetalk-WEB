@@ -23,11 +23,6 @@ const FirstStep = ({ consultant, onChangeMode }: FirstStepProps) => {
   const { data: myInfo } = useGetMyInfo();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isRematched, setIsRematched] = useState(false);
-
-  const onRematch = () => {
-    setIsRematched(true);
-  };
 
   const onMakeReservation = () => {
     onChangeMode("reservation");
@@ -37,7 +32,7 @@ const FirstStep = ({ consultant, onChangeMode }: FirstStepProps) => {
     <>
       <PageLayout
         header={<WithCloseHeader className="bg-transparent" onClose={() => setIsModalOpen(true)} />}
-        className="from-blue-gradient-start bg-gradient-to-b to-white to-10%"
+        className="from-blue-gradient-start bg-linear-to-b to-white to-10%"
       >
         <div className="flex flex-col items-center gap-4 text-center">
           <Image src={complete} alt="complete" className="size-[52px]" />
@@ -51,16 +46,8 @@ const FirstStep = ({ consultant, onChangeMode }: FirstStepProps) => {
           <ConsultantCard consultant={consultant} />
         </div>
       </PageLayout>
-      <FloatingContainer className="flex gap-3">
-        <Button
-          theme="assistive"
-          className="flex-1 transition-none"
-          onClick={onRematch}
-          disabled={isRematched}
-        >
-          다시 매칭 ({isRematched ? 0 : 1}/1)
-        </Button>
-        <Button onClick={onMakeReservation} className="flex-1 transition-none">
+      <FloatingContainer>
+        <Button onClick={onMakeReservation} className="w-full transition-none">
           상담일정 선택
         </Button>
       </FloatingContainer>
