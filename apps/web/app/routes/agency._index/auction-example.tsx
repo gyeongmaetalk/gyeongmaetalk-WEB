@@ -49,11 +49,21 @@ export default function AuctionExample() {
         plugins={[Autoplay({ delay: 3000 })]}
       >
         <CarouselContent>
-          <CarouselItem>
-            <Image src={auctionExampleImage1} alt="경매대행 예시 이미지" />
+          <CarouselItem className="aspect-343/260 w-full">
+            <Image
+              fetchPriority="high"
+              src={auctionExampleImage1}
+              alt="경매대행 예시 이미지"
+              className="w-full"
+            />
           </CarouselItem>
-          <CarouselItem>
-            <Image src={auctionExampleImage2} alt="경매대행 예시 이미지" />
+          <CarouselItem className="aspect-343/260 w-full">
+            <Image
+              fetchPriority="high"
+              src={auctionExampleImage2}
+              alt="경매대행 예시 이미지"
+              className="w-full"
+            />
           </CarouselItem>
         </CarouselContent>
         <p className="bg-label-neutral font-caption1-regular absolute bottom-2.5 left-1/2 mx-auto -translate-x-1/2 rounded-full px-3 py-1 text-white">
