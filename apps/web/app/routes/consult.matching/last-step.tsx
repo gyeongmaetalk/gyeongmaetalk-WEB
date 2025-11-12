@@ -74,7 +74,7 @@ const LastStep = ({ consultant, reservationResult }: LastStepProps) => {
           </ul>
         </section>
       </PageLayout>
-      <FloatingContainer className="flex gap-3">
+      <FloatingContainer className="flex gap-3 bg-white">
         <Button onClick={onRouteToHome} theme="assistive" className="flex-1 transition-none">
           홈으로 이동
         </Button>

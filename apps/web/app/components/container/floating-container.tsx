@@ -8,7 +8,7 @@ export default function FloatingContainer({
   return (
     <div
       className={cn(
-        "max-w-mobile fixed bottom-[calc(2.5rem+var(--spacing-ios-bottom))] left-1/2 w-full -translate-x-1/2 px-4",
+        "max-w-mobile fixed bottom-0 left-1/2 w-full -translate-x-1/2 px-4 pt-2 pb-[calc(2.5rem+var(--spacing-ios-bottom))]",
         className
       )}
       {...props}

@@ -14,6 +14,7 @@ const formatPhoneNumber = (phoneNumber: string) => {
 
 const getConsultDate = (date: string) => {
   return new Intl.DateTimeFormat("ko-KR", {
+    year: "numeric",
     month: "numeric",
     day: "numeric",
     weekday: "short",
