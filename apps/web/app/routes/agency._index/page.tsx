@@ -40,11 +40,6 @@ const AgencyPage = () => {
   return (
     <div>
       <section className="px-4 py-6">
-        <p className="font-heading2-bold text-label-strong">
-          경매톡에서 경매대행 시
-          <br />
-          <span className="text-primary-normal">무료로 추천매물</span>을 받아 볼 수 있어요!
-        </p>
         <AuctionExample />
         <p className="text-label-assistive font-caption1-regular">예시 이미지 입니다.</p>
       </section>

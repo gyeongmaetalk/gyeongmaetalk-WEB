@@ -6,7 +6,7 @@ import { Button } from "@gyeongmaetalk/ui";
 
 import { useNavigate } from "react-router";
 
-import complete from "~/assets/complete.png";
+import complete from "~/assets/complete.webp";
 import Image from "~/components/image";
 import Modal from "~/components/modal";
 import { PROPERTY } from "~/constants";

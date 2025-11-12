@@ -2,7 +2,7 @@ import { Button } from "@gyeongmaetalk/ui";
 
 import { useNavigate } from "react-router";
 
-import hasNoConsult from "~/assets/has-no-consult.png";
+import hasNoConsult from "~/assets/has-no-consult.webp";
 import Image from "~/components/image";
 
 export const ConsultEmpty = () => {

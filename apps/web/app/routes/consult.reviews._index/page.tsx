@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Link, useSearchParams } from "react-router";
 
-import homeBg from "~/assets/home-main.png";
+import homeBg from "~/assets/home-main.webp";
 import { Back, Close } from "~/components/icons";
 import { WithBackHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
@@ -49,7 +49,7 @@ const ConsultReviewsPage = () => {
   return (
     <PageLayout header={<WithBackHeader title="상담후기" />}>
       {isShowModal && (
-        <section className="px-4 pb-6 pt-3">
+        <section className="px-4 pt-3 pb-6">
           <div
             className="space-y-1.5 rounded-[12px] bg-cover bg-center bg-no-repeat px-5 py-[15px]"
             style={{ backgroundImage: `url(${homeBg})` }}

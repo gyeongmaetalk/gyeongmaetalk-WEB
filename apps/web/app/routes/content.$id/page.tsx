@@ -1,6 +1,6 @@
-import thumbnail1 from "~/assets/content-thumbnail1.png";
-import thumbnail2 from "~/assets/content-thumbnail2.png";
-import thumbnail3 from "~/assets/content-thumbnail3.png";
+import thumbnail1 from "~/assets/content-thumbnail1.webp";
+import thumbnail2 from "~/assets/content-thumbnail2.webp";
+import thumbnail3 from "~/assets/content-thumbnail3.webp";
 import Image from "~/components/image";
 import { WithBackHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
@@ -19,7 +19,7 @@ const ContentDetailPage = ({ id }: ContentDetailPageProps) => {
   return (
     <>
       <PageLayout header={<WithBackHeader onShare={() => {}} />} withFloating>
-        <section className="flex flex-col gap-4 px-4 pb-12 pt-6">
+        <section className="flex flex-col gap-4 px-4 pt-6 pb-12">
           <h1 className="font-title3-bold text-label-strong whitespace-pre-line">
             {content?.title}
           </h1>

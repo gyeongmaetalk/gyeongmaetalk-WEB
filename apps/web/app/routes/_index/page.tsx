@@ -3,10 +3,10 @@ import { DragCarousel, DragCarouselItem } from "@gyeongmaetalk/ui";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router";
 
-import homeBg from "~/assets/home-main.png";
-import thumbnail1 from "~/assets/home-thumbnail1.png";
-import thumbnail2 from "~/assets/home-thumbnail2.png";
-import thumbnail3 from "~/assets/home-thumbnail3.png";
+import homeBg from "~/assets/home-main.webp";
+import thumbnail1 from "~/assets/home-thumbnail1.webp";
+import thumbnail2 from "~/assets/home-thumbnail2.webp";
+import thumbnail3 from "~/assets/home-thumbnail3.webp";
 import Dot from "~/components/icons/Dot";
 import { DefaultHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
@@ -59,11 +59,11 @@ export default function HomePage() {
         style={{ backgroundImage: `url(${homeBg})` }}
       >
         <TitleSection status={status} />
-        <div className="gap-18 flex h-full flex-col rounded-b-none rounded-t-[20px] bg-[#FFF] px-4 py-6 shadow-[0_0_16px_0_rgba(8,89,193,0.2)]">
+        <div className="flex h-full flex-col gap-18 rounded-t-[20px] rounded-b-none bg-[#FFF] px-4 py-6 shadow-[0_0_16px_0_rgba(8,89,193,0.2)]">
           {status === CounselStatus.COUNSEL_AFTER && (
             <SectionField title={HOME_SECTION_TITLES.RESERVATION}>
-              <div className="flex cursor-pointer flex-row items-center gap-2 rounded-[12px] bg-[rgba(0_119_255_/_0.05)] p-4">
-                <div className="border-1 rounded-[111px] border-[rgba(18,18,19,0.5)] bg-[#FFF] px-2 py-[5px] text-[12px] font-bold text-[#07F]">
+              <div className="flex cursor-pointer flex-row items-center gap-2 rounded-[12px] bg-[rgba(0_119_255_/0.05)] p-4">
+                <div className="rounded-[111px] border border-[rgba(18,18,19,0.5)] bg-[#FFF] px-2 py-[5px] text-[12px] font-bold text-[#07F]">
                   {getTimeDisplay(counselStatus?.info.counselDate ?? "")}
                 </div>
                 <div className="flex flex-row items-center gap-1.5">
@@ -83,7 +83,7 @@ export default function HomePage() {
               {contents.map((item) => (
                 <DragCarouselItem key={item.id} className="cursor-pointer">
                   <div
-                    className="font-body1-normal-bold text-label-neutral w-45 h-60 whitespace-pre-line rounded-[12px] bg-[rgb(247_247_248_/_0.5)] bg-cover bg-center bg-no-repeat p-4"
+                    className="font-body1-normal-bold text-label-neutral h-60 w-45 rounded-[12px] bg-[rgb(247_247_248_/0.5)] bg-cover bg-center bg-no-repeat p-4 whitespace-pre-line"
                     style={{ backgroundImage: `url(${item.thumbnail})` }}
                     onClick={() => navigate(`/content/${item.id}`)}
                   >

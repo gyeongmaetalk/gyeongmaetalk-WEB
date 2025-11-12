@@ -3,7 +3,7 @@ import { Button } from "@gyeongmaetalk/ui";
 import { Info } from "lucide-react";
 import { Navigate, useNavigate } from "react-router";
 
-import calendarCheck from "~/assets/calendar-check.png";
+import calendarCheck from "~/assets/calendar-check.webp";
 import ConsultInfoCard from "~/components/card/consult-info-card";
 import ConsultantCard from "~/components/card/consultant-card";
 import ReservationInfoCard from "~/components/card/reservation-info-card";
@@ -35,10 +35,7 @@ const LastStep = ({ consultant, reservationResult }: LastStepProps) => {
 
   return (
     <>
-      <PageLayout
-        withFloating
-        className="from-blue-gradient-start bg-gradient-to-b to-white to-10%"
-      >
+      <PageLayout withFloating className="from-blue-gradient-start bg-linear-to-b to-white to-10%">
         <section className="space-y-8 px-4 pb-6">
           <div className="flex flex-col items-center gap-3">
             <Image src={calendarCheck} alt="상담 일정 확정 아이콘" className="w-20" />
