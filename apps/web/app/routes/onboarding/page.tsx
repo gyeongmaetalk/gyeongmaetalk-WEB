@@ -111,9 +111,11 @@ const OnboardingPage = () => {
           ))}
         </div>
       </div>
-      <Button onClick={onNext} className="w-full">
-        {buttonText}
-      </Button>
+      <div className="px-5">
+        <Button onClick={onNext} className="w-full">
+          {buttonText}
+        </Button>
+      </div>
     </PageLayout>
   );
 };

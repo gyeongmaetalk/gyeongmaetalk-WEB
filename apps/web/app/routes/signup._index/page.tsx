@@ -93,7 +93,7 @@ export default function SignupPage() {
         successToast("회원가입이 완료되었어요.");
         setAccessToken(accessToken);
         setRefreshToken(refreshToken);
-        navigate("/onboarding", { replace: true });
+        navigate("/onboarding?mode=apply", { replace: true });
       } else {
         errorToast("회원가입에 실패했어요.");
         console.error(res);
