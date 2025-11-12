@@ -16,8 +16,13 @@ interface SecondStepProps {
 }
 
 const SecondStep = ({ form }: SecondStepProps) => {
-  const [region, setRegion] = useState(form.getValues("region"));
-  const [customRegion, setCustomRegion] = useState("");
+  const regionValue = form.getValues("region");
+  const isCustomRegion = !REGION_OPTIONS.includes(regionValue);
+  const initialRegion = regionValue === "" ? "" : isCustomRegion ? "직접 입력" : regionValue;
+  const initialCustomRegion = isCustomRegion ? regionValue : "";
+
+  const [region, setRegion] = useState(initialRegion);
+  const [customRegion, setCustomRegion] = useState(initialCustomRegion);
 
   const navigate = useNavigate();
 
@@ -32,7 +37,7 @@ const SecondStep = ({ form }: SecondStepProps) => {
   };
 
   const onNext = () => {
-    const value = region === "custom" ? customRegion : region;
+    const value = region === "직접 입력" ? customRegion : region;
     form.setValue("region", value);
     navigate("?step=3");
   };
