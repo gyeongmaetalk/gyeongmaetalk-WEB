@@ -123,7 +123,8 @@ export default function PhoneVerification({
             label="휴대폰 번호"
             required
             placeholder="번호를 입력해주세요.(ex.01012345678)"
-            className="rounded-r-none"
+            containerClassName="rounded-r-none max-w-full"
+            className="w-full truncate"
             maxLength={11}
             value={phone}
             onChange={onPhoneChange}
@@ -147,7 +148,8 @@ export default function PhoneVerification({
             required
             label="인증번호"
             placeholder="인증번호를 입력해주세요."
-            className={cn(!successText && "rounded-r-none")}
+            containerClassName={cn("max-w-full", !successText && "rounded-r-none")}
+            className="w-full truncate"
             disabled={isCheckCodeDisabled}
             successText={successText}
             errorText={errorText}
