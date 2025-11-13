@@ -7,9 +7,16 @@ export default function Image(props: React.ImgHTMLAttributes<HTMLImageElement>) 
     props.src = undefined;
   };
 
+  const onContextMenuHandler = (e: React.MouseEvent<HTMLImageElement>) => {
+    e.preventDefault();
+    props.onContextMenu?.(e);
+  };
+
   if (!props.src) {
     return <LogoIcon className={cn("size-full", props.className)} />;
   }
 
-  return <img {...props} onError={onError} />;
+  return (
+    <img draggable={false} onError={onError} onContextMenu={onContextMenuHandler} {...props} />
+  );
 }

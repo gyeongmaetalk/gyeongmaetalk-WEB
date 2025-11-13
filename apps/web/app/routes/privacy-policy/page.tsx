@@ -391,7 +391,7 @@ const PrivacyPolicyPage = () => {
             보호책임자를 지정하고 있습니다.
           </p>
 
-          <dl className="space-y-2">
+          <dl className="ml-4 space-y-2">
             <li>
               개인정보 보호 책임자
               <ul className="ml-4 list-inside list-disc space-y-1">

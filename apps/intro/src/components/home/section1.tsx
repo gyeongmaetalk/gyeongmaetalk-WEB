@@ -15,7 +15,7 @@ export default function Section1() {
       {/* 메인 배경 이미지 */}
       <picture className="absolute inset-0 h-full w-full overflow-hidden object-contain">
         <source type="image/webp" srcSet={section1Bg} />
-        <img
+        <Image
           src={section1Bg}
           alt="메인 배경 이미지"
           className="h-full w-full object-cover md:h-auto md:object-contain"
