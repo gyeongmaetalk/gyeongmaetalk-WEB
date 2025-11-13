@@ -2,9 +2,10 @@ import { instance } from "@gyeongmaetalk/lib/ky";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 
 import { api } from "~/lib/ky";
-import { s3BaseUrl } from "~/utils/env";
 import { convertImageToWebP } from "~/utils/image";
 import { errorToast } from "~/utils/toast";
+
+const s3BaseUrl = import.meta.env.VITE_S3_BASE_URL;
 
 export async function uploadImage(file: File, category: string) {
   const ext = file.type;
