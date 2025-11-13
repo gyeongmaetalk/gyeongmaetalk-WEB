@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-const s3BaseUrl = import.meta.env.VITE_S3_BASE_URL;
+const s3BaseUrl = "https://auctiontalk-s3.s3.ap-northeast-2.amazonaws.com";
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],

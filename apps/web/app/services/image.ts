@@ -5,7 +5,7 @@ import { api } from "~/lib/ky";
 import { convertImageToWebP } from "~/utils/image";
 import { errorToast } from "~/utils/toast";
 
-const s3BaseUrl = import.meta.env.VITE_S3_BASE_URL;
+const s3BaseUrl = "https://auctiontalk-s3.s3.ap-northeast-2.amazonaws.com";
 
 export async function uploadImage(file: File, category: string) {
   const ext = file.type;
