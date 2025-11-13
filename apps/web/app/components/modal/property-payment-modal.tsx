@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button } from "@gyeongmaetalk/ui";
 import {
   ANONYMOUS,
@@ -11,11 +10,9 @@ import {
 } from "@tosspayments/tosspayments-sdk";
 
 import { X } from "lucide-react";
-import { useNavigate } from "react-router";
 
-import { PROPERTY } from "~/constants";
-import { useConfirmPurchase, useReadyPurchase } from "~/lib/tanstack/mutation/property";
-import { errorToast, successToast } from "~/utils/toast";
+import { useReadyPurchase } from "~/lib/tanstack/mutation/property";
+import { errorToast } from "~/utils/toast";
 
 import Modal from ".";
 
@@ -38,10 +35,7 @@ export default function PropertyPaymentModal({ id, isOpen, onClose }: PropertyPa
   const [agreementWidget, setAgreementWidget] = useState<WidgetAgreementWidget | null>(null);
   const [isAgreementChecked, setIsAgreementChecked] = useState(true);
 
-  const navigate = useNavigate();
-
   const { mutateAsync: readyPurchase } = useReadyPurchase();
-  const { mutateAsync: confirmPurchase } = useConfirmPurchase();
 
   const paymentDisabled = !isAgreementChecked || isLoading || isPaymentWidgetLoading;
 
@@ -55,6 +49,7 @@ export default function PropertyPaymentModal({ id, isOpen, onClose }: PropertyPa
 
       if (!readyResponse.isSuccess) {
         errorToast("결제 준비에 실패했습니다.");
+        setIsLoading(false);
         return;
       }
 
@@ -63,28 +58,20 @@ export default function PropertyPaymentModal({ id, isOpen, onClose }: PropertyPa
         value: AMOUNT,
       });
 
-      // 결제 요청
-      const result = await tossPayments.requestPayment({
+      const origin = window.location.origin;
+
+      await tossPayments.requestPayment({
         orderId: readyResponse.result.orderId,
         orderName: "추천 매물 구매",
+        successUrl: `${origin}/payment/property/success?propertyId=${id}`,
+        failUrl: `${origin}/payment/property/fail`,
       });
 
-      await confirmPurchase({
-        propertyId: id,
-        paymentKey: result.paymentKey,
-        orderId: result.orderId,
-        amount: result.amount.value,
-      });
-
-      successToast("결제가 완료되었어요.");
-      queryClient.invalidateQueries({ queryKey: [PROPERTY.PROPERTY_LIST] });
-      navigate(`/agency/recommend/${id}`);
+      onClose();
     } catch (error) {
       console.error("결제 요청 중 오류 발생:", error);
       errorToast("결제에 실패했어요. 다시 시도해주세요.");
-    } finally {
       setIsLoading(false);
-      onClose();
     }
   };
 
