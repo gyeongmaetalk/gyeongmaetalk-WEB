@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button } from "@gyeongmaetalk/ui";
 import {
   ANONYMOUS,
@@ -12,9 +11,8 @@ import {
 
 import { X } from "lucide-react";
 
-import { COUNSEL } from "~/constants";
-import { useConfirmSubscription, useReadySubscribe } from "~/lib/tanstack/mutation/property";
-import { errorToast, successToast } from "~/utils/toast";
+import { useReadySubscribe } from "~/lib/tanstack/mutation/property";
+import { errorToast } from "~/utils/toast";
 
 import Modal from ".";
 
@@ -38,7 +36,6 @@ export default function SubscribePaymentModal({ id, isOpen, onClose }: Subscribe
   const [isAgreementChecked, setIsAgreementChecked] = useState(true);
 
   const { mutateAsync: readySubscribe } = useReadySubscribe();
-  const { mutateAsync: confirmSubscription } = useConfirmSubscription();
 
   const paymentDisabled = !isAgreementChecked || isLoading || isPaymentWidgetLoading;
 
@@ -52,6 +49,7 @@ export default function SubscribePaymentModal({ id, isOpen, onClose }: Subscribe
 
       if (!readyResponse.isSuccess) {
         errorToast("결제 준비에 실패했습니다.");
+        setIsLoading(false);
         return;
       }
 
@@ -60,27 +58,20 @@ export default function SubscribePaymentModal({ id, isOpen, onClose }: Subscribe
         value: AMOUNT,
       });
 
-      // 결제 요청
-      const result = await tossPayments.requestPayment({
+      const origin = window.location.origin;
+
+      await tossPayments.requestPayment({
         orderId: readyResponse.result.orderId,
         orderName: "경매 대행 서비스",
+        successUrl: `${origin}/payment/subscribe/success?subscriptionId=${readyResponse.result.subscriptionId}`,
+        failUrl: `${origin}/payment/subscribe/fail`,
       });
 
-      await confirmSubscription({
-        subscriptionId: readyResponse.result.subscriptionId,
-        paymentKey: result.paymentKey,
-        orderId: result.orderId,
-        amount: result.amount.value,
-      });
-
-      successToast("결제가 완료되었어요.");
-      queryClient.invalidateQueries({ queryKey: [COUNSEL.COUNSEL_STATUS] });
+      onClose();
     } catch (error) {
       console.error("결제 요청 중 오류 발생:", error);
       errorToast("결제에 실패했어요. 다시 시도해주세요.");
-    } finally {
       setIsLoading(false);
-      onClose();
     }
   };
 
