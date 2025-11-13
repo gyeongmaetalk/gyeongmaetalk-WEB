@@ -30,7 +30,7 @@ export default function SectionField({
           {viewMore ? "더보기" : null}
         </div>
       </div>
-      <div>{children}</div>
+      {children}
     </div>
   );
 }

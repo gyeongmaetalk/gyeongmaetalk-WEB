@@ -9,13 +9,23 @@ import { Carousel, type CarouselApi, CarouselContent, CarouselItem } from ".";
 interface DragCarouselProps {
   children: ReactNode;
   className?: string;
+  contentClassName?: string;
+  containerClassName?: string;
   setApi?: (api: CarouselApi | null) => void;
 }
 
-export function DragCarousel({ children, className, setApi }: DragCarouselProps) {
+export function DragCarousel({
+  children,
+  className,
+  contentClassName,
+  containerClassName,
+  setApi,
+}: DragCarouselProps) {
   return (
     <Carousel opts={{ dragFree: true }} className={className} setApi={setApi}>
-      <CarouselContent>{children}</CarouselContent>
+      <CarouselContent containerClassName={containerClassName} className={contentClassName}>
+        {children}
+      </CarouselContent>
     </Carousel>
   );
 }

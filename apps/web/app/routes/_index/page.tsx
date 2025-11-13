@@ -80,7 +80,7 @@ export default function HomePage() {
             </SectionField>
           )}
           <SectionField title={HOME_SECTION_TITLES.A_TO_Z}>
-            <DragCarousel>
+            <DragCarousel containerClassName="px-4">
               {contents.map((item) => (
                 <DragCarouselItem key={item.id} className="cursor-pointer">
                   <div
