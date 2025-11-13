@@ -5,7 +5,7 @@ import type { UserResponse } from "~/models/auth";
 import { baseUrl } from "~/utils/env";
 
 import { resetUserQueries } from "../tanstack";
-import { useAccessTokenStore, useRefreshTokenStore } from "../zustand/user";
+import { useAccessTokenStore, useRefreshTokenStore, useUserStore } from "../zustand/user";
 
 export const api = instance.extend({
   prefixUrl: baseUrl,
@@ -43,6 +43,7 @@ export const api = instance.extend({
               console.error("Refresh 실패", error);
               useAccessTokenStore.setState({ accessToken: null });
               useRefreshTokenStore.setState({ refreshToken: null });
+              useUserStore.setState({ user: null });
               localStorage.clear();
               resetUserQueries();
               window.location.href = "/login";
