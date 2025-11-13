@@ -5,7 +5,6 @@ import { Button } from "@gyeongmaetalk/ui";
 import ConsultantReviewCard from "~/components/card/consultant-review-card";
 import SubscribePaymentModal from "~/components/modal/subscribe-payment-modal";
 import type { ReservedCounselDataResponse } from "~/models/counsel";
-import { formatDate } from "~/utils/format";
 
 interface NotPaidProps {
   info: ReservedCounselDataResponse["info"];
@@ -31,7 +30,7 @@ export default function NotPaid({ info }: NotPaidProps) {
         </p>
       </div>
       <ConsultantReviewCard
-        date={formatDate({ date: info.counselDate, withTime: true, shortYear: true })}
+        date={info.counselDate}
         counselorName={info.counselorName}
         experience={info.experience}
         counselorImage={info.counselorImage}

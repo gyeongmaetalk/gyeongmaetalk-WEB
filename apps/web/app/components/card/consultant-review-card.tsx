@@ -41,7 +41,7 @@ const ConsultantReviewCard = ({
           <div className="flex items-center gap-1">
             <p className="font-caption1-bold w-12">진행일</p>
             <p className="font-label2-regular text-label-alternative">
-              {formatDate({ date, withTime: true })} 상담완료
+              {formatDate({ date, withTime: true, shortYear: true })} 상담완료
             </p>
           </div>
         </>
