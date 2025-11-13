@@ -2,11 +2,16 @@ import type { HTTPError } from "@gyeongmaetalk/lib/ky";
 import { useMutation, type UseMutationOptions } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 
-import type { ReviewReportRequest, ReviewResponse } from "~/models/review";
+import type {
+  CreateReviewRequest,
+  ReviewReportRequest,
+  ReviewResponse,
+  UpdateReviewRequest,
+} from "~/models/review";
 import { createReview, removeReview, reportReview, updateReview } from "~/services/review";
 
 export const useCreateReview = (
-  options?: UseMutationOptions<BaseResponse<ReviewResponse>, HTTPError, FormData>
+  options?: UseMutationOptions<BaseResponse<ReviewResponse>, HTTPError, CreateReviewRequest>
 ) => {
   return useMutation({
     mutationFn: createReview,
@@ -18,7 +23,7 @@ export const useUpdateReview = (
   options?: UseMutationOptions<
     BaseResponse<ReviewResponse>,
     HTTPError,
-    { formData: FormData; reviewId: string }
+    { body: UpdateReviewRequest; reviewId: string }
   >
 ) => {
   return useMutation({

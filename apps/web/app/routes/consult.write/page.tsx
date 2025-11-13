@@ -32,6 +32,7 @@ import {
   type WriteConsultReviewForm,
   writeConsultReviewFormSchema,
 } from "~/routes/consult.write/schema";
+import { uploadImage } from "~/services/image";
 import { errorToast, infoToast, successToast } from "~/utils/toast";
 
 interface ConsultWriteReviewPageProps {
@@ -39,9 +40,9 @@ interface ConsultWriteReviewPageProps {
 }
 
 const DEFAULT_VALUES = {
-  rating: 0,
+  score: 0,
   content: "",
-  images: [],
+  imageUrls: [],
   isAgree: false,
 };
 
@@ -49,20 +50,20 @@ const MAX_IMAGES = 5;
 const MIN_CONTENT_LENGTH = 20;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-const getRatingText = (rating: number) => {
-  if (rating === 1) return "별로에요";
-  if (rating === 2) return "그럭저럭 괜찮았어요";
-  if (rating === 3) return "보통이에요";
-  if (rating === 4) return "아주 만족해요";
+const getRatingText = (score: number) => {
+  if (score === 1) return "별로에요";
+  if (score === 2) return "그럭저럭 괜찮았어요";
+  if (score === 3) return "보통이에요";
+  if (score === 4) return "아주 만족해요";
   return "훌륭한 경험이었어요!";
 };
 
 export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPageProps) {
+  const [isAgree, setIsAgree] = useState(false);
   const [searchParams] = useSearchParams();
   const consultantId = searchParams.get("consultantId");
   const reviewId = searchParams.get("reviewId");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
 
   const navigate = useNavigate();
 
@@ -109,26 +110,25 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
     defaultValues: DEFAULT_VALUES,
   });
 
-  const rating = form.watch("rating");
-  const images = form.watch("images");
-  const isAgree = form.watch("isAgree");
+  const score = form.watch("score");
+  const imageUrls = form.watch("imageUrls");
   const content = form.watch("content");
 
   const submitDisabled =
-    rating === 0 || content.length < MIN_CONTENT_LENGTH || !isAgree || form.formState.isSubmitting;
+    score === 0 || content.length < MIN_CONTENT_LENGTH || !isAgree || form.formState.isSubmitting;
   const statusText = reviewId ? "수정" : "작성";
 
   const onRatingChange = (newRating: number) => {
-    if (rating === newRating) return;
-    form.setValue("rating", newRating);
+    if (score === newRating) return;
+    form.setValue("score", newRating);
   };
 
-  const onFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
 
     if (files.length === 0) return;
 
-    const currentImageCount = images?.length || 0;
+    const currentImageCount = imageUrls.length;
     const remainingSlots = MAX_IMAGES - currentImageCount;
 
     if (files.length > remainingSlots) {
@@ -136,31 +136,22 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
       return;
     }
 
-    form.setValue("images", [...(images || []), ...files]);
-
-    const newPreviewUrls = files.map((file) => URL.createObjectURL(file));
-    setImagePreviewUrls((prev) => [...prev, ...newPreviewUrls]);
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    try {
+      const newImageUrls = await Promise.all(files.map((file) => uploadImage(file, "review")));
+      form.setValue("imageUrls", [...(imageUrls || []), ...newImageUrls]);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (error) {
+      errorToast("이미지 업로드에 실패했어요.");
+      console.error(error);
     }
   };
 
   const onRemoveImage = (index: number) => {
-    const newImages = [...(images || [])];
-    const newPreviewUrls = [...imagePreviewUrls];
-
-    URL.revokeObjectURL(newPreviewUrls[index]);
-
+    const newImages = [...imageUrls];
     newImages.splice(index, 1);
-    newPreviewUrls.splice(index, 1);
-
-    form.setValue("images", newImages);
-    setImagePreviewUrls(newPreviewUrls);
-  };
-
-  const onUploadButtonClick = () => {
-    fileInputRef.current?.click();
+    form.setValue("imageUrls", newImages);
   };
 
   if (!consultantId && !reviewId) {
@@ -173,53 +164,21 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
       return;
     }
 
-    const formData = new FormData();
-    const request = {
-      score: data.rating,
-      content: data.content,
-    };
-
     if (reviewId) {
-      const existingImages: string[] = [];
-      const reviewImages: File[] = [];
-      data.images?.forEach((image) => {
-        if (image.name.startsWith("https://")) {
-          existingImages.push(image.name);
-        } else {
-          reviewImages.push(image);
-        }
-      });
-      Object.assign(request, { existingImages });
-      formData.append("request", JSON.stringify(request));
-      if (reviewImages.length > 0) {
-        reviewImages.forEach((image) => {
-          formData.append("reviewImages", image);
-        });
-      }
-      await updateReview({ formData, reviewId });
+      await updateReview({ body: data, reviewId });
       return;
     }
-    Object.assign(request, { consultantId });
-    formData.append("request", JSON.stringify(request));
 
-    if (data.images) {
-      data.images.forEach((image) => {
-        formData.append("reviewImages", image);
-      });
-    }
+    if (!consultantId) return;
 
-    await createReview(formData);
+    await createReview({ ...data, consultantId });
   });
 
   useEffect(() => {
     if (review) {
-      form.setValue("rating", review.score);
+      form.setValue("score", review.score);
       form.setValue("content", review.content);
-      form.setValue(
-        "images",
-        review.images.map((image) => new File([image], image))
-      );
-      setImagePreviewUrls(review.images);
+      form.setValue("imageUrls", review.images);
     }
   }, []);
 
@@ -228,7 +187,7 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
       <PageLayout header={<WithBackHeader title={`상담후기 ${statusText}`} />} withFloating>
         <form className="space-y-5 px-4 py-6" onSubmit={onSubmit}>
           {isCounselInfoLoading ? (
-            <div className="bg-cool-neutral-98 h-[6.5rem] animate-pulse rounded-lg" />
+            <div className="bg-cool-neutral-98 h-26 animate-pulse rounded-lg" />
           ) : (
             <ConsultantReviewCard
               date={counselorInfo.counselDate}
@@ -240,9 +199,9 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
 
           <p className="font-body1-normal-bold">이정훈 상담사와 상담 경험은 어땠나요?</p>
           <div className="flex items-center gap-2">
-            <StarRating rating={form.watch("rating")} size="lg" setRating={onRatingChange} />
-            {rating > 0 && (
-              <p className="text-label-neutral font-label2-regular">{getRatingText(rating)}</p>
+            <StarRating rating={score} size="lg" setRating={onRatingChange} />
+            {score > 0 && (
+              <p className="text-label-neutral font-label2-regular">{getRatingText(score)}</p>
             )}
           </div>
           <Divider className="bg-cool-neutral-98" />
@@ -255,21 +214,21 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
             additionalText="최소 20자"
           />
           <div className="flex flex-wrap gap-2">
-            {imagePreviewUrls.length < MAX_IMAGES && (
+            {imageUrls.length < MAX_IMAGES && (
               <button
                 type="button"
-                onClick={onUploadButtonClick}
+                onClick={() => fileInputRef.current?.click()}
                 className="border-cool-neutral-50/16 flex size-20 flex-col items-center justify-center gap-1 rounded-lg border"
                 aria-label="이미지 업로드"
               >
                 <Camera />
                 <p className="font-label2-medium text-label-alternative">
-                  {imagePreviewUrls.length}/{MAX_IMAGES}
+                  {imageUrls.length}/{MAX_IMAGES}
                 </p>
               </button>
             )}
             <DragCarousel>
-              {imagePreviewUrls.map((url, index) => (
+              {imageUrls.map((url, index) => (
                 <DragCarouselItem key={`${url}-${index}`}>
                   <div className="relative">
                     <Image
@@ -300,7 +259,11 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
           </div>
           <Divider className="bg-cool-neutral-98" />
           <div className="flex items-center gap-1">
-            <Checkbox id="isAgree" {...form.register("isAgree")} />
+            <Checkbox
+              id="isAgree"
+              checked={isAgree}
+              onChange={(e) => setIsAgree(e.target.checked)}
+            />
             <Label htmlFor="isAgree" className="font-body2-normal-regular text-label-alternative">
               작성된 후기는 경매톡의 홍보 및 서비스 개선에 활용될 수 있습니다. (필수)
             </Label>

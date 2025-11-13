@@ -4,10 +4,12 @@ import type { SortType } from "~/constants";
 import { api } from "~/lib/ky";
 import type {
   ConsultantReviewListResponse,
+  CreateReviewRequest,
   ReviewDetailResponse,
   ReviewListResponse,
   ReviewReportRequest,
   ReviewResponse,
+  UpdateReviewRequest,
 } from "~/models/review";
 
 export const getConsultantReviews = async (props: {
@@ -34,18 +36,18 @@ export const getReviewById = async (
   return api.get(`reviews/${reviewId}`).json();
 };
 
-export const createReview = (formData: FormData): Promise<BaseResponse<ReviewResponse>> => {
-  return api.post("reviews", { body: formData }).json();
+export const createReview = (body: CreateReviewRequest): Promise<BaseResponse<ReviewResponse>> => {
+  return api.post("reviews", { json: body }).json();
 };
 
 export const updateReview = ({
-  formData,
+  body,
   reviewId,
 }: {
-  formData: FormData;
+  body: UpdateReviewRequest;
   reviewId: string;
 }): Promise<BaseResponse<ReviewResponse>> => {
-  return api.patch(`reviews/${reviewId}`, { body: formData }).json();
+  return api.patch(`reviews/${reviewId}`, { json: body }).json();
 };
 
 export const removeReview = (reviewId: number): Promise<BaseResponse<ReviewResponse>> => {

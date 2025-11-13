@@ -1,3 +1,13 @@
+export interface UpdateReviewRequest {
+  score: number;
+  content: string;
+  imageUrls: string[];
+}
+
+export interface CreateReviewRequest extends UpdateReviewRequest {
+  consultantId: string;
+}
+
 export interface ConsultantReviewListItemDTO {
   reviewId: number;
   name: string;
