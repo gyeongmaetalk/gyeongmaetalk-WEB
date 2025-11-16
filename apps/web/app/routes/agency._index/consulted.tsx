@@ -1,6 +1,5 @@
 import ConsultantReviewCard from "~/components/card/consultant-review-card";
 import type { ReservedCounselDataResponse } from "~/models/counsel";
-import { formatDate } from "~/utils/format";
 
 interface ConsultedProps {
   info: ReservedCounselDataResponse["info"];
@@ -14,7 +13,7 @@ export default function Consulted({ info }: ConsultedProps) {
         경매 대행를 진행해 보세요.
       </p>
       <ConsultantReviewCard
-        date={formatDate({ date: info.counselDate, withTime: true, shortYear: true })}
+        date={info.counselDate}
         counselorName={info.counselorName}
         experience={info.experience}
         counselorImage={info.counselorImage}
