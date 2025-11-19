@@ -1,6 +1,8 @@
 import { useState } from "react";
 
+import { useScroll } from "@gyeongmaetalk/hooks";
 import { Button } from "@gyeongmaetalk/ui";
+import { cn } from "@gyeongmaetalk/utils";
 
 import complete from "~/assets/complete.webp";
 import ConsultantCard from "~/components/card/consultant-card";
@@ -22,6 +24,8 @@ interface FirstStepProps {
 const FirstStep = ({ consultant, name, onChangeMode }: FirstStepProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const isScrolled = useScroll();
+
   const onMakeReservation = () => {
     onChangeMode("reservation");
   };
@@ -29,7 +33,12 @@ const FirstStep = ({ consultant, name, onChangeMode }: FirstStepProps) => {
   return (
     <>
       <PageLayout
-        header={<WithCloseHeader className="bg-transparent" onClose={() => setIsModalOpen(true)} />}
+        header={
+          <WithCloseHeader
+            className={cn(isScrolled ? "bg-white" : "bg-transparent")}
+            onClose={() => setIsModalOpen(true)}
+          />
+        }
         className="from-blue-gradient-start bg-linear-to-b to-white to-10%"
       >
         <div className="flex flex-col items-center gap-4 text-center">

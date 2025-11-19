@@ -17,13 +17,6 @@ const RESERVED_BUTTON_OPTIONS = [
   {
     variant: "outlined",
     theme: "assistive",
-    label: "예약 취소",
-    value: "cancel",
-    review: false,
-  },
-  {
-    variant: "outlined",
-    theme: "assistive",
     label: "예약 변경",
     value: "change",
     review: false,
@@ -95,11 +88,8 @@ const ConsultPage = () => {
         : AUCTION_BUTTON_OPTIONS;
 
   const handleButtonClick = (value: string) => {
-    if (value === "cancel") {
-      // TODO: 예약 취소 API 호출
-    }
     if (value === "change") {
-      // TODO: 예약 변경 API 호출
+      // TODO: 예약 변경 화면으로 이동
     }
     if (value === "review") {
       navigate(`/consult/write?consultantId=${reservedcCounselData?.info.counselorId}`);

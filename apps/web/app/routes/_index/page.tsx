@@ -100,7 +100,7 @@ export default function HomePage() {
             viewMore
             viewMoreLink="/consult/reviews"
           >
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 px-4">
               {isLoading ? (
                 <div className="flex h-full items-center justify-center py-10">
                   <Loader2 className="text-primary-normal mx-auto size-10 animate-spin" />
