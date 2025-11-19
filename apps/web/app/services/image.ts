@@ -20,7 +20,7 @@ export async function uploadImage(file: File, category: string) {
     const { result: preSignedUrl } = await api
       .get<
         BaseResponse<string>
-      >("s3/presigned", { searchParams: { fileName: webpFile.name, category } })
+      >("s3/presigned/put", { searchParams: { fileName: webpFile.name, category } })
       .json();
 
     // S3 URL을 프록시 URL로 변경
@@ -36,8 +36,13 @@ export async function uploadImage(file: File, category: string) {
       })
       .json();
 
-    const url = preSignedUrl.split("?")[0] || "";
-    return url;
+    const urlObj = new URL(preSignedUrl);
+    const fileUrl = urlObj.pathname.substring(1);
+    const { result: returnUrl } = await api
+      .get<BaseResponse<string>>("s3/presigned/get", { searchParams: { fileUrl } })
+      .json();
+
+    return returnUrl;
   } catch (err) {
     console.error(err);
     errorToast("이미지 업로드에 실패했어요.");
