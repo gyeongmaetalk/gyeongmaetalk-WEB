@@ -89,7 +89,7 @@ const ConsultPage = () => {
 
   const handleButtonClick = (value: string) => {
     if (value === "change") {
-      // TODO: 예약 변경 화면으로 이동
+      navigate("/consult/apply?mode=change");
     }
     if (value === "review") {
       navigate(`/consult/write?consultantId=${reservedcCounselData?.info.counselorId}`);

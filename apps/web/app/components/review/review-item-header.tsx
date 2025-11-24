@@ -34,7 +34,7 @@ const ReviewItemHeader = ({
           <p className="text-label-alternative text-[3px]">●</p>
           <p className="text-label-alternative">{formatDate({ date: createAt })}</p>
         </div>
-        <StarRating rating={score} />
+        <StarRating rating={+score.toFixed(1)} />
       </div>
       <ReviewItemMenu reviewId={reviewId} isMyReview={isMyReview} />
     </div>

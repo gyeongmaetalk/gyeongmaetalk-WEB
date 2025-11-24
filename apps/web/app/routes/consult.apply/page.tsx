@@ -17,15 +17,11 @@ import SecondStep from "~/routes/consult.apply/second-step";
 import Stepper from "~/routes/consult.apply/stepper";
 import ThirdStep from "~/routes/consult.apply/third-step";
 
-const DEFAULT_VALUES: ApplyConsultForm = {
-  purpose: "",
-  region: "",
-  service: "",
-  category: "",
-  name: "",
-};
+interface ConsultApplyPageProps {
+  defaultValues: ApplyConsultForm;
+}
 
-const ConsultApplyPage = () => {
+const ConsultApplyPage = ({ defaultValues }: ConsultApplyPageProps) => {
   const [isError, setIsError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -35,7 +31,7 @@ const ConsultApplyPage = () => {
 
   const form = useForm<ApplyConsultForm>({
     resolver: zodResolver(applyConsultFormSchema),
-    defaultValues: DEFAULT_VALUES,
+    defaultValues,
   });
 
   const navigate = useNavigate();

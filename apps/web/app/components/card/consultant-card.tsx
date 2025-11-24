@@ -50,7 +50,7 @@ const ConsultantCard = ({ status, consultant }: ConsultantCardProps) => {
             <p className="text-label-neutral font-label1-normal-regular">경매지도사</p>
             <div className="font-label1-normal-regular flex items-center gap-1">
               <Star className="text-status-cautionary" />
-              <p>{consultant.score}</p>
+              <p>{consultant.score.toFixed(1)}</p>
               <p className="text-label-neutral underline">리뷰 {consultant.reviewCount}건</p>
             </div>
           </div>
