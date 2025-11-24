@@ -20,6 +20,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
     return {
       mode,
       result: result.info,
+      counselFormId: result.info.counselFormId,
     };
   } catch (error) {
     console.error(error);
@@ -44,6 +45,7 @@ const DEFAULT_VALUES = {
 };
 
 export default function ConsultApplyLayout({ loaderData }: Route.ComponentProps) {
+  const isChangeMode = loaderData?.mode === "change";
   let defaultValues = DEFAULT_VALUES;
   if (loaderData && loaderData.mode) {
     defaultValues = {
@@ -55,5 +57,11 @@ export default function ConsultApplyLayout({ loaderData }: Route.ComponentProps)
     };
   }
 
-  return <ConsultApplyPage defaultValues={defaultValues} />;
+  return (
+    <ConsultApplyPage
+      defaultValues={defaultValues}
+      isChangeMode={isChangeMode}
+      counselFormId={loaderData?.counselFormId}
+    />
+  );
 }

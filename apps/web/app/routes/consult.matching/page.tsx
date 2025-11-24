@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-import { Navigate, useLocation } from "react-router";
+import { Navigate, useLocation, useSearchParams } from "react-router";
 
+import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
 import { useUserStore } from "~/lib/zustand/user";
 import type { MatchCounselResponse, ReserveConsultResponse } from "~/models/counsel";
 import FirstStep from "~/routes/consult.matching/first-step";
@@ -11,8 +12,13 @@ import SecondStep from "~/routes/consult.matching/second-step";
 export type Mode = "reservation" | "complete" | null;
 
 const ConsultMatchingPage = () => {
-  const [mode, setMode] = useState<Mode>(null);
   const [reservationResult, setReservationResult] = useState<ReserveConsultResponse | null>(null);
+
+  const [searchParams] = useSearchParams();
+  const isChangeMode = searchParams.get("mode") === "change";
+  const [mode, setMode] = useState<Mode>(isChangeMode ? "reservation" : null);
+
+  const { data: counselStatus } = useCheckCounselStatus();
 
   const user = useUserStore((state) => state.user);
 
@@ -27,6 +33,9 @@ const ConsultMatchingPage = () => {
       return (
         <SecondStep
           consultant={state}
+          isChangeMode={isChangeMode}
+          counselDate={counselStatus?.info.counselDate}
+          counselTime={counselStatus?.info.counselTime}
           onChangeMode={setMode}
           setReservationResult={setReservationResult}
         />

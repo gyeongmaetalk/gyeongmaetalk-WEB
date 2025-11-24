@@ -13,7 +13,7 @@ import { Header } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import CancelApplyConsult from "~/components/modal/cancel-apply-consult";
 import { COUNSEL } from "~/constants";
-import { useReserveConsult } from "~/lib/tanstack/mutation/counsel";
+import { useChangeReserveConsult, useReserveConsult } from "~/lib/tanstack/mutation/counsel";
 import { useGetAvailableTimes } from "~/lib/tanstack/query/counsel";
 import type { MatchCounselResponse, ReserveConsultResponse } from "~/models/counsel";
 import { errorToast } from "~/utils/toast";
@@ -24,14 +24,26 @@ import TimeSelect from "./time-select";
 
 interface SecondStepProps {
   consultant: MatchCounselResponse;
+  isChangeMode?: boolean;
+  counselDate?: string;
+  counselTime?: string;
   setReservationResult: (result: ReserveConsultResponse) => void;
   onChangeMode: (mode: Mode) => void;
 }
 
-const SecondStep = ({ consultant, onChangeMode, setReservationResult }: SecondStepProps) => {
+const SecondStep = ({
+  consultant,
+  isChangeMode,
+  counselDate,
+  counselTime,
+  onChangeMode,
+  setReservationResult,
+}: SecondStepProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTime, setSelectedTime] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    isChangeMode && counselDate ? new Date(counselDate) : null
+  );
+  const [selectedTime, setSelectedTime] = useState(isChangeMode && counselTime ? counselTime : "");
 
   const formatedDate = selectedDate ? selectedDate.toISOString().split("T")[0] : "";
 
@@ -40,7 +52,7 @@ const SecondStep = ({ consultant, onChangeMode, setReservationResult }: SecondSt
     date: formatedDate,
   });
 
-  const { mutateAsync: reserveConsult, isPending } = useReserveConsult({
+  const { mutateAsync: reserveConsult, isPending: isReservePending } = useReserveConsult({
     onSuccess: async (data) => {
       setReservationResult(data.result);
       await queryClient.invalidateQueries({ queryKey: [COUNSEL.COUNSEL_STATUS] });
@@ -51,11 +63,35 @@ const SecondStep = ({ consultant, onChangeMode, setReservationResult }: SecondSt
       console.error(error);
     },
   });
+  const { mutateAsync: changeReserveConsult, isPending: isChangePending } = useChangeReserveConsult(
+    {
+      onSuccess: async (data) => {
+        setReservationResult(data.result);
+        await queryClient.invalidateQueries({ queryKey: [COUNSEL.COUNSEL_STATUS] });
+        onChangeMode("complete");
+      },
+      onError: (error) => {
+        errorToast("상담 예약 변경에 실패했어요.");
+        console.error(error);
+      },
+    }
+  );
 
   const reservationDisabled = !selectedDate || !selectedTime;
+  const isPending = isReservePending || isChangePending;
 
-  const onReservation = async () => {
-    await reserveConsult({
+  const onReservation = () => {
+    if (isChangeMode) {
+      changeReserveConsult({
+        counseldorId: consultant.counselorId,
+        counselId: consultant.counselorId,
+        counselFormId: consultant.counselFormId,
+        date: `${formatedDate}T${selectedTime}`,
+      });
+      return;
+    }
+
+    reserveConsult({
       counseldorId: consultant.counselorId,
       counselFormId: consultant.counselFormId,
       date: `${formatedDate}T${selectedTime}`,

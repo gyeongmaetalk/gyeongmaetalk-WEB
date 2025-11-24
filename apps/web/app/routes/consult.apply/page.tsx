@@ -19,9 +19,15 @@ import ThirdStep from "~/routes/consult.apply/third-step";
 
 interface ConsultApplyPageProps {
   defaultValues: ApplyConsultForm;
+  isChangeMode: boolean;
+  counselFormId?: number;
 }
 
-const ConsultApplyPage = ({ defaultValues }: ConsultApplyPageProps) => {
+const ConsultApplyPage = ({
+  defaultValues,
+  isChangeMode,
+  counselFormId,
+}: ConsultApplyPageProps) => {
   const [isError, setIsError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -53,7 +59,7 @@ const ConsultApplyPage = ({ defaultValues }: ConsultApplyPageProps) => {
       case 4:
         return <FourthStep form={form} />;
       case 5:
-        return <LastStep form={form} />;
+        return <LastStep form={form} isChangeMode={isChangeMode} counselFormId={counselFormId} />;
     }
   };
 

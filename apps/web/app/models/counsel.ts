@@ -8,6 +8,10 @@ export interface MatchCounselRequest {
   participantType: string;
 }
 
+export interface ChangeMatchCounselRequest extends MatchCounselRequest {
+  counselFormId: number;
+}
+
 export interface MatchCounselResponse {
   counselorId: number;
   counselFormId: number;
@@ -33,6 +37,10 @@ export interface ReserveConsultRequest {
   date: string;
 }
 
+export interface ChangeReserveConsultRequest extends ReserveConsultRequest {
+  counselId: number;
+}
+
 export interface ReserveConsultResponse extends MatchCounselRequest {
   counselDate: string;
   counselTime: string;
@@ -41,8 +49,7 @@ export interface ReserveConsultResponse extends MatchCounselRequest {
 
 export interface ReservedCounselDataResponse {
   status: CounselStatus;
-  info: ReserveConsultResponse &
-    Omit<MatchCounselResponse, "counselFormId"> & { reviewed: boolean };
+  info: ReserveConsultResponse & MatchCounselResponse & { reviewed: boolean };
 }
 
 export interface CounselInfoResponse {

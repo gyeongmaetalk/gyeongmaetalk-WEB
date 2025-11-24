@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 import { useScroll } from "@gyeongmaetalk/hooks";
 import { DragCarousel, DragCarouselItem } from "@gyeongmaetalk/ui";
 import { cn } from "@gyeongmaetalk/utils";
@@ -17,7 +15,6 @@ import PageLayout from "~/components/layout/page-layout";
 import { CounselStatus, SortType } from "~/constants";
 import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
 import { useGetReviews } from "~/lib/tanstack/query/review";
-import { useRefreshTokenStore } from "~/lib/zustand/user";
 import { HOME_SECTION_TITLES } from "~/routes/_index/constant";
 import ReviewPreview from "~/routes/_index/review-preview";
 import SectionField from "~/routes/_index/section-field";
@@ -45,19 +42,12 @@ const contents = [
 export default function HomePage() {
   const { data: counselStatus } = useCheckCounselStatus();
   const { data: reviews = [], isLoading, isError } = useGetReviews(SortType.LATEST);
-  const setRefreshToken = useRefreshTokenStore((state) => state.setRefreshToken);
 
   const navigate = useNavigate();
 
   const status = counselStatus ? counselStatus.status : CounselStatus.NONE;
 
   const isScrolled = useScroll();
-
-  useEffect(() => {
-    // setRefreshToken(
-    //   "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3NjM5NDE2ODksImV4cCI6MTc2NTIzNzY4OSwic3ViIjoiMTMiLCJtZW1iZXJJZCI6MTMsImF1dGgiOiJVU0VSIn0.W2oT2HQ_YaGCqjbRafQ38JXMTL4icHahv_UobPOedGfNaV5xqab60KJciLlrzYxHPt12c7G98qJz9UXxKS-ZGg"
-    // );
-  }, []);
 
   return (
     <PageLayout

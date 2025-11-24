@@ -9,7 +9,7 @@ import { useNavigate } from "react-router";
 import FloatingContainer from "~/components/container/floating-container";
 import Modal from "~/components/modal";
 import SuggestLogin from "~/components/modal/suggest-login";
-import { useMatchCounsel } from "~/lib/tanstack/mutation/counsel";
+import { useChangeMatchCounsel, useMatchCounsel } from "~/lib/tanstack/mutation/counsel";
 import { useUserStore } from "~/lib/zustand/user";
 import { type ApplyConsultForm } from "~/routes/consult.apply/schema";
 import { errorToast } from "~/utils/toast";
@@ -19,9 +19,11 @@ import Select from "./select";
 
 interface LastStepProps {
   form: UseFormReturn<ApplyConsultForm>;
+  isChangeMode: boolean;
+  counselFormId?: number;
 }
 
-const LastStep = ({ form }: LastStepProps) => {
+const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
   const user = useUserStore((state) => state.user);
 
   const [name, setName] = useState(form.getValues("name"));
@@ -33,6 +35,16 @@ const LastStep = ({ form }: LastStepProps) => {
   const { mutate: matchCounsel } = useMatchCounsel({
     onSuccess: (data) => {
       navigate("/consult/matching", { replace: true, state: data.result });
+    },
+    onError: (error) => {
+      errorToast("상담 신청에 실패했어요.");
+      console.error(error);
+    },
+  });
+
+  const { mutate: changeMatchCounsel } = useChangeMatchCounsel({
+    onSuccess: (data) => {
+      navigate("/consult/matching?mode=change", { replace: true, state: data.result });
     },
     onError: (error) => {
       errorToast("상담 신청에 실패했어요.");
@@ -68,14 +80,19 @@ const LastStep = ({ form }: LastStepProps) => {
       if (!user) return setIsShowLoginModal(true);
 
       const selectedValue = name === "개인" ? `개인,${innerOption}` : name;
-
-      matchCounsel({
+      const body = {
         purpose: data.purpose,
         area: data.region,
         serviceType: data.service,
         interest: data.category,
         participantType: selectedValue,
-      });
+      };
+
+      if (isChangeMode && counselFormId) {
+        changeMatchCounsel({ ...body, counselFormId });
+      } else {
+        matchCounsel(body);
+      }
     },
     (errors) => {
       console.error(errors);
@@ -129,16 +146,19 @@ const LastStep = ({ form }: LastStepProps) => {
           완료
         </Button>
       </FloatingContainer>
-      {(form.formState.isSubmitting || form.formState.isSubmitSuccessful) && user && (
-        <Modal className="flex flex-col items-center justify-center gap-7 bg-transparent">
-          <Loader2 className="size-20 animate-spin text-white" />
-          <Modal.Content className="font-heading1-bold text-white">
-            ‘{user.name}’님에게 적합한
-            <br />
-            경매 전문가를 찾고 있어요
-          </Modal.Content>
-        </Modal>
-      )}
+      {(form.formState.isSubmitting || form.formState.isSubmitSuccessful) &&
+        !isChangeMode &&
+        user && (
+          <Modal className="flex flex-col items-center justify-center gap-7 bg-transparent">
+            <Loader2 className="size-20 animate-spin text-white" />
+            <Modal.Content className="font-heading1-bold text-white">
+              {isChangeMode
+                ? "예약을 변경하고 있어요"
+                : `‘{user.name}’님에게 적합한
+              경매 전문가를 찾고 있어요`}
+            </Modal.Content>
+          </Modal>
+        )}
       <SuggestLogin isOpen={isShowLoginModal} />
     </>
   );
