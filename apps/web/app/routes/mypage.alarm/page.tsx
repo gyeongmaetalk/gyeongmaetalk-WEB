@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
 
 import { useDebounce } from "@gyeongmaetalk/hooks";
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Label, Switch } from "@gyeongmaetalk/ui";
 
+import { FCM } from "~/constants";
 import { useUpdateNotificationSetting } from "~/lib/tanstack/mutation/auth";
 import { useGetNotificationSetting } from "~/lib/tanstack/query/fcm";
 
@@ -29,27 +31,44 @@ const MyPageAlarmPage = () => {
       false,
   };
 
-  const debouncedAlarmState = useDebounce(alarmState, 500);
-  const prevDebouncedStateRef = useRef(debouncedAlarmState);
+  const debouncedReviewNotificationEnabled = useDebounce(alarmState.reviewNotificationEnabled, 500);
+  const debouncedPropertyNotificationEnabled = useDebounce(
+    alarmState.propertyNotificationEnabled,
+    500
+  );
+  const prevDebouncedStateRef = useRef({
+    reviewNotificationEnabled: debouncedReviewNotificationEnabled,
+    propertyNotificationEnabled: debouncedPropertyNotificationEnabled,
+  });
 
   const onChangeAlarmState = (key: keyof typeof alarmState, value: boolean) => {
     setOverrides((prev) => ({ ...prev, [key]: value }));
   };
 
-  const { mutate: updateNotificationSetting } = useUpdateNotificationSetting();
+  const { mutate: updateNotificationSetting } = useUpdateNotificationSetting({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [FCM.NOTIFICATION_SETTING] });
+    },
+  });
 
   // debounced 값이 변경되면 API 호출
   if (
     prevDebouncedStateRef.current.reviewNotificationEnabled !==
-      debouncedAlarmState.reviewNotificationEnabled ||
+      debouncedReviewNotificationEnabled ||
     prevDebouncedStateRef.current.propertyNotificationEnabled !==
-      debouncedAlarmState.propertyNotificationEnabled
+      debouncedPropertyNotificationEnabled
   ) {
     // override가 있을 때만 API 호출 (초기 렌더링 방지)
     if (Object.keys(overrides).length > 0) {
-      updateNotificationSetting(debouncedAlarmState);
+      updateNotificationSetting({
+        reviewNotificationEnabled: debouncedReviewNotificationEnabled,
+        propertyNotificationEnabled: debouncedPropertyNotificationEnabled,
+      });
     }
-    prevDebouncedStateRef.current = debouncedAlarmState;
+    prevDebouncedStateRef.current = {
+      reviewNotificationEnabled: debouncedReviewNotificationEnabled,
+      propertyNotificationEnabled: debouncedPropertyNotificationEnabled,
+    };
   }
 
   return (
