@@ -24,7 +24,7 @@ import { WithBackHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import Modal from "~/components/modal";
 import StarRating from "~/components/star-rating";
-import { REVIEW } from "~/constants";
+import { REVIEW, s3BaseUrl } from "~/constants";
 import { useCreateReview, useUpdateReview } from "~/lib/tanstack/mutation/review";
 import { useGetCounselInfo } from "~/lib/tanstack/query/counsel";
 import type { ReviewDetailResponse } from "~/models/review";
@@ -164,14 +164,19 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
       return;
     }
 
+    const body = {
+      ...data,
+      imageUrls: data.imageUrls.map((url) => url.replace(`${s3BaseUrl}/`, "").split("?")[0]),
+    };
+
     if (reviewId) {
-      await updateReview({ body: data, reviewId });
+      await updateReview({ body, reviewId });
       return;
     }
 
     if (!consultantId) return;
 
-    await createReview({ ...data, consultantId });
+    await createReview({ ...body, consultantId });
   });
 
   useEffect(() => {
