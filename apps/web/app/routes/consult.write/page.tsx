@@ -24,7 +24,7 @@ import { WithBackHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import Modal from "~/components/modal";
 import StarRating from "~/components/star-rating";
-import { REVIEW, s3BaseUrl } from "~/constants";
+import { REVIEW } from "~/constants";
 import { useCreateReview, useUpdateReview } from "~/lib/tanstack/mutation/review";
 import { useGetCounselInfo } from "~/lib/tanstack/query/counsel";
 import type { ReviewDetailResponse } from "~/models/review";
@@ -49,6 +49,8 @@ const DEFAULT_VALUES = {
 const MAX_IMAGES = 5;
 const MIN_CONTENT_LENGTH = 20;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+const s3BaseUrl = "https://auctiontalk-s3.s3.ap-northeast-2.amazonaws.com";
 
 const getRatingText = (score: number) => {
   if (score === 1) return "별로에요";
