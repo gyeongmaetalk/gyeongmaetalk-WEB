@@ -1,7 +1,8 @@
 import { CounselStatus } from "~/constants";
 
 export const HOME_SECTION_TITLES = {
-  RESERVATION: "예정된 상담",
+  BEFORE_RESERVATION: "예정된 상담",
+  AFTER_RESERVATION: "지난 상담",
   A_TO_Z: "경매 입문자를 위한 A to Z",
   USER_REVIEWS: "이용자들의 생생한 후기",
   NEWS: "이번주 경매 뉴스",

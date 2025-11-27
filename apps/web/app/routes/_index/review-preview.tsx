@@ -17,7 +17,7 @@ const ReviewPreview = ({
   onClick,
 }: ReviewPreviewProps) => {
   return (
-    <div className="flex flex-row items-center gap-2.5" onClick={onClick}>
+    <div className="flex flex-row items-center justify-between gap-2.5" onClick={onClick}>
       <div className="flex flex-col gap-1">
         <StarRating rating={score} />
         <p className="font-label1-normal-medium text-label-neutral text-overflow-ellipsis line-clamp-2">

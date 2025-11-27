@@ -61,8 +61,14 @@ export default function HomePage() {
       >
         <TitleSection status={status} />
         <div className="flex h-full flex-col gap-18 rounded-t-[20px] rounded-b-none bg-white py-6 shadow-[0_0_16px_0_rgba(8,89,193,0.2)]">
-          {status === CounselStatus.COUNSEL_BEFORE && (
-            <SectionField title={HOME_SECTION_TITLES.RESERVATION}>
+          {(status === CounselStatus.COUNSEL_BEFORE || status === CounselStatus.COUNSEL_AFTER) && (
+            <SectionField
+              title={
+                status === CounselStatus.COUNSEL_BEFORE
+                  ? HOME_SECTION_TITLES.BEFORE_RESERVATION
+                  : HOME_SECTION_TITLES.AFTER_RESERVATION
+              }
+            >
               <div className="flex cursor-pointer flex-row items-center gap-2 rounded-[12px] bg-[rgba(0_119_255_/0.05)] p-4">
                 <div className="rounded-[111px] border border-[rgba(18,18,19,0.5)] bg-[#FFF] px-2 py-[5px] text-[12px] font-bold text-[#07F]">
                   {getTimeDisplay(counselStatus?.info.counselDate ?? "")}
