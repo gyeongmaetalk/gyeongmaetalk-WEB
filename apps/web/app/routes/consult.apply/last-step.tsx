@@ -154,7 +154,7 @@ const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
             <Modal.Content className="font-heading1-bold text-white">
               {isChangeMode
                 ? "예약을 변경하고 있어요"
-                : `‘{user.name}’님에게 적합한
+                : `‘${user.name}’님에게 적합한
               경매 전문가를 찾고 있어요`}
             </Modal.Content>
           </Modal>
