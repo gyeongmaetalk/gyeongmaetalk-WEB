@@ -10,7 +10,6 @@ import { WithBackHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import ReviewItemHeader from "~/components/review/review-item-header";
 import { useGetReviewById } from "~/lib/tanstack/query/review";
-import { formatDate } from "~/utils/format";
 
 interface ConsultReviewsDetailPageProps {
   reviewId: string;
@@ -46,10 +45,7 @@ const ConsultReviewsDetailPage = ({ reviewId }: ConsultReviewsDetailPageProps) =
               score={review?.score || 0}
             />
             <ConsultantReviewCard
-              date={formatDate({
-                date: review?.counselDate || new Date().toISOString(),
-                withTime: true,
-              })}
+              date={review?.counselDate || new Date().toISOString()}
               counselorName={review?.counselorName || "이름"}
               experience={review?.experience || 0}
               counselorImage={review?.counselorImage || ""}

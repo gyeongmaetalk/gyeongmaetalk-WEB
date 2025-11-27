@@ -1,7 +1,6 @@
 import { Badge } from "@gyeongmaetalk/ui";
 
-import { formatDate } from "~/utils/format";
-import { maskUserName } from "~/utils/format";
+import { formatDate, maskUserName } from "~/utils/format";
 
 import ReviewItemMenu from "./review-item-menu";
 import StarRating from "../star-rating";

@@ -86,7 +86,7 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
           required
           placeholder="이름을 입력해주세요"
           value={name}
-          {...register("name")}
+          onChange={(e) => setValue("name", e.target.value)}
         />
         <Textfield
           label="생년월일"
