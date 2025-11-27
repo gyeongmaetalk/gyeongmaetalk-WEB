@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
 
+import FloatingContainer from "~/components/container/floating-container";
 import { AUTH } from "~/constants/auth";
 import { useUpdateUserInfo } from "~/lib/tanstack/mutation/auth";
 import type { MyInfoResponse } from "~/models/auth";
@@ -106,14 +107,14 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
         />
       </form>
 
-      <div className="bottom-ios-bottom fixed right-0 left-0 flex flex-col gap-2 px-4 pb-6">
+      <FloatingContainer className="flex flex-col gap-2">
         <Button type="submit" disabled={isSubmitDisabled} form="user-info-form">
           수정
         </Button>
         <Button variant="text" theme="assistive">
           회원탈퇴
         </Button>
-      </div>
+      </FloatingContainer>
     </div>
   );
 };
