@@ -25,8 +25,8 @@ import TimeSelect from "./time-select";
 interface SecondStepProps {
   consultant: MatchCounselResponse;
   isChangeMode?: boolean;
-  counselDate?: string;
-  counselTime?: string;
+  counselDate: string | null;
+  counselTime: string | null;
   setReservationResult: (result: ReserveConsultResponse) => void;
   onChangeMode: (mode: Mode) => void;
 }
@@ -41,9 +41,9 @@ const SecondStep = ({
 }: SecondStepProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(
-    isChangeMode && counselDate ? new Date(counselDate) : null
+    counselDate ? new Date(counselDate) : null
   );
-  const [selectedTime, setSelectedTime] = useState(isChangeMode && counselTime ? counselTime : "");
+  const [selectedTime, setSelectedTime] = useState(counselTime ? counselTime : "");
 
   const formatedDate = selectedDate ? selectedDate.toISOString().split("T")[0] : "";
 

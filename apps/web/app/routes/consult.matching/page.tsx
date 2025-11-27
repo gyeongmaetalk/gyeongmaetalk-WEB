@@ -19,7 +19,6 @@ const ConsultMatchingPage = () => {
   const [mode, setMode] = useState<Mode>(isChangeMode ? "reservation" : null);
 
   const { data: counselStatus } = useCheckCounselStatus();
-
   const user = useUserStore((state) => state.user);
 
   const { state }: { state: MatchCounselResponse } = useLocation();
@@ -34,8 +33,8 @@ const ConsultMatchingPage = () => {
         <SecondStep
           consultant={state}
           isChangeMode={isChangeMode}
-          counselDate={counselStatus?.info.counselDate}
-          counselTime={counselStatus?.info.counselTime}
+          counselDate={counselStatus?.info.counselDate ?? null}
+          counselTime={counselStatus?.info.counselTime ?? null}
           onChangeMode={setMode}
           setReservationResult={setReservationResult}
         />
