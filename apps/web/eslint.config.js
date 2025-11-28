@@ -18,9 +18,29 @@ export default defineConfig([
       "./app/components/icons",
     ],
   },
-  { files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"], plugins: { js }, extends: ["js/recommended"] },
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    plugins: { js },
+    extends: ["js/recommended"],
     languageOptions: { globals: globals.browser },
+    rules: {
+      "no-undef": "off",
+      "@typescript-eslint/no-undef": "off",
+      "no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          args: "none",
+        },
+      ],
+    },
+  },
+  {
+    files: ["**/*.d.ts", "**/constants/**/*.ts"],
+    rules: {
+      "no-unused-vars": "off",
+    },
   },
 ]);

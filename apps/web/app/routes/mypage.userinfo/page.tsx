@@ -21,7 +21,7 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
     birth: myInfo.birth.replace(/-/g, ""),
   };
 
-  const { formState, watch, register, handleSubmit, setValue } = useForm<UpdateUserInfoForm>({
+  const { formState, watch, handleSubmit, setValue } = useForm<UpdateUserInfoForm>({
     resolver: zodResolver(updateUserInfoFormSchema),
     defaultValues,
   });

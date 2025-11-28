@@ -5,8 +5,8 @@ export const COUNSEL = {
 };
 
 export enum CounselStatus {
-  NONE = "NONE",
-  COUNSEL_AFTER = "COUNSEL_AFTER",
-  COUNSEL_BEFORE = "COUNSEL_BEFORE",
-  SUBSCRIBE = "SUBSCRIBE",
+  NONE,
+  COUNSEL_AFTER,
+  COUNSEL_BEFORE,
+  SUBSCRIBE,
 }
