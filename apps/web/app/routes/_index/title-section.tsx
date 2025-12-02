@@ -19,7 +19,7 @@ export default function TitleSection({ status }: TitleSectionProps) {
     <div className="flex flex-col gap-5 px-5 py-10">
       {/* 타이틀 */}
       <div className="flex flex-col gap-1">
-        <div className="text-label-normal whitespace-pre-line text-[20px] font-bold">
+        <div className="text-label-normal text-[20px] font-bold whitespace-pre-line">
           {title}
           <span className="text-primary-normal text-[20px] font-bold">{highlightText}</span>
           {titleAfter}
