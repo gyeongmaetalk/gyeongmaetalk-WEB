@@ -16,3 +16,7 @@ export const getNotificationSetting = async (): Promise<
 > => {
   return api.get("fcm/notifications/setting").json();
 };
+
+export const registerDeviceToken = async (fcmToken: string): Promise<BaseResponse<void>> => {
+  return api.post("fcm/token", { searchParams: { fcmToken } }).json();
+};

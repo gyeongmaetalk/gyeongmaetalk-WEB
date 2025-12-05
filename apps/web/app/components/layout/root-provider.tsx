@@ -3,6 +3,7 @@ import { Toaster } from "@gyeongmaetalk/ui";
 
 import { Outlet } from "react-router";
 
+import FcmTokenProvider from "./fcm-token-provider";
 import MswProvider from "./msw-provider";
 import UserProvider from "./user-provider";
 
@@ -14,7 +15,9 @@ const RootProvider = () => {
     <TanstackProvider>
       <script type="text/javascript" src={naverMapScriptUrl} />
       <UserProvider>
-        <Outlet />
+        <FcmTokenProvider>
+          <Outlet />
+        </FcmTokenProvider>
       </UserProvider>
       <MswProvider />
       <Toaster position="bottom-center" duration={3000} closeButton />

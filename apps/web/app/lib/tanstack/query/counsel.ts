@@ -3,7 +3,7 @@ import { useQuery } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 
 import { COUNSEL } from "~/constants";
-import { useRefreshTokenStore } from "~/lib/zustand/user";
+import { useUserStore } from "~/lib/zustand/user";
 import type { AvailableTimesRequest, CounselInfoResponse } from "~/models/counsel";
 import type { ReservedCounselDataResponse } from "~/models/counsel";
 import { getAvailableTimes, getCounselInfo, getReservedCounselData } from "~/services/counsel";
@@ -18,7 +18,7 @@ export const useGetAvailableTimes = (props: AvailableTimesRequest) => {
 };
 
 export const useCheckCounselStatus = () => {
-  const refreshToken = useRefreshTokenStore((state) => state.refreshToken);
+  const user = useUserStore((state) => state.user);
 
   return useQuery<
     BaseResponse<ReservedCounselDataResponse>,
@@ -28,7 +28,7 @@ export const useCheckCounselStatus = () => {
     queryKey: [COUNSEL.COUNSEL_STATUS],
     queryFn: getReservedCounselData,
     select: (data) => data.result,
-    enabled: !!refreshToken,
+    enabled: !!user,
     staleTime: 1000 * 60 * 5,
   });
 };
