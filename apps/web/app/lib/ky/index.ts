@@ -29,6 +29,7 @@ const refreshAccessToken = async (): Promise<void> => {
     } catch (error) {
       console.error("Refresh 실패", error);
       useUserStore.setState({ user: null, isLoggedIn: false });
+      localStorage.clear();
       resetUserQueries();
       window.location.href = "/login";
       throw error;
