@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
 
 import type { MyInfoResponse } from "~/models/auth";
 
@@ -12,17 +11,9 @@ interface UserStore {
   setUser: (user: User | null) => void;
 }
 
-export const useUserStore = create<UserStore>()(
-  persist(
-    (set) => ({
-      isLoggedIn: false,
-      setIsLoggedIn: (isLoggedIn: boolean) => set({ isLoggedIn }),
-      user: null,
-      setUser: (user: User | null) => set({ user }),
-    }),
-    {
-      name: "user",
-      storage: createJSONStorage(() => localStorage),
-    }
-  )
-);
+export const useUserStore = create<UserStore>()((set) => ({
+  isLoggedIn: false,
+  setIsLoggedIn: (isLoggedIn: boolean) => set({ isLoggedIn }),
+  user: null,
+  setUser: (user: User | null) => set({ user }),
+}));

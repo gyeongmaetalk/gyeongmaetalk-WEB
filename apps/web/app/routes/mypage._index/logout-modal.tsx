@@ -22,7 +22,6 @@ export default function LogoutModal({ isOpen, onCancel }: LogoutModalProps) {
   const onConfirm = () => {
     setUser(null);
     setIsLoggedIn(false);
-    localStorage.clear();
     resetUserQueries();
     onCancel();
   };
