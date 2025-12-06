@@ -24,7 +24,7 @@ interface LastStepProps {
 }
 
 const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
-  const user = useUserStore((state) => state.user);
+  const { isLoggedIn, user } = useUserStore();
 
   const [name, setName] = useState(form.getValues("name"));
   const [innerOption, setInnerOption] = useState("");
@@ -77,7 +77,7 @@ const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
 
   const onComplete = form.handleSubmit(
     async (data) => {
-      if (!user) return setIsShowLoginModal(true);
+      if (!isLoggedIn) return setIsShowLoginModal(true);
 
       const selectedValue = name === "개인" ? `개인,${innerOption}` : name;
       const body = {

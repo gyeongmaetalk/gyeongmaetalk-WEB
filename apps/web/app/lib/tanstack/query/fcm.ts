@@ -8,18 +8,18 @@ import type { NotificationResponse, NotificationSettingResponse } from "~/models
 import { getNotifications, getNotificationSetting } from "~/services/fcm";
 
 export const useGetNotifications = () => {
-  const user = useUserStore((state) => state.user);
+  const isLoggedIn = useUserStore((state) => state.isLoggedIn);
 
   return useQuery<BaseResponse<NotificationResponse>, HTTPError, NotificationResponse>({
     queryKey: [FCM.NOTIFICATIONS],
     queryFn: getNotifications,
     select: (data) => data.result,
-    enabled: !!user,
+    enabled: isLoggedIn,
   });
 };
 
 export const useGetNotificationSetting = () => {
-  const user = useUserStore((state) => state.user);
+  const isLoggedIn = useUserStore((state) => state.isLoggedIn);
 
   return useQuery<
     BaseResponse<NotificationSettingResponse>,
@@ -29,6 +29,6 @@ export const useGetNotificationSetting = () => {
     queryKey: [FCM.NOTIFICATION_SETTING],
     queryFn: getNotificationSetting,
     select: (data) => data.result,
-    enabled: !!user,
+    enabled: isLoggedIn,
   });
 };

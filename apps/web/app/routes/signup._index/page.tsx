@@ -5,12 +5,12 @@ import { Button, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
-import { Navigate, useLocation, useNavigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
 import PhoneVerification from "~/components/phone-verification";
 import { api } from "~/lib/ky";
-import { useAccessTokenStore, useRefreshTokenStore } from "~/lib/zustand/user";
+import { useUserStore } from "~/lib/zustand/user";
 import type { SignupResponse } from "~/models/auth";
 import { type SignupForm, signupFormSchema } from "~/routes/signup._index/schema";
 import { errorToast, successToast } from "~/utils/toast";
@@ -25,8 +25,7 @@ const DEFAULT_VALUES: SignupForm = {
 export default function SignupPage() {
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [isPending, setIsPending] = useState(false);
-
-  const { state } = useLocation();
+  const isLoggedIn = useUserStore((state) => state.isLoggedIn);
 
   const navigate = useNavigate();
 
@@ -34,12 +33,6 @@ export default function SignupPage() {
     resolver: zodResolver(signupFormSchema),
     defaultValues: DEFAULT_VALUES,
   });
-
-  const setAccessToken = useAccessTokenStore((state) => state.setAccessToken);
-  const setRefreshToken = useRefreshTokenStore((state) => state.setRefreshToken);
-
-  const accessToken = state?.accessToken;
-  const refreshToken = state?.refreshToken;
 
   const name = watch("name");
   const birth = watch("birth");
@@ -85,14 +78,11 @@ export default function SignupPage() {
             birth,
             cellPhone: data.phone,
           },
-          headers: { Authorization: `Bearer ${accessToken}` },
         })
         .json();
 
       if (res.isSuccess) {
         successToast("회원가입이 완료되었어요.");
-        setAccessToken(accessToken);
-        setRefreshToken(refreshToken);
         navigate("/onboarding?mode=apply", { replace: true });
       } else {
         errorToast("회원가입에 실패했어요.");
@@ -106,7 +96,7 @@ export default function SignupPage() {
     }
   });
 
-  if (!accessToken || !refreshToken) {
+  if (isLoggedIn) {
     return <Navigate to="/" />;
   }
 
@@ -134,7 +124,6 @@ export default function SignupPage() {
           onChange={(e) => onChangeNumber(e, "birth")}
         />
         <PhoneVerification
-          accessToken={accessToken}
           phone={phone}
           code={code}
           onPhoneChange={(e) => onChangeNumber(e, "phone")}

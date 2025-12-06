@@ -8,13 +8,13 @@ import type { MyInfoResponse } from "~/models/auth";
 import { getMyInfo } from "~/services/auth";
 
 export const useGetMyInfo = () => {
-  const user = useUserStore((state) => state.user);
+  const isLoggedIn = useUserStore((state) => state.isLoggedIn);
 
   return useQuery<BaseResponse<MyInfoResponse>, HTTPError, MyInfoResponse>({
     queryKey: [AUTH.MY_INFO],
     queryFn: getMyInfo,
     select: (data) => data.result,
-    enabled: !!user,
+    enabled: isLoggedIn,
     staleTime: 1000 * 60 * 5,
   });
 };

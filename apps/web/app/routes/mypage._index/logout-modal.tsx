@@ -4,7 +4,7 @@ import { Button } from "@gyeongmaetalk/ui";
 import { Close } from "~/components/icons";
 import Modal from "~/components/modal";
 import { resetUserQueries } from "~/lib/tanstack";
-import { useAccessTokenStore, useRefreshTokenStore, useUserStore } from "~/lib/zustand/user";
+import { useUserStore } from "~/lib/zustand/user";
 
 interface LogoutModalProps {
   isOpen: boolean;
@@ -12,18 +12,16 @@ interface LogoutModalProps {
 }
 
 export default function LogoutModal({ isOpen, onCancel }: LogoutModalProps) {
-  const setRefreshToken = useRefreshTokenStore((state) => state.setRefreshToken);
-  const setAccessToken = useAccessTokenStore((state) => state.setAccessToken);
   const setUser = useUserStore((state) => state.setUser);
+  const setIsLoggedIn = useUserStore((state) => state.setIsLoggedIn);
 
   const [modalRef] = useOutsideClick<HTMLDivElement>(() => {
     onCancel();
   });
 
   const onConfirm = () => {
-    setRefreshToken(null);
-    setAccessToken(null);
     setUser(null);
+    setIsLoggedIn(false);
     localStorage.clear();
     resetUserQueries();
     onCancel();

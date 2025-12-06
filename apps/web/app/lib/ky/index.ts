@@ -5,36 +5,30 @@ import type { UserResponse } from "~/models/auth";
 import { baseUrl } from "~/utils/env";
 
 import { resetUserQueries } from "../tanstack";
-import { useAccessTokenStore, useRefreshTokenStore, useUserStore } from "../zustand/user";
+import { useUserStore } from "../zustand/user";
 
 // 토큰 갱신 락 및 Promise 관리
-let refreshPromise: Promise<string> | null = null;
+let refreshPromise: Promise<void> | null = null;
 let isRefreshing = false;
 
-const refreshAccessToken = async (refreshToken: string): Promise<string> => {
+const refreshAccessToken = async (): Promise<void> => {
   // 이미 refresh 중이면 기존 Promise 반환
   if (refreshPromise) {
-    return refreshPromise;
+    return;
   }
 
   // refresh 시작
   isRefreshing = true;
   refreshPromise = (async () => {
     try {
-      const refreshResponse = await instance
+      await instance
         .post<BaseResponse<UserResponse>>(baseUrl + "/auth/refresh", {
-          headers: { RefreshToken: refreshToken },
+          credentials: "include",
         })
         .json<BaseResponse<UserResponse>>();
-
-      useRefreshTokenStore.setState({ refreshToken: refreshResponse.result.refreshToken });
-      useAccessTokenStore.setState({ accessToken: refreshResponse.result.accessToken });
-      return refreshResponse.result.accessToken;
     } catch (error) {
       console.error("Refresh 실패", error);
-      useAccessTokenStore.setState({ accessToken: null });
-      useRefreshTokenStore.setState({ refreshToken: null });
-      useUserStore.setState({ user: null });
+      useUserStore.setState({ user: null, isLoggedIn: false });
       localStorage.clear();
       resetUserQueries();
       window.location.href = "/login";
@@ -46,40 +40,32 @@ const refreshAccessToken = async (refreshToken: string): Promise<string> => {
     }
   })();
 
-  return refreshPromise;
+  return;
 };
 
 export const api = instance.extend({
   prefixUrl: baseUrl,
+  credentials: "include",
   hooks: {
     beforeRequest: [
-      async (request) => {
+      async () => {
         // refresh 중이면 완료될 때까지 대기
         if (isRefreshing && refreshPromise) {
           await refreshPromise;
         }
 
         // 클라이언트측에서 필요한 헤더 추가 (예: 인증 토큰)
-        const accessToken = useAccessTokenStore.getState().accessToken;
-        if (accessToken) {
-          request.headers.set("Authorization", `Bearer ${accessToken}`);
-        }
       },
     ],
     afterResponse: [
       async (request, options, response) => {
         // 응답 처리 로직 (예: 토큰 갱신)
         if (response.status === 401 || response.status === 500) {
-          const refreshToken = useRefreshTokenStore.getState().refreshToken;
+          // 토큰 갱신 (이미 진행 중이면 기존 Promise 사용)
+          await refreshAccessToken();
 
-          if (refreshToken) {
-            // 토큰 갱신 (이미 진행 중이면 기존 Promise 사용)
-            const newAccessToken = await refreshAccessToken(refreshToken);
-
-            // 새로운 토큰으로 기존 요청 재시도
-            request.headers.set("Authorization", `Bearer ${newAccessToken}`);
-            return instance(request);
-          }
+          // 새로운 토큰으로 기존 요청 재시도
+          return instance(request);
         }
 
         return response;

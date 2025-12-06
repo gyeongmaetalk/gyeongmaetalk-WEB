@@ -1,55 +1,29 @@
 import { useEffect } from "react";
 
-import type { BaseResponse } from "@gyeongmaetalk/types";
-
 import { Loader2 } from "lucide-react";
-import { Navigate, useNavigate, useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
-import { WebviewEvent } from "~/constants";
-import { useWebView } from "~/hooks/use-webview";
-import { api } from "~/lib/ky";
-import { useAccessTokenStore, useRefreshTokenStore } from "~/lib/zustand/user";
-import type { UserResponse } from "~/models/auth";
+import { useUserStore } from "~/lib/zustand/user";
 import { errorToast } from "~/utils/toast";
 
 export default function RedirectPage() {
   const [searchParams] = useSearchParams();
 
-  const code = searchParams.get("code");
   const registered = searchParams.get("registered");
   const isRegistered = registered === "true";
 
   const navigate = useNavigate();
 
-  const { postMessage } = useWebView();
-
-  const setAccessToken = useAccessTokenStore((state) => state.setAccessToken);
-  const setRefreshToken = useRefreshTokenStore((state) => state.setRefreshToken);
-
-  if (!code) {
-    return <Navigate to="/" />;
-  }
+  const setIsLoggedIn = useUserStore((state) => state.setIsLoggedIn);
 
   useEffect(() => {
     const requestAccessToken = async () => {
       try {
-        const { result } = await api
-          .post<BaseResponse<UserResponse>>("auth/exchange", {
-            searchParams: { code },
-          })
-          .json();
-
-        postMessage(WebviewEvent.GET_ALARM_STATUS, {
-          accessToken: result.accessToken,
-          refreshToken: result.refreshToken,
-        });
-
+        setIsLoggedIn(true);
         if (isRegistered) {
-          setAccessToken(result.accessToken);
-          setRefreshToken(result.refreshToken);
           navigate("/", { replace: true });
         } else {
-          navigate("/signup", { replace: true, state: result });
+          navigate("/signup", { replace: true });
         }
       } catch (error) {
         console.error(error);

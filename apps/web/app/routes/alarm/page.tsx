@@ -11,14 +11,14 @@ import PageLayout from "~/components/layout/page-layout";
 import { NotificationType, WebviewEvent } from "~/constants";
 import { useWebView } from "~/hooks/use-webview";
 import { useGetNotifications } from "~/lib/tanstack/query/fcm";
-import { useRefreshTokenStore } from "~/lib/zustand/user";
+import { useUserStore } from "~/lib/zustand/user";
 import AlarmItem from "~/routes/alarm/alarm-item";
 import AlarmRecommendItem from "~/routes/alarm/alarm-recommend-item";
 import AlarmReviewItem from "~/routes/alarm/alarm-review-item";
 
 export default function AlarmPage() {
   const [isAlarmEnabled, setIsAlarmEnabled] = useState<boolean | null>(null);
-  const isAuthenticated = useRefreshTokenStore((state) => state.refreshToken) !== null;
+  const isAuthenticated = useUserStore((state) => state.user) !== null;
 
   const { data: notifications = [], isPending } = useGetNotifications();
 

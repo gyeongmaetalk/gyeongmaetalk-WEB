@@ -18,7 +18,7 @@ export const useGetAvailableTimes = (props: AvailableTimesRequest) => {
 };
 
 export const useCheckCounselStatus = () => {
-  const user = useUserStore((state) => state.user);
+  const isLoggedIn = useUserStore((state) => state.isLoggedIn);
 
   return useQuery<
     BaseResponse<ReservedCounselDataResponse>,
@@ -28,7 +28,7 @@ export const useCheckCounselStatus = () => {
     queryKey: [COUNSEL.COUNSEL_STATUS],
     queryFn: getReservedCounselData,
     select: (data) => data.result,
-    enabled: !!user,
+    enabled: isLoggedIn,
     staleTime: 1000 * 60 * 5,
   });
 };

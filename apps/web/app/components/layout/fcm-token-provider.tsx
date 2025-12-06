@@ -12,7 +12,7 @@ interface FcmTokenProviderProps {
 }
 
 export default function FcmTokenProvider({ children }: FcmTokenProviderProps) {
-  const user = useUserStore((state) => state.user);
+  const isLoggedIn = useUserStore((state) => state.isLoggedIn);
 
   const { mutate: registerDeviceToken } = useRegisterDeviceToken();
 
@@ -26,10 +26,10 @@ export default function FcmTokenProvider({ children }: FcmTokenProviderProps) {
   });
 
   useEffect(() => {
-    if (user) {
+    if (isLoggedIn) {
       postMessage(WebviewEvent.GET_DEVICE_TOKEN);
     }
-  }, [user]);
+  }, [isLoggedIn]);
 
   return children;
 }

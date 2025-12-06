@@ -8,7 +8,7 @@ import Divider from "~/components/divider";
 import { Document } from "~/components/icons";
 import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
 import { useGetPropertyList } from "~/lib/tanstack/query/property";
-import { useRefreshTokenStore } from "~/lib/zustand/user";
+import { useUserStore } from "~/lib/zustand/user";
 import AgencyRecommendItem from "~/routes/agency.recommend._index/agency-recommend-item";
 import StatusNav from "~/routes/agency.recommend._index/status-nav";
 
@@ -41,7 +41,7 @@ const getStatus = (status: string) => {
 const AgencyRecommendPage = () => {
   const [searchParams] = useSearchParams();
   const status = searchParams.get("status") || "";
-  const isAuthenticated = useRefreshTokenStore((state) => state.refreshToken) !== null;
+  const isAuthenticated = useUserStore((state) => state.user) !== null;
 
   const { data = [], isLoading } = useGetPropertyList(getStatus(status));
   const { data: counselStatus } = useCheckCounselStatus();

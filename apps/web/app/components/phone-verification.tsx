@@ -12,7 +12,6 @@ import { errorToast } from "~/utils/toast";
 interface PhoneVerificationProps {
   phone: string;
   code: string;
-  accessToken: string;
   onPhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onVerificationComplete: (isVerified: boolean) => void;
@@ -23,7 +22,6 @@ const TIMEOUT_DURATION = 60 * 5;
 export default function PhoneVerification({
   phone,
   code,
-  accessToken,
   onPhoneChange,
   onCodeChange,
   onVerificationComplete,
@@ -45,12 +43,7 @@ export default function PhoneVerification({
   const onRequestCode = async () => {
     setIsPending(true);
     try {
-      await api
-        .post("auth/sms", {
-          searchParams: { phoneNumber: phone },
-          headers: { Authorization: `Bearer ${accessToken}` },
-        })
-        .json();
+      await api.post("auth/sms", { searchParams: { phoneNumber: phone } }).json();
 
       // 기존 interval이 있다면 정리
       if (intervalRef.current) {
@@ -87,10 +80,9 @@ export default function PhoneVerification({
     setIsPending(true);
     try {
       const res = await api
-        .post<BaseResponse<boolean>>("auth/sms/verify", {
-          searchParams: { code, phoneNumber: phone },
-          headers: { Authorization: `Bearer ${accessToken}` },
-        })
+        .post<
+          BaseResponse<boolean>
+        >("auth/sms/verify", { searchParams: { code, phoneNumber: phone } })
         .json();
       setIsCodeVerified(res.result);
       onVerificationComplete(res.result);
