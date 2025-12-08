@@ -16,6 +16,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api\/s3/, ""),
       },
     },
+    allowedHosts: ["gyeongmaetalk.shop"],
   },
   build: {
     sourcemap: true,

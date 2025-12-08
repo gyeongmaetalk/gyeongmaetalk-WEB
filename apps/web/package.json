@@ -9,7 +9,7 @@
     "icons": "pnpm exec svgr --out-dir app/components/icons -- app/assets/icons",
     "icons:watch": "npm-watch icons",
     "dev:svg": "run-s icons icons:watch",
-    "dev:remix": "react-router dev",
+    "dev:remix": "react-router dev --host",
     "dev": "run-p dev:*",
     "lint": "eslint --fix \"**/*.{ts,tsx,md}\"",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
