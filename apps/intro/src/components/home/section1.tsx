@@ -13,14 +13,7 @@ export default function Section1() {
   return (
     <section className="relative bg-cover md:bg-contain" aria-label="메인 소개">
       {/* 메인 배경 이미지 */}
-      <picture className="absolute inset-0 h-full w-full overflow-hidden object-contain">
-        <source type="image/webp" srcSet={section1Bg} />
-        <Image
-          src={section1Bg}
-          alt="메인 배경 이미지"
-          className="h-full w-full object-cover md:h-auto md:object-contain"
-        />
-      </picture>
+      <Image src={section1Bg} alt="메인 배경 이미지" fill className="object-cover" />
       {/* 메인 콘텐츠 */}
       <div className="relative container mx-auto pt-20">
         <div className="flex flex-col gap-4">

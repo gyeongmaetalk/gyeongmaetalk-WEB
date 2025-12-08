@@ -12,7 +12,7 @@ const PrivacyPolicyPage = () => {
           role="list"
         >
           <li>
-            &lt;데벨&gt;(&apos;gyeongmaetalk-intro.vercel.app&apos; 이하 &apos;경매톡&apos;)은(는)
+            &lt;데벨&gt;(&apos;www.gyeongmaetalk.shop&apos; 이하 &apos;경매톡&apos;)은(는)
             「개인정보보호법」에 따라 이용자의 개인정보 보호 및 권익을 보호하고 개인정보와 관련한
             이용자의 고충을 원활하게 처리할 수 있도록 다음과 같은 처리방침을 두고 있습니다.
           </li>
@@ -31,7 +31,7 @@ const PrivacyPolicyPage = () => {
         </h2>
         <div className="font-label1-normal-regular text-label-neutral space-y-2 break-keep">
           <p>
-            &lt;데벨&gt;(&apos;gyeongmaetalk-intro.vercel.app&apos; 이하 &apos;경매톡&apos;)은(는)
+            &lt;데벨&gt;(&apos;www.gyeongmaetalk.shop&apos; 이하 &apos;경매톡&apos;)은(는)
             개인정보를 다음의 목적을 위해 처리합니다. 처리한 개인정보는 다음의 목적 이외의 용도로는
             사용되지 않으며 이용 목적이 변경될 시에는 사전 동의를 구할 예정입니다.
           </p>

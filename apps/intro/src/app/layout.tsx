@@ -28,19 +28,19 @@ export const metadata: Metadata = {
     "취득세",
     "부동산 자산관리",
   ],
-  metadataBase: new URL("https://gyeongmaetalk-intro.vercel.app"),
+  metadataBase: new URL("https://intro.gyeongmaetalk.shop"),
   openGraph: {
     title: "경매톡 | 부동산 경매를 쉽고 빠르게",
     description:
       "30분 무료 상담으로 불안 해소부터 입찰 대행까지 — 복잡한 부동산 경매, 이제 경매톡과 함께 하세요.",
-    url: "https://gyeongmaetalk-intro.vercel.app",
+    url: "https://intro.gyeongmaetalk.shop",
     siteName: "경매톡",
     locale: "ko_KR",
     type: "website",
     images: "/og-image.png",
   },
   alternates: {
-    canonical: "https://gyeongmaetalk-intro.vercel.app",
+    canonical: "https://intro.gyeongmaetalk.shop",
   },
 };
 
