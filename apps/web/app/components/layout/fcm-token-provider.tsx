@@ -14,14 +14,16 @@ interface FcmTokenProviderProps {
 export default function FcmTokenProvider({ children }: FcmTokenProviderProps) {
   const isLoggedIn = useUserStore((state) => state.isLoggedIn);
 
-  const { mutate: registerDeviceToken } = useRegisterDeviceToken();
+  const { mutateAsync: registerDeviceToken } = useRegisterDeviceToken();
 
   const { postMessage } = useWebView((event) => {
     const { type, data } = event;
 
     if (type === WebviewEvent.REGISTER_DEVICE_TOKEN) {
       const { fcmToken } = data as { fcmToken: string };
-      registerDeviceToken(fcmToken);
+      registerDeviceToken(fcmToken).catch(() => {
+        // 에러를 조용히 무시하여 백그라운드에서 실행되도록 함
+      });
     }
   });
 
