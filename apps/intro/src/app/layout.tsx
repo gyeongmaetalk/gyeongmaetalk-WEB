@@ -37,6 +37,7 @@ export const metadata: Metadata = {
     siteName: "경매톡",
     locale: "ko_KR",
     type: "website",
+    images: "/og-image.png",
   },
   alternates: {
     canonical: "https://gyeongmaetalk-intro.vercel.app",
