@@ -158,13 +158,11 @@ export default function InquiryTable() {
           </div>
         </div>
       </div>
-      {selectedInquiry && (
-        <InquiryAnswerModal
-          inquiry={selectedInquiry}
-          isOpen={isAnswerModalOpen}
-          onClose={onCloseAnswerModal}
-        />
-      )}
+      <InquiryAnswerModal
+        inquiry={selectedInquiry}
+        isOpen={isAnswerModalOpen}
+        onClose={onCloseAnswerModal}
+      />
     </>
   );
 }

@@ -50,12 +50,12 @@ export default function FaqModal({ faq, isOpen, isEditMode, onClose, onSave }: F
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-2xl">
+      <SheetContent className="sm:max-w-2xl">
         <SheetHeader>
           <SheetTitle>{isEditMode ? "FAQ 수정" : "FAQ 추가"}</SheetTitle>
         </SheetHeader>
 
-        <div className="space-y-6 p-4">
+        <div className="space-y-6 overflow-y-auto p-4">
           <div className="space-y-2">
             <label htmlFor="question" className="text-sm font-medium">
               질문

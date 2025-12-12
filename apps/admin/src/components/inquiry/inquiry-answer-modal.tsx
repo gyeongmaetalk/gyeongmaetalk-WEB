@@ -15,7 +15,7 @@ import {
 } from "@gyeongmaetalk/ui";
 
 interface InquiryAnswerModalProps {
-  inquiry: Inquiry;
+  inquiry: Inquiry | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -32,7 +32,7 @@ function formatDate(date: string) {
 }
 
 export default function InquiryAnswerModal({ inquiry, isOpen, onClose }: InquiryAnswerModalProps) {
-  const [answer, setAnswer] = useState(inquiry.answerContent || "");
+  const [answer, setAnswer] = useState(inquiry?.answerContent || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSaveAnswer = async () => {
@@ -47,14 +47,18 @@ export default function InquiryAnswerModal({ inquiry, isOpen, onClose }: Inquiry
     onClose();
   };
 
+  if (!inquiry) {
+    return null;
+  }
+
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-2xl">
+      <SheetContent className="sm:max-w-2xl">
         <SheetHeader>
           <SheetTitle>문의 답변</SheetTitle>
         </SheetHeader>
 
-        <div className="space-y-6 p-4">
+        <div className="space-y-6 overflow-y-auto p-4">
           <div className="space-y-2">
             <div className="text-sm font-medium">유저 정보</div>
             <div className="text-muted-foreground text-sm">
