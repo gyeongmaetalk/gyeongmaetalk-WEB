@@ -83,6 +83,7 @@ export default function SignupPage() {
 
       if (res.isSuccess) {
         successToast("회원가입이 완료되었어요.");
+        localStorage.removeItem("isSignupNeeded");
         navigate("/onboarding?mode=apply", { replace: true });
       } else {
         errorToast("회원가입에 실패했어요.");

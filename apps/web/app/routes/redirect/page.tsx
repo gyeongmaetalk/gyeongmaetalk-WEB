@@ -23,6 +23,7 @@ export default function RedirectPage() {
         if (isRegistered) {
           navigate("/", { replace: true });
         } else {
+          localStorage.setItem("isSignupNeeded", "true");
           navigate("/signup", { replace: true });
         }
       } catch (error) {
