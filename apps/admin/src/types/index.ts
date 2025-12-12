@@ -16,7 +16,7 @@ export interface Reservation {
   requestedAtIso: string;
   scheduledAtIso: string;
   auctionPurpose: "거주" | "투자" | "법인투자" | "기타";
-  interestRegions: string[];
+  interestRegions: string;
   serviceScopes: ("사전권리분석" | "입찰대행" | "낙찰후등기" | "명도지원" | "세무상담연계")[];
   interestTopics: ("권리분석" | "배당/세금" | "대출/자금" | "명도" | "법인전략" | "기타")[];
   ownershipPlan: "개인" | "공동" | "법인";

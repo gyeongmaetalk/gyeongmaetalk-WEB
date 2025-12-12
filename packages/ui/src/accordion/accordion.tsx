@@ -26,7 +26,11 @@ function Accordion({ children, className }: AccordionProps) {
   );
 }
 
-function AccordionHeader({ children, className }: AccordionProps) {
+interface AccordionHeaderProps extends AccordionProps {
+  iconClassName?: string;
+}
+
+function AccordionHeader({ children, className, iconClassName }: AccordionHeaderProps) {
   const context = useContext(AccordionContext);
 
   if (context === null) {
@@ -38,11 +42,15 @@ function AccordionHeader({ children, className }: AccordionProps) {
   return (
     <button
       onClick={() => setOpen(!open)}
-      className={cn("flex w-full items-center justify-between px-2 py-4", className)}
+      className={cn("relative flex w-full items-center justify-between px-2 py-4", className)}
     >
       {children}
       <ChevronDown
-        className={cn("size-5 transition-transform duration-200", open && "rotate-180")}
+        className={cn(
+          "size-5 transition-transform duration-200",
+          iconClassName,
+          open && "rotate-180"
+        )}
       />
     </button>
   );

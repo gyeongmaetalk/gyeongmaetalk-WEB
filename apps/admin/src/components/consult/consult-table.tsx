@@ -5,15 +5,17 @@ import { useMemo, useState } from "react";
 import { COUNSEL_STATUS_LABEL, CounselStatus } from "@/constants/counsel";
 import { mockReservations } from "@/mock/bookings";
 import type { Reservation } from "@/types";
+import { Accordion } from "@gyeongmaetalk/ui";
 import { cn } from "@gyeongmaetalk/utils";
 
 import ConsultFilter, { type ConsultFilterValue } from "./consult-filter";
 import ConsultStatusChip from "./consult-status-chip";
 
-const STATUS = [CounselStatus.COUNSEL_BEFORE, CounselStatus.COUNSEL_AFTER, CounselStatus.SUBSCRIBE];
-
-// 추후 tanstack quert로 교체
-const isLoading = false;
+const statuses = [
+  CounselStatus.COUNSEL_BEFORE,
+  CounselStatus.COUNSEL_AFTER,
+  CounselStatus.SUBSCRIBE,
+];
 
 function formatDate(date: string) {
   return new Date(date).toLocaleString("ko-KR", {
@@ -57,7 +59,7 @@ export default function ConsultTable() {
       <ConsultFilter value={filters} onChange={setFilters} />
       <div className="space-y-2 text-nowrap" aria-label="상담 테이블">
         <div className="flex items-center gap-2">
-          {STATUS.map((status) => (
+          {statuses.map((status) => (
             <div key={status} className="flex items-center gap-1">
               <div
                 className={cn(
@@ -76,55 +78,66 @@ export default function ConsultTable() {
             </div>
           ))}
         </div>
-        <div className="border-cool-neutral-95 overflow-x-auto rounded-md border">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-muted">
-              <tr>
-                <th className="px-4 py-3">고객</th>
-                <th className="px-4 py-3">상담일시</th>
-                <th className="px-4 py-3">신청일시</th>
-                <th className="px-4 py-3">상태</th>
-                <th className="px-4 py-3">목적</th>
-                <th className="px-4 py-3">관심 지역</th>
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading && (
-                <tr>
-                  <td colSpan={7} className="text-muted-foreground px-4 py-10 text-center">
-                    로딩 중...
-                  </td>
-                </tr>
-              )}
-              {!isLoading && filteredReservations.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="text-muted-foreground px-4 py-10 text-center">
-                    표시할 상담이 없습니다.
-                  </td>
-                </tr>
-              )}
-              {!isLoading &&
-                filteredReservations.map((r) => (
-                  <tr key={r.reservationId} className="border-t-cool-neutral-95 border-t">
-                    <td className="px-4 py-3">
-                      <div className="flex flex-col">
-                        <span className="font-medium">{r.customerName}</span>
-                        <span className="text-muted-foreground text-xs">{r.customerPhone}</span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">{formatDate(r.scheduledAtIso)}</td>
-                    <td className="px-4 py-3">{formatDate(r.requestedAtIso)}</td>
-                    <td className="px-4 py-3">
+        <div className="border-cool-neutral-95 w-full overflow-x-auto rounded-md border text-left text-sm">
+          <ul className="bg-muted grid grid-cols-4">
+            <li className="px-4 py-3">고객</li>
+            <li className="px-4 py-3">상담일시</li>
+            <li className="px-4 py-3">신청일시</li>
+            <li className="px-4 py-3">상태</li>
+          </ul>
+          <div>
+            {filteredReservations.map((r) => (
+              <Accordion key={r.reservationId} className="w-full">
+                <Accordion.Header
+                  iconClassName="absolute right-4 top-1/2 -translate-y-1/2"
+                  className="border-t-cool-neutral-95 w-full border-t"
+                >
+                  <ul className="grid w-full grid-cols-4 items-center text-start">
+                    <li className="truncate px-4 py-3">
+                      <span className="block">{r.customerName}</span>
+                      <span className="text-muted-foreground block text-xs">{r.customerPhone}</span>
+                    </li>
+                    <li className="truncate px-4 py-3">{formatDate(r.scheduledAtIso)}</li>
+                    <li className="truncate px-4 py-3">{formatDate(r.requestedAtIso)}</li>
+                    <li className="px-4 py-3">
                       <ConsultStatusChip status={r.status} />
-                    </td>
-                    <td className="px-4 py-3">{r.auctionPurpose}</td>
-                    <td className="truncate px-4 py-3" title={r.interestRegions.join(", ")}>
-                      {r.interestRegions.join(", ")}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+                    </li>
+                  </ul>
+                </Accordion.Header>
+                <Accordion.Content>
+                  <div className="grid grid-cols-6 gap-5 overflow-x-auto px-5 text-sm">
+                    <div className="space-y-2">
+                      <p className="truncate font-medium">상담사</p>
+                      <div>
+                        <p>이정훈</p>
+                        <p className="text-muted-foreground truncate text-xs">010-1234-5678</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="truncate font-medium">목적</p>
+                      <p className="truncate">{r.auctionPurpose}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="truncate font-medium">지역</p>
+                      <p className="truncate">{r.interestRegions}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="truncate font-medium">희망 서비스</p>
+                      <p className="truncate">전체 대행</p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="truncate font-medium">궁금한 분야</p>
+                      <p className="truncate">아파트 경매 등</p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="truncate font-medium">명의</p>
+                      <p className="truncate">개인</p>
+                    </div>
+                  </div>
+                </Accordion.Content>
+              </Accordion>
+            ))}
+          </div>
         </div>
       </div>
     </div>
