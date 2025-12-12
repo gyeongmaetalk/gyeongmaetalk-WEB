@@ -1,6 +1,14 @@
-import LoginForm from "@/components/home/login-form";
+import { redirect, RedirectType } from "next/navigation";
 
-export default function LoginPage() {
+import LoginForm from "@/components/home/login-form";
+import { getCookie } from "@/utils/cookie";
+
+export default async function LoginPage() {
+  const loggedIn = await getCookie("loggedIn");
+  if (loggedIn) {
+    redirect("/consult", RedirectType.replace);
+  }
+
   return (
     <main className="flex h-screen max-w-md flex-col justify-center">
       <div>

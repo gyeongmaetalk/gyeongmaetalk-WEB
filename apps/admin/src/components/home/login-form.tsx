@@ -3,55 +3,59 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { errorToast } from "@/utils/toast";
+import { useLogin } from "@/lib/tanstack/mutation/auth";
+import { setCookie } from "@/utils/cookie";
+import type { BaseResponse } from "@gyeongmaetalk/types";
 import { Button, Textfield } from "@gyeongmaetalk/ui";
-
-const EMAIL_HINT = "admin@example.com";
-const PASSWORD_HINT = "password123";
 
 export default function LoginForm() {
   const router = useRouter();
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState("");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const {
+    mutate: login,
+    isPending,
+    isSuccess,
+  } = useLogin({
+    onSuccess: () => {
+      setCookie("loggedIn", "true");
+      router.push("/consult");
+    },
+    onError: async (error) => {
+      const errorResponse = await error.response.json<BaseResponse>();
+      setError(errorResponse.message);
+    },
+  });
+
+  const isSubmitDisabled = isPending || isSuccess;
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-    const formData = new FormData(e.target as HTMLFormElement);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    const formData = new FormData(e.currentTarget);
+    const username = formData.get("username");
+    const password = formData.get("password");
 
-    if (!email || !password) {
-      setError("이메일과 비밀번호를 모두 입력해주세요.");
+    if (typeof username !== "string" || typeof password !== "string") {
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError("올바른 이메일 형식을 입력해주세요.");
+    if (!username || !password) {
+      setError("아이디와 비밀번호를 모두 입력해주세요.");
       return;
     }
 
-    if (email !== EMAIL_HINT || password !== PASSWORD_HINT) {
-      errorToast("이메일 또는 비밀번호가 올바르지 않습니다.");
-      return;
-    }
-
-    if (password === PASSWORD_HINT) {
-      router.replace("/consult");
-      return;
-    }
-    setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+    login({ username, password });
   };
 
   return (
     <form onSubmit={onSubmit} className="space-y-4" aria-label="로그인 폼">
       <div className="space-y-2">
         <Textfield
-          id="email"
-          name="email"
-          aria-label="이메일"
-          placeholder="이메일"
-          type="email"
+          id="username"
+          name="username"
+          aria-label="아이디"
+          placeholder="아이디"
           required
         />
         <Textfield
@@ -64,15 +68,9 @@ export default function LoginForm() {
           errorText={error}
         />
       </div>
-      <Button type="submit" aria-label="로그인" className="w-full">
+      <Button type="submit" aria-label="로그인" className="w-full" disabled={isSubmitDisabled}>
         로그인
       </Button>
-      <p className="text-muted-foreground text-xs" aria-live="polite">
-        개발용 힌트: 이메일 {EMAIL_HINT}
-      </p>
-      <p className="text-muted-foreground text-xs" aria-live="polite">
-        개발용 힌트: 비밀번호 {PASSWORD_HINT}
-      </p>
     </form>
   );
 }
