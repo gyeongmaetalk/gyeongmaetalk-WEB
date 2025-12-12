@@ -4,7 +4,8 @@ import { Button } from "@gyeongmaetalk/ui";
 
 import { Apple, Kakao as KakaoIcon, LogoIcon, LogoText } from "~/components/icons";
 import { AuthProvider } from "~/constants";
-import { baseUrl } from "~/utils/env";
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);

@@ -2,7 +2,6 @@ import { instance } from "@gyeongmaetalk/lib/ky";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 
 import type { UserResponse } from "~/models/auth";
-import { baseUrl } from "~/utils/env";
 
 import { resetUserQueries } from "../tanstack";
 import { useUserStore } from "../zustand/user";
@@ -10,6 +9,8 @@ import { useUserStore } from "../zustand/user";
 // 토큰 갱신 락 및 Promise 관리
 let refreshPromise: Promise<void> | null = null;
 let isRefreshing = false;
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const refreshAccessToken = async (): Promise<void> => {
   // 이미 refresh 중이면 기존 Promise 반환

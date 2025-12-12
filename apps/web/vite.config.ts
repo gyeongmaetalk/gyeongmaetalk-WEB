@@ -19,7 +19,7 @@ export default defineConfig({
     allowedHosts: ["gyeongmaetalk.shop"],
   },
   build: {
-    sourcemap: true,
+    sourcemap: process.env.NODE_ENV === "development",
     rollupOptions: {
       onLog(level, log, handler) {
         if (

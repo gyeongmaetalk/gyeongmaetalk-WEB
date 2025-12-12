@@ -4,7 +4,6 @@ import { Toaster } from "@gyeongmaetalk/ui";
 import { Outlet } from "react-router";
 
 import FcmTokenProvider from "./fcm-token-provider";
-import MswProvider from "./msw-provider";
 import UserProvider from "./user-provider";
 
 const naverMapKey = import.meta.env.VITE_NAVER_MAP_KEY;
@@ -19,7 +18,6 @@ const RootProvider = () => {
           <Outlet />
         </FcmTokenProvider>
       </UserProvider>
-      <MswProvider />
       <Toaster position="bottom-center" duration={3000} closeButton />
     </TanstackProvider>
   );
