@@ -4,6 +4,7 @@ import { Button } from "@gyeongmaetalk/ui";
 import { Close } from "~/components/icons";
 import Modal from "~/components/modal";
 import { resetUserQueries } from "~/lib/tanstack";
+import { useLogout } from "~/lib/tanstack/mutation/auth";
 import { useUserStore } from "~/lib/zustand/user";
 
 interface LogoutModalProps {
@@ -15,17 +16,19 @@ export default function LogoutModal({ isOpen, onCancel }: LogoutModalProps) {
   const setUser = useUserStore((state) => state.setUser);
   const setIsLoggedIn = useUserStore((state) => state.setIsLoggedIn);
 
+  const { mutate: logout, isPending } = useLogout({
+    onSuccess: () => {
+      setUser(null);
+      setIsLoggedIn(false);
+      localStorage.clear();
+      resetUserQueries();
+      onCancel();
+    },
+  });
+
   const [modalRef] = useOutsideClick<HTMLDivElement>(() => {
     onCancel();
   });
-
-  const onConfirm = () => {
-    setUser(null);
-    setIsLoggedIn(false);
-    localStorage.clear();
-    resetUserQueries();
-    onCancel();
-  };
 
   return (
     isOpen && (
@@ -39,7 +42,9 @@ export default function LogoutModal({ isOpen, onCancel }: LogoutModalProps) {
         </Modal.Header>
         <Modal.Content>정말 로그아웃 하시겠습니까?</Modal.Content>
         <Modal.Footer className="flex flex-col gap-2">
-          <Button onClick={onConfirm}>확인</Button>
+          <Button onClick={() => logout()} disabled={isPending}>
+            확인
+          </Button>
         </Modal.Footer>
       </Modal>
     )

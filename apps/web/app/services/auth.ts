@@ -23,3 +23,7 @@ export const updateNotificationSetting = async (
 ): Promise<BaseResponse<void>> => {
   return api.patch("auth/notification/setting", { json: props }).json();
 };
+
+export const logout = async (): Promise<BaseResponse<void>> => {
+  return api.post("auth/logout").json();
+};

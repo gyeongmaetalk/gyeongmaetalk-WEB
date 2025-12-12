@@ -4,7 +4,7 @@ import type { BaseResponse } from "@gyeongmaetalk/types";
 
 import type { SignupResponse, UpdateNotificationSettingRequest } from "~/models/auth";
 import type { UpdateUserInfoForm } from "~/routes/mypage.userinfo/schema";
-import { updateNotificationSetting, updateUserInfo } from "~/services/auth";
+import { logout, updateNotificationSetting, updateUserInfo } from "~/services/auth";
 
 export const useUpdateUserInfo = (
   options?: UseMutationOptions<BaseResponse<SignupResponse>, HTTPError, UpdateUserInfoForm>
@@ -20,6 +20,13 @@ export const useUpdateNotificationSetting = (
 ) => {
   return useMutation<BaseResponse<void>, HTTPError, UpdateNotificationSettingRequest>({
     mutationFn: updateNotificationSetting,
+    ...options,
+  });
+};
+
+export const useLogout = (options?: UseMutationOptions<BaseResponse<void>, HTTPError>) => {
+  return useMutation<BaseResponse<void>, HTTPError>({
+    mutationFn: logout,
     ...options,
   });
 };
