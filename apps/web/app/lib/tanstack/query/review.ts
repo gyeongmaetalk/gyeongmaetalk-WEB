@@ -1,11 +1,11 @@
 import type { HTTPError } from "@gyeongmaetalk/lib/ky";
 import { useInfiniteQuery, useQuery } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
+import { calculatePaigination } from "@gyeongmaetalk/utils";
 
 import { REVIEW, type SortType } from "~/constants";
 import type { ReviewDetailResponse } from "~/models/review";
 import { getConsultantReviews, getMyReviews, getReviewById, getReviews } from "~/services/review";
-import { calculatePaigination } from "~/utils/api";
 
 export const useGetConsultantReviews = ({
   consultantId,
