@@ -27,6 +27,11 @@ const getQnaAnswerTime = (time: string) => {
     .replace(/(\d{4})\. (\d{2})\. (\d{2})\. (.+)/, "$1.$2.$3 $4");
 };
 
+const qnaCategoryMap = {
+  PAYMENT: "결제",
+  ETC: "기타",
+};
+
 export default function MyInquiryTab() {
   const { data: myQna, isLoading, isError } = useGetMyQna();
 
@@ -53,7 +58,9 @@ export default function MyInquiryTab() {
           <Accordion key={`${qna.qnaTitle}-${qna.qnaStatus}`}>
             <Accordion.Header>
               <div className="flex w-full items-center justify-between gap-2">
-                <p className="font-body2-normal-bold">{qna.qnaTitle}</p>
+                <p className="font-body2-normal-bold">
+                  [{qnaCategoryMap[qna.category]}] {qna.qnaTitle}
+                </p>
                 <p
                   className={cn(
                     "font-label1-normal-bold mr-2",
