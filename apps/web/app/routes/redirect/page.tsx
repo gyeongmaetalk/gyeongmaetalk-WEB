@@ -15,15 +15,16 @@ export default function RedirectPage() {
   const navigate = useNavigate();
 
   const setIsLoggedIn = useUserStore((state) => state.setIsLoggedIn);
+  const setIsRegistered = useUserStore((state) => state.setIsRegistered);
 
   useEffect(() => {
     const requestAccessToken = async () => {
       try {
         setIsLoggedIn(true);
+        setIsRegistered(isRegistered);
         if (isRegistered) {
           navigate("/", { replace: true });
         } else {
-          localStorage.setItem("isSignupNeeded", "true");
           navigate("/signup", { replace: true });
         }
       } catch (error) {

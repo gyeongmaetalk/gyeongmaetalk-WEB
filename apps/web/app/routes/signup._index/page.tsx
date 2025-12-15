@@ -25,7 +25,9 @@ const DEFAULT_VALUES: SignupForm = {
 export default function SignupPage() {
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [isPending, setIsPending] = useState(false);
-  const isLoggedIn = useUserStore((state) => state.isLoggedIn);
+
+  const isRegistered = useUserStore((state) => state.isRegistered);
+  const setIsRegistered = useUserStore((state) => state.setIsRegistered);
 
   const navigate = useNavigate();
 
@@ -83,7 +85,7 @@ export default function SignupPage() {
 
       if (res.isSuccess) {
         successToast("회원가입이 완료되었어요.");
-        localStorage.removeItem("isSignupNeeded");
+        setIsRegistered(true);
         navigate("/onboarding?mode=apply", { replace: true });
       } else {
         errorToast("회원가입에 실패했어요.");
@@ -97,7 +99,7 @@ export default function SignupPage() {
     }
   });
 
-  if (isLoggedIn) {
+  if (isRegistered) {
     return <Navigate to="/" />;
   }
 

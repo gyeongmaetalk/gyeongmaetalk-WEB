@@ -13,14 +13,11 @@ interface LogoutModalProps {
 }
 
 export default function LogoutModal({ isOpen, onCancel }: LogoutModalProps) {
-  const setUser = useUserStore((state) => state.setUser);
-  const setIsLoggedIn = useUserStore((state) => state.setIsLoggedIn);
+  const reset = useUserStore((state) => state.reset);
 
   const { mutate: logout, isPending } = useLogout({
     onSuccess: () => {
-      setUser(null);
-      setIsLoggedIn(false);
-      localStorage.clear();
+      reset();
       resetUserQueries();
       onCancel();
     },

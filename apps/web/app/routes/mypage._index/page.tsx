@@ -44,7 +44,7 @@ const MyPagePage = () => {
             </div>
           )}
           <Link className="font-headline1-bold ml-1" to={user ? "/mypage/userinfo" : "/login"}>
-            {user ? `${user.name} 님` : "로그인 및 회원가입"}
+            {user ? (user.name ? `${user.name} 님` : "정보 입력이 필요해요") : "로그인 및 회원가입"}
           </Link>
           <Back className="h-3 w-[7px] -scale-x-100" />
         </div>

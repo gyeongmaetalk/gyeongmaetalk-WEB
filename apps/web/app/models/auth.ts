@@ -11,10 +11,10 @@ export interface SignupResponse {
 }
 
 export interface MyInfoResponse {
-  name: string;
+  name: string | null;
   loginType: AuthProvider;
-  cellPhone: string;
-  birth: string;
+  cellPhone: string | null;
+  birth: string | null;
   auctionStatus: boolean;
 }
 

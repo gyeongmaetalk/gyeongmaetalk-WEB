@@ -3,10 +3,12 @@ import { Button, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
+import { useRevalidator } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
 import { AUTH } from "~/constants/auth";
 import { useUpdateUserInfo } from "~/lib/tanstack/mutation/auth";
+import { useUserStore } from "~/lib/zustand/user";
 import type { MyInfoResponse } from "~/models/auth";
 import { type UpdateUserInfoForm, updateUserInfoFormSchema } from "~/routes/mypage.userinfo/schema";
 import { errorToast, successToast } from "~/utils/toast";
@@ -16,9 +18,11 @@ interface UserInfoPageProps {
 }
 
 const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
+  const revalidator = useRevalidator();
   const defaultValues = {
-    ...myInfo,
-    birth: myInfo.birth.replace(/-/g, ""),
+    name: myInfo.name ?? "",
+    cellPhone: myInfo.cellPhone ?? "",
+    birth: myInfo.birth ? myInfo.birth.replace(/-/g, "") : "",
   };
 
   const { formState, watch, handleSubmit, setValue } = useForm<UpdateUserInfoForm>({
@@ -29,6 +33,8 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
   const name = watch("name");
   const birth = watch("birth");
   const cellPhone = watch("cellPhone");
+
+  const setIsRegistered = useUserStore((state) => state.setIsRegistered);
 
   const onChangeNumber = (e: React.ChangeEvent<HTMLInputElement>, id: keyof UpdateUserInfoForm) => {
     const value = e.target.value;
@@ -56,9 +62,11 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
     !name || birth.length !== 8 || !cellPhone || formState.isSubmitting || isOrigin;
 
   const { mutate: updateUserInfo } = useUpdateUserInfo({
-    onSuccess: () => {
+    onSuccess: async () => {
+      setIsRegistered(true);
       successToast("회원정보가 수정되었어요.");
       queryClient.invalidateQueries({ queryKey: [AUTH.MY_INFO] });
+      revalidator.revalidate();
     },
     onError: (error) => {
       errorToast("회원정보 수정에 실패했어요.");

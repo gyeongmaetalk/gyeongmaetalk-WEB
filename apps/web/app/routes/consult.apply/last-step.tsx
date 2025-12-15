@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import FloatingContainer from "~/components/container/floating-container";
 import Modal from "~/components/modal";
 import SuggestLogin from "~/components/modal/suggest-login";
+import SuggestSignup from "~/components/modal/suggest-signup";
 import { useChangeMatchCounsel, useMatchCounsel } from "~/lib/tanstack/mutation/counsel";
 import { useUserStore } from "~/lib/zustand/user";
 import { type ApplyConsultForm } from "~/routes/consult.apply/schema";
@@ -24,11 +25,12 @@ interface LastStepProps {
 }
 
 const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
-  const { isLoggedIn, user } = useUserStore();
+  const { isLoggedIn, user, isRegistered } = useUserStore();
 
   const [name, setName] = useState(form.getValues("name"));
   const [innerOption, setInnerOption] = useState("");
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
+  const [isShowSignupModal, setIsShowSignupModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -77,7 +79,13 @@ const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
 
   const onComplete = form.handleSubmit(
     async (data) => {
-      if (!isLoggedIn) return setIsShowLoginModal(true);
+      if (!isLoggedIn) {
+        return setIsShowLoginModal(true);
+      }
+
+      if (!isRegistered) {
+        return setIsShowSignupModal(true);
+      }
 
       const selectedValue = name === "개인" ? `개인,${innerOption}` : name;
       const body = {
@@ -160,6 +168,7 @@ const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
           </Modal>
         )}
       <SuggestLogin isOpen={isShowLoginModal} />
+      <SuggestSignup isOpen={isShowSignupModal} />
     </>
   );
 };
