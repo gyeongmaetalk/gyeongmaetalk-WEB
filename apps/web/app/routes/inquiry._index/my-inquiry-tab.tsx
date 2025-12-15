@@ -56,8 +56,8 @@ export default function MyInquiryTab() {
       ) : (
         myQna.map((qna) => (
           <Accordion key={`${qna.qnaTitle}-${qna.qnaStatus}`}>
-            <Accordion.Header>
-              <div className="flex w-full items-center justify-between gap-2">
+            <Accordion.Header iconClassName="self-start">
+              <div className="flex w-full justify-between gap-2 text-left">
                 <p className="font-body2-normal-bold">
                   [{qnaCategoryMap[qna.category]}] {qna.qnaTitle}
                 </p>
