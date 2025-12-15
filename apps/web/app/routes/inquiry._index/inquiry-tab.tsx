@@ -9,9 +9,11 @@ import { useRequestQna } from "~/lib/tanstack/mutation/qna";
 import { infoToast, successToast } from "~/utils/toast";
 import { errorToast } from "~/utils/toast";
 
-import { type InquiryForm, inquiryFormSchema } from "./schema";
+import InquiryDropdown from "./inquiry-dropdown";
+import { InquiryCategory, type InquiryForm, inquiryFormSchema } from "./schema";
 
 const DEFAULT_VALUES = {
+  category: InquiryCategory.DEFAULT,
   title: "",
   content: "",
   isAgree: false,
@@ -23,7 +25,12 @@ export default function InquiryTab() {
     defaultValues: DEFAULT_VALUES,
   });
 
-  const { mutateAsync: requestQna } = useRequestQna({
+  const category = form.watch("category");
+  const onSelectCategory = (value: InquiryCategory) => {
+    form.setValue("category", value);
+  };
+
+  const { mutate: requestQna } = useRequestQna({
     onSuccess: () => {
       successToast("문의가 접수되었어요.");
       queryClient.invalidateQueries({ queryKey: [QNA.MY_QNA] });
@@ -35,20 +42,21 @@ export default function InquiryTab() {
     },
   });
 
-  const onSubmit = form.handleSubmit(async (data: InquiryForm) => {
-    if (!data.title || !data.content) {
+  const onSubmit = form.handleSubmit((data: InquiryForm) => {
+    if (!data.category || !data.title || !data.content) {
       return infoToast("모든 필수 항목을 입력해주세요.");
     }
     if (!data.isAgree) {
       return infoToast("개인정보 수집 및 이용 동의를 동의해주세요.");
     }
 
-    await requestQna(data);
+    requestQna(data);
   });
 
   return (
     <form className="flex h-full flex-col justify-between px-4 py-6" onSubmit={onSubmit}>
       <div className="space-y-6">
+        <InquiryDropdown category={category} onSelectCategory={onSelectCategory} />
         <Textfield
           {...form.register("title")}
           required
