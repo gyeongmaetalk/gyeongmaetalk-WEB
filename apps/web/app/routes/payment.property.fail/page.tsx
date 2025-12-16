@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@gyeongmaetalk/ui";
+
 import { Navigate, useNavigate, useSearchParams } from "react-router";
 
 import { errorToast } from "~/utils/toast";
@@ -26,9 +27,8 @@ export default function PropertyPaymentFailPage() {
 
   return (
     <section className="flex h-full flex-col items-center justify-center gap-2">
-      <Loader2 className="text-primary-normal size-10 animate-spin" />
+      <Spinner className="size-10" />
       <p>결제 실패 처리 중...</p>
     </section>
   );
 }
-

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@gyeongmaetalk/ui";
+
 import { useNavigate, useSearchParams } from "react-router";
 
 import { useUserStore } from "~/lib/zustand/user";
@@ -39,7 +40,7 @@ export default function RedirectPage() {
 
   return (
     <section className="flex h-full flex-col items-center justify-center gap-2">
-      <Loader2 className="text-primary-normal size-10 animate-spin" />
+      <Spinner className="size-10" />
       <p>로그인 중...</p>
     </section>
   );

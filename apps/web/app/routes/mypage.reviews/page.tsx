@@ -1,7 +1,6 @@
-import { Loader2 } from "lucide-react";
+import { SentinelSpinner, Spinner } from "@gyeongmaetalk/ui";
 
 import { Review, ReviewList } from "~/components/review";
-import SentinelSpinner from "~/components/sentinel-spinner";
 import { useGetMyReviews } from "~/lib/tanstack/query/review";
 
 export default function MyPageReviewsPage() {
@@ -17,7 +16,7 @@ export default function MyPageReviewsPage() {
   if (isLoading) {
     return (
       <div className="flex h-full items-center">
-        <Loader2 className="text-primary-normal mx-auto size-10 animate-spin" />
+        <Spinner className="mx-auto size-10" />
       </div>
     );
   }

@@ -1,6 +1,5 @@
 import { queryClient } from "@gyeongmaetalk/lib/tanstack";
-
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@gyeongmaetalk/ui";
 
 import { WithBackHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
@@ -25,7 +24,7 @@ export async function clientLoader() {
 export function HydrateFallback() {
   return (
     <main className="flex h-screen items-center">
-      <Loader2 className="text-primary-normal mx-auto size-10 animate-spin" />
+      <Spinner className="mx-auto size-10" />
     </main>
   );
 }

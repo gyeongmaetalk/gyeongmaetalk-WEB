@@ -1,11 +1,11 @@
-import { Loader2 } from "lucide-react";
+import { SentinelSpinner, Spinner } from "@gyeongmaetalk/ui";
+
 import { Navigate, useSearchParams } from "react-router";
 
 import ConsultantReviewCard from "~/components/card/consultant-review-card";
 import { WithBackHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import { Review, ReviewHeader, ReviewList } from "~/components/review";
-import SentinelSpinner from "~/components/sentinel-spinner";
 import { SortType } from "~/constants";
 import { useGetConsultantReviews } from "~/lib/tanstack/query/review";
 
@@ -31,7 +31,7 @@ const ConsultReviewsConsultantPage = () => {
 
   return (
     <PageLayout header={<WithBackHeader title={`${data.counselorInfo?.name || ""} 상담사 후기`} />}>
-      <section className="px-4 pb-6 pt-3">
+      <section className="px-4 pt-3 pb-6">
         <ConsultantReviewCard
           counselorName={data.counselorInfo?.name || ""}
           experience={data.counselorInfo?.experience || 0}
@@ -46,7 +46,7 @@ const ConsultReviewsConsultantPage = () => {
         />
         {isLoading ? (
           <div className="flex h-full items-center">
-            <Loader2 className="text-primary-normal mx-auto size-10 animate-spin" />
+            <Spinner className="mx-auto size-10" />
           </div>
         ) : (
           <ReviewList reviews={data.consultantReviews} />

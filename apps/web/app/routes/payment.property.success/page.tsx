@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
 import { queryClient } from "@gyeongmaetalk/lib/tanstack";
+import { Spinner } from "@gyeongmaetalk/ui";
 
-import { Loader2 } from "lucide-react";
 import { Navigate, useNavigate, useSearchParams } from "react-router";
 
 import { PROPERTY } from "~/constants";
@@ -49,9 +49,8 @@ export default function PropertyPaymentSuccessPage() {
 
   return (
     <section className="flex h-full flex-col items-center justify-center gap-2">
-      <Loader2 className="text-primary-normal size-10 animate-spin" />
+      <Spinner className="size-10" />
       <p>결제 확인 중...</p>
     </section>
   );
 }
-

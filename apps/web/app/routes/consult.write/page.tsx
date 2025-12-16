@@ -7,11 +7,12 @@ import {
   DragCarousel,
   DragCarouselItem,
   Label,
+  Spinner,
   Textarea,
 } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Camera, Loader2 } from "lucide-react";
+import { Camera } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Navigate, useNavigate, useSearchParams } from "react-router";
 
@@ -284,7 +285,7 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
       </PageLayout>
       {form.formState.isSubmitting && (
         <Modal className="flex flex-col items-center justify-center gap-7 bg-transparent">
-          <Loader2 className="size-20 animate-spin text-white" />
+          <Spinner className="size-20 text-white" />
           <Modal.Content className="font-heading1-bold text-white">
             리뷰를 {statusText}하고 있어요
           </Modal.Content>

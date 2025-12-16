@@ -6,7 +6,8 @@ import { cn } from "@gyeongmaetalk/utils";
 import { Slot } from "@radix-ui/react-slot";
 
 import { cva } from "class-variance-authority";
-import { Loader2 } from "lucide-react";
+
+import { Spinner } from "../spinner";
 
 interface ButtonProps extends React.ComponentProps<"button"> {
   /**
@@ -160,7 +161,7 @@ function Button({
   const isDisabled = disabled || loading;
 
   const childrenWithLoader = loading ? (
-    <Loader2 className={cn(iconSize[size ?? "default"], "animate-spin")} />
+    <Spinner className={iconSize[size ?? "default"]} />
   ) : (
     <>
       {LeftIcon && !iconOnly && <LeftIcon className={cn(iconSize[size ?? "default"])} />}

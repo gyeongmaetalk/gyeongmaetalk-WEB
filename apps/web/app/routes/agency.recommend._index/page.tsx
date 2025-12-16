@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@gyeongmaetalk/ui";
+
 import { Navigate, useSearchParams } from "react-router";
 
 import ConsultantReviewCard from "~/components/card/consultant-review-card";
@@ -62,7 +63,7 @@ const AgencyRecommendPage = () => {
       <StatusNav statusList={STATUS_LIST} status={status} />
       {isLoading ? (
         <div className="flex h-[calc(100%-200px)] items-center">
-          <Loader2 className="text-primary-normal mx-auto size-10 animate-spin" />
+          <Spinner className="mx-auto size-10" />
         </div>
       ) : data.length === 0 ? (
         <section className="mt-44 flex flex-col justify-center space-y-3">

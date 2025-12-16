@@ -1,6 +1,4 @@
-import { Accordion } from "@gyeongmaetalk/ui";
-
-import { Loader2 } from "lucide-react";
+import { Accordion, Spinner } from "@gyeongmaetalk/ui";
 
 import { useGetFaq } from "~/lib/tanstack/query/qna";
 
@@ -17,7 +15,7 @@ export default function QuestionsPage() {
         </div>
       ) : isLoading || !faq ? (
         <div className="flex h-full items-center">
-          <Loader2 className="text-primary-normal mx-auto size-10 animate-spin" />
+          <Spinner className="mx-auto size-10" />
         </div>
       ) : faq.length === 0 ? (
         <div className="flex h-full items-center">

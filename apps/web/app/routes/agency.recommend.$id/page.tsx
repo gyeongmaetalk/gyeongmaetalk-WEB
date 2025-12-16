@@ -1,7 +1,7 @@
-import { Badge } from "@gyeongmaetalk/ui";
+import { Badge, Spinner } from "@gyeongmaetalk/ui";
 import { formatPrice } from "@gyeongmaetalk/utils";
 
-import { Copy, Loader2 } from "lucide-react";
+import { Copy } from "lucide-react";
 import { Navigate, useParams } from "react-router";
 
 import Divider from "~/components/divider";
@@ -36,7 +36,7 @@ const AgencyRecommendDetailPage = () => {
   if (isLoading || !data) {
     return (
       <div className="flex h-screen items-center">
-        <Loader2 className="text-primary-normal mx-auto size-10 animate-spin" />
+        <Spinner className="mx-auto size-10" />
       </div>
     );
   }

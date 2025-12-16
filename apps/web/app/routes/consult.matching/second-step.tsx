@@ -1,9 +1,7 @@
 import { useState } from "react";
 
 import { queryClient } from "@gyeongmaetalk/lib/tanstack";
-import { Button } from "@gyeongmaetalk/ui";
-
-import { Loader2 } from "lucide-react";
+import { Button, Spinner } from "@gyeongmaetalk/ui";
 
 import Divider from "~/components/divider";
 import { Verified } from "~/components/icons";
@@ -147,7 +145,7 @@ const SecondStep = ({
               <>
                 <Divider className="bg-cool-neutral-97" />
                 {isLoading ? (
-                  <Loader2 className="text-primary-normal mx-auto animate-spin" />
+                  <Spinner className="mx-auto" />
                 ) : (
                   <TimeSelect
                     selectedDate={selectedDate}

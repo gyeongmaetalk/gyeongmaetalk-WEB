@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@gyeongmaetalk/ui";
 
 import { getReservedCounselData } from "~/services/counsel";
 
@@ -31,7 +31,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 export function HydrateFallback() {
   return (
     <main className="flex h-screen items-center">
-      <Loader2 className="text-primary-normal mx-auto size-10 animate-spin" />
+      <Spinner className="mx-auto size-10" />
     </main>
   );
 }

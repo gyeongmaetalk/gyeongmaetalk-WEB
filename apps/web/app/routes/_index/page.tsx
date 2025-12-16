@@ -1,8 +1,7 @@
 import { useScroll } from "@gyeongmaetalk/hooks";
-import { DragCarousel, DragCarouselItem } from "@gyeongmaetalk/ui";
+import { DragCarousel, DragCarouselItem, Spinner } from "@gyeongmaetalk/ui";
 import { cn } from "@gyeongmaetalk/utils";
 
-import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router";
 
 import homeBg from "~/assets/home-main.webp";
@@ -109,7 +108,7 @@ export default function HomePage() {
             <div className="flex flex-col gap-4 px-4">
               {isLoading ? (
                 <div className="flex h-full items-center justify-center py-10">
-                  <Loader2 className="text-primary-normal mx-auto size-10 animate-spin" />
+                  <Spinner className="mx-auto size-10" />
                 </div>
               ) : isError ? (
                 <div className="flex h-full items-center justify-center py-10">

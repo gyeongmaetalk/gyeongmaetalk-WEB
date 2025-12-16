@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-import { Loader2 } from "lucide-react";
+import { SentinelSpinner, Spinner } from "@gyeongmaetalk/ui";
+
 import { Link, useSearchParams } from "react-router";
 
 import homeBg from "~/assets/home-main.webp";
@@ -8,7 +9,6 @@ import { Back, Close } from "~/components/icons";
 import { WithBackHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import { Review, ReviewHeader, ReviewList } from "~/components/review";
-import SentinelSpinner from "~/components/sentinel-spinner";
 import { SortType } from "~/constants";
 import { useGetReviews } from "~/lib/tanstack/query/review";
 
@@ -74,7 +74,7 @@ const ConsultReviewsPage = () => {
         <ReviewHeader sort={sort} totalCount={reviews.length} />
         {isLoading ? (
           <div className="flex h-full items-center">
-            <Loader2 className="text-primary-normal mx-auto size-10 animate-spin" />
+            <Spinner className="mx-auto size-10" />
           </div>
         ) : isError ? (
           <div className="flex h-full items-center justify-center">

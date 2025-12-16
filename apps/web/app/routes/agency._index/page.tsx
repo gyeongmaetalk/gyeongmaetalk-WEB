@@ -1,4 +1,5 @@
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@gyeongmaetalk/ui";
+
 import { Navigate } from "react-router";
 
 import Divider from "~/components/divider";
@@ -15,7 +16,7 @@ const AgencyPage = () => {
   if (isLoading) {
     return (
       <div className="flex h-full items-center">
-        <Loader2 className="text-primary-normal mx-auto size-10 animate-spin" />
+        <Spinner className="mx-auto size-10" />
       </div>
     );
   }

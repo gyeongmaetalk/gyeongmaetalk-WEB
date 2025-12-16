@@ -1,6 +1,6 @@
-import { Button } from "@gyeongmaetalk/ui";
+import { Button, Spinner } from "@gyeongmaetalk/ui";
 
-import { Info, Loader2 } from "lucide-react";
+import { Info } from "lucide-react";
 import { useNavigate } from "react-router";
 
 import ConsultInfoCard from "~/components/card/consult-info-card";
@@ -32,7 +32,7 @@ const ConsultPage = () => {
     return (
       <PageLayout header={<WithLeftTitleHeader title="무료상담" />} showNav>
         <div className="flex h-full flex-col items-center justify-center">
-          <Loader2 className="text-primary-normal mx-auto size-10 animate-spin" />
+          <Spinner className="mx-auto size-10" />
         </div>
       </PageLayout>
     );

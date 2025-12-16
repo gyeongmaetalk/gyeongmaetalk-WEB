@@ -1,6 +1,5 @@
-import { Button, DragCarousel, DragCarouselItem } from "@gyeongmaetalk/ui";
+import { Button, DragCarousel, DragCarouselItem, Spinner } from "@gyeongmaetalk/ui";
 
-import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router";
 
 import ConsultantReviewCard from "~/components/card/consultant-review-card";
@@ -27,7 +26,7 @@ const ConsultReviewsDetailPage = ({ reviewId }: ConsultReviewsDetailPageProps) =
       <PageLayout header={<WithBackHeader title="상담 상세" />} withFloating>
         {isLoading ? (
           <div className="flex h-full">
-            <Loader2 className="text-primary-normal mx-auto size-10 animate-spin self-center" />
+            <Spinner className="mx-auto size-10 self-center" />
           </div>
         ) : isError ? (
           <div className="flex h-full items-center justify-center">
