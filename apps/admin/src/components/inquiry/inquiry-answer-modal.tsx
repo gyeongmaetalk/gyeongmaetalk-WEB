@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { InquiryStatus } from "@/constants/inquiry";
-import type { Inquiry } from "@/types";
+import { QNA } from "@/constants/qna";
+import { useAnswerQna } from "@/lib/tanstack/mutation/qna";
+import type { QnaListItem } from "@/types/qna";
+import { errorToast, successToast } from "@/utils/toast";
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import {
   Button,
   Sheet,
@@ -15,11 +18,11 @@ import {
 } from "@gyeongmaetalk/ui";
 
 interface InquiryAnswerModalProps {
-  inquiry: Inquiry | null;
+  inquiry: QnaListItem | null;
   isOpen: boolean;
   onClose: () => void;
 }
-
+// 답변하는 API 안되는거 확인하기
 function formatDate(date: string) {
   return new Date(date).toLocaleString("ko-KR", {
     year: "numeric",
@@ -32,24 +35,33 @@ function formatDate(date: string) {
 }
 
 export default function InquiryAnswerModal({ inquiry, isOpen, onClose }: InquiryAnswerModalProps) {
-  const [answer, setAnswer] = useState(inquiry?.answerContent || "");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [answer, setAnswer] = useState("");
 
-  const onSaveAnswer = async () => {
-    if (!answer.trim()) {
-      return;
+  const { mutate: answerQna, isPending: isSubmitting } = useAnswerQna({
+    onSuccess: () => {
+      successToast("답변이 저장되었어요.");
+      queryClient.invalidateQueries({ queryKey: [QNA.LIST] });
+      onClose();
+    },
+    onError: (error) => {
+      errorToast("질문 답변에 실패했어요.");
+      console.error(error);
+    },
+  });
+
+  useEffect(() => {
+    if (inquiry) {
+      setAnswer(inquiry.answerContent || "");
     }
-
-    setIsSubmitting(true);
-    // TODO: API 호출
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setIsSubmitting(false);
-    onClose();
-  };
+  }, [inquiry]);
 
   if (!inquiry) {
     return null;
   }
+
+  const onSaveAnswer = () => {
+    answerQna({ qnaId: inquiry.id, content: answer });
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -62,32 +74,30 @@ export default function InquiryAnswerModal({ inquiry, isOpen, onClose }: Inquiry
           <div className="space-y-2">
             <div className="text-sm font-medium">유저 정보</div>
             <div className="text-muted-foreground text-sm">
-              <div>이름: {inquiry.userName}</div>
-              <div>전화번호: {inquiry.userPhone}</div>
+              <div>이름: {inquiry.name}</div>
+              <div>전화번호: {inquiry.cellPhone}</div>
             </div>
           </div>
 
           <div className="space-y-2">
             <div className="text-sm font-medium">제목</div>
-            <div className="text-sm">{inquiry.title}</div>
+            <div className="text-sm">{inquiry.qnaTitle}</div>
           </div>
 
           <div className="space-y-2">
             <div className="text-sm font-medium">내용</div>
-            <div className="text-sm whitespace-pre-wrap">{inquiry.content}</div>
+            <div className="text-sm whitespace-pre-wrap">{inquiry.qnaContent}</div>
           </div>
 
           <div className="space-y-2">
             <div className="text-sm font-medium">문의 일시</div>
-            <div className="text-muted-foreground text-sm">{formatDate(inquiry.createdAtIso)}</div>
+            <div className="text-muted-foreground text-sm">{formatDate(inquiry.createdAt)}</div>
           </div>
 
-          {inquiry.status === InquiryStatus.ANSWERED && inquiry.answeredAtIso && (
+          {inquiry.qnaStatus === "ANSWERED" && inquiry.answerTime && (
             <div className="space-y-2">
               <div className="text-sm font-medium">답변 일시</div>
-              <div className="text-muted-foreground text-sm">
-                {formatDate(inquiry.answeredAtIso)}
-              </div>
+              <div className="text-muted-foreground text-sm">{formatDate(inquiry.answerTime)}</div>
             </div>
           )}
 
@@ -110,7 +120,7 @@ export default function InquiryAnswerModal({ inquiry, isOpen, onClose }: Inquiry
           <Button variant="outlined" onClick={onClose} disabled={isSubmitting}>
             취소
           </Button>
-          <Button onClick={onSaveAnswer} disabled={isSubmitting || !answer.trim()}>
+          <Button onClick={onSaveAnswer} disabled={isSubmitting}>
             {isSubmitting ? "저장 중..." : "저장"}
           </Button>
         </SheetFooter>

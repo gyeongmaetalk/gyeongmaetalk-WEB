@@ -1,9 +1,9 @@
-import type { InquiryStatus } from "@/constants/inquiry";
 import { INQUIRY_STATUS_LABEL } from "@/constants/inquiry";
+import type { QnaStatus } from "@/types/qna";
 import { cn } from "@gyeongmaetalk/utils";
 
 interface InquiryStatusChipProps {
-  status: InquiryStatus;
+  status: QnaStatus;
 }
 
 export default function InquiryStatusChip({ status }: InquiryStatusChipProps) {
@@ -24,4 +24,3 @@ export default function InquiryStatusChip({ status }: InquiryStatusChipProps) {
     </span>
   );
 }
-

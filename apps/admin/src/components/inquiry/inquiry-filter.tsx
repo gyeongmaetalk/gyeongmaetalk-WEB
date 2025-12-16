@@ -1,10 +1,11 @@
 "use client";
 
 import { INQUIRY_STATUS_LABEL, InquiryStatus } from "@/constants/inquiry";
+import type { QnaStatus } from "@/types/qna";
 import { Button, Textfield } from "@gyeongmaetalk/ui";
 
 export interface InquiryFilterValue {
-  status?: InquiryStatus;
+  status?: QnaStatus;
   startDate?: string;
   endDate?: string;
 }
@@ -80,4 +81,3 @@ export default function InquiryFilter({ value, onChange }: InquiryFilterProps) {
     </section>
   );
 }
-

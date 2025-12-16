@@ -41,8 +41,8 @@ const refreshAccessToken = async (): Promise<void> => {
   return;
 };
 
-export const api = instance.extend({
-  prefixUrl: adminBaseUrl,
+export const baseApi = instance.extend({
+  prefixUrl: baseUrl,
   credentials: "include",
   hooks: {
     beforeRequest: [
@@ -70,4 +70,8 @@ export const api = instance.extend({
       },
     ],
   },
+});
+
+export const api = baseApi.extend({
+  prefixUrl: adminBaseUrl,
 });

@@ -3,9 +3,9 @@
 import { useMemo, useState } from "react";
 
 import { INQUIRY_STATUS_LABEL, InquiryStatus } from "@/constants/inquiry";
-import { mockInquiries } from "@/mock/inquiries";
-import type { Inquiry } from "@/types";
-import { Button } from "@gyeongmaetalk/ui";
+import { useGetQnaList } from "@/lib/tanstack/query/qna";
+import type { QnaListItem } from "@/types/qna";
+import { Button, SentinelSpinner } from "@gyeongmaetalk/ui";
 import { cn } from "@gyeongmaetalk/utils";
 
 import InquiryAnswerModal from "./inquiry-answer-modal";
@@ -13,9 +13,6 @@ import InquiryFilter, { type InquiryFilterValue } from "./inquiry-filter";
 import InquiryStatusChip from "./inquiry-status-chip";
 
 const STATUS = [InquiryStatus.PENDING, InquiryStatus.ANSWERED];
-
-// 추후 tanstack query로 교체
-const isLoading = false;
 
 function formatDate(date: string) {
   return new Date(date).toLocaleString("ko-KR", {
@@ -29,20 +26,28 @@ function formatDate(date: string) {
 }
 
 export default function InquiryTable() {
+  const {
+    data: qnaList = [],
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useGetQnaList();
+
   const [filters, setFilters] = useState<InquiryFilterValue>({
     status: undefined,
     startDate: undefined,
     endDate: undefined,
   });
 
-  const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
+  const [selectedInquiry, setSelectedInquiry] = useState<QnaListItem | null>(null);
   const [isAnswerModalOpen, setIsAnswerModalOpen] = useState(false);
 
   const filteredInquiries = useMemo(() => {
-    const inStatus = (i: Inquiry) => !filters.status || filters.status === i.status;
-    const inDate = (i: Inquiry) => {
+    const inStatus = (i: QnaListItem) => !filters.status || filters.status === i.qnaStatus;
+    const inDate = (i: QnaListItem) => {
       if (!filters.startDate && !filters.endDate) return true;
-      const d = new Date(i.createdAtIso);
+      const d = new Date(i.createdAt);
       if (filters.startDate) {
         const s = new Date(filters.startDate + "T00:00:00");
         if (d < s) return false;
@@ -53,10 +58,10 @@ export default function InquiryTable() {
       }
       return true;
     };
-    return mockInquiries.filter((i) => inStatus(i) && inDate(i));
-  }, [filters]);
+    return qnaList.filter((i) => inStatus(i) && inDate(i));
+  }, [filters, qnaList]);
 
-  const onOpenAnswerModal = (inquiry: Inquiry) => {
+  const onOpenAnswerModal = (inquiry: QnaListItem) => {
     setSelectedInquiry(inquiry);
     setIsAnswerModalOpen(true);
   };
@@ -121,26 +126,24 @@ export default function InquiryTable() {
                 )}
                 {!isLoading &&
                   filteredInquiries.map((i) => (
-                    <tr key={i.inquiryId} className="border-t-cool-neutral-95 border-t">
+                    <tr key={i.id} className="border-t-cool-neutral-95 border-t">
                       <td className="px-4 py-3">
                         <div className="flex flex-col">
-                          <span className="font-medium">{i.userName}</span>
-                          <span className="text-muted-foreground text-xs">{i.userPhone}</span>
+                          <span className="font-medium">{i.name}</span>
+                          <span className="text-muted-foreground text-xs">{i.cellPhone}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3">{i.title}</td>
+                      <td className="px-4 py-3">{i.qnaTitle}</td>
                       <td className="px-4 py-3">
-                        <div className="max-w-xs truncate" title={i.content}>
-                          {i.content}
+                        <div className="max-w-xs truncate" title={i.qnaContent}>
+                          {i.qnaContent}
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <InquiryStatusChip status={i.status} />
+                        <InquiryStatusChip status={i.qnaStatus} />
                       </td>
-                      <td className="px-4 py-3">{formatDate(i.createdAtIso)}</td>
-                      <td className="px-4 py-3">
-                        {i.answeredAtIso ? formatDate(i.answeredAtIso) : "-"}
-                      </td>
+                      <td className="px-4 py-3">{formatDate(i.createdAt)}</td>
+                      <td className="px-4 py-3">{i.answerTime ? formatDate(i.answerTime) : "-"}</td>
                       <td className="px-4 py-3">
                         <Button
                           size="sm"
@@ -148,13 +151,20 @@ export default function InquiryTable() {
                           aria-label="답변하기"
                           onClick={() => onOpenAnswerModal(i)}
                         >
-                          {i.status === InquiryStatus.PENDING ? "답변하기" : "답변보기"}
+                          {i.qnaStatus === "PENDING" ? "답변하기" : "답변보기"}
                         </Button>
                       </td>
                     </tr>
                   ))}
               </tbody>
             </table>
+            <SentinelSpinner
+              fetchNextPage={fetchNextPage}
+              hasNextPage={hasNextPage}
+              isLoading={isLoading}
+              isFetchingNextPage={isFetchingNextPage}
+              className="my-5"
+            />
           </div>
         </div>
       </div>
