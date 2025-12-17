@@ -33,8 +33,8 @@ const ConsultMatchingPage = () => {
         <SecondStep
           consultant={state}
           isChangeMode={isChangeMode}
-          counselDate={counselStatus ? counselStatus.info.counselDate : null}
-          counselTime={counselStatus ? counselStatus.info.counselTime : null}
+          counselDate={counselStatus?.info?.counselDate ?? null}
+          counselTime={counselStatus?.info?.counselTime ?? null}
           onChangeMode={setMode}
           setReservationResult={setReservationResult}
         />
