@@ -11,12 +11,22 @@ interface ConsultantReviewCardProps {
   counselorImage: string;
 }
 
+const getConsultStatus = (date: string | undefined): string => {
+  if (!date) return "상담 전";
+  const consultDate = new Date(date);
+  const now = new Date();
+
+  return consultDate.getTime() <= now.getTime() ? "상담완료" : "상담 전";
+};
+
 const ConsultantReviewCard = ({
   date,
   counselorName,
   experience,
   counselorImage,
 }: ConsultantReviewCardProps) => {
+  const consultStatus = getConsultStatus(date);
+
   return (
     <div className="bg-cool-neutral-99 space-y-2.5 rounded-lg p-3">
       <div className="flex items-center gap-3">
@@ -41,7 +51,7 @@ const ConsultantReviewCard = ({
           <div className="flex items-center gap-1">
             <p className="font-caption1-bold w-12">진행일</p>
             <p className="font-label2-regular text-label-alternative">
-              {formatDate({ date, withTime: true, shortYear: true })} 상담완료
+              {formatDate({ date, withTime: true, shortYear: true })} {consultStatus}
             </p>
           </div>
         </>
