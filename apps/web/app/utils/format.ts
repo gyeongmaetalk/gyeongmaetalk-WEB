@@ -43,11 +43,6 @@ export const getTimeDisplay = (date: string) => {
 
   const suffix = isFuture ? "후" : "전";
 
-  // 어제/내일 (24시간 ~ 48시간)
-  if (diffHours >= 24 && diffHours <= 48) {
-    return isFuture ? "내일" : "어제";
-  }
-
   // 하루 이내 (24시간 이내)
   if (diffHours < 24) {
     if (diffMinutes < 60) {
