@@ -33,8 +33,8 @@ const ConsultMatchingPage = () => {
         <SecondStep
           consultant={state}
           isChangeMode={isChangeMode}
-          counselDate={counselStatus?.info.counselDate ?? null}
-          counselTime={counselStatus?.info.counselTime ?? null}
+          counselDate={counselStatus ? counselStatus.info.counselDate : null}
+          counselTime={counselStatus ? counselStatus.info.counselTime : null}
           onChangeMode={setMode}
           setReservationResult={setReservationResult}
         />
@@ -42,7 +42,7 @@ const ConsultMatchingPage = () => {
     case "complete":
       return <LastStep consultant={state} reservationResult={reservationResult} />;
     default:
-      return <FirstStep consultant={state} name={user.name} onChangeMode={setMode} />;
+      return <FirstStep consultant={state} name={user.name || ""} onChangeMode={setMode} />;
   }
 };
 
