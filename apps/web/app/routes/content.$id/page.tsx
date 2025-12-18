@@ -18,7 +18,7 @@ const ContentDetailPage = ({ id }: ContentDetailPageProps) => {
 
   return (
     <>
-      <PageLayout header={<WithBackHeader onShare={() => {}} />} withFloating>
+      <PageLayout header={<WithBackHeader />} withFloating>
         <section className="flex flex-col gap-4 px-4 pt-6 pb-12">
           <h1 className="font-title3-bold text-label-strong whitespace-pre-line">
             {content?.title}

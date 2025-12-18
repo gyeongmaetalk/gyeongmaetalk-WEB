@@ -40,7 +40,7 @@ const contents = [
 
 export default function HomePage() {
   const { data: counselStatus } = useCheckCounselStatus();
-  const { data: reviews = [], isLoading, isError } = useGetReviews(SortType.LATEST);
+  const { data: reviews = [], isLoading, isError } = useGetReviews(SortType.LATEST, "5");
 
   const navigate = useNavigate();
 

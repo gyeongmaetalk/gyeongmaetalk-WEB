@@ -25,8 +25,9 @@ export const getConsultantReviews = async (props: {
 export const getReviews = async (props: {
   type: SortType;
   page: string;
+  size: string;
 }): Promise<PaginationResponse<ReviewListResponse>> => {
-  const searchParams = new URLSearchParams({ ...props, size: "10" });
+  const searchParams = new URLSearchParams(props);
   return api.get(`reviews/list`, { searchParams }).json();
 };
 

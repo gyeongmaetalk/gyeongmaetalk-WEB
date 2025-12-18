@@ -29,10 +29,10 @@ export const useGetConsultantReviews = ({
   });
 };
 
-export const useGetReviews = (type: SortType) => {
+export const useGetReviews = (type: SortType, size: string = "10") => {
   return useInfiniteQuery({
     queryKey: [REVIEW.REVIEWS, type],
-    queryFn: ({ pageParam = 0 }) => getReviews({ type, page: pageParam.toString() }),
+    queryFn: ({ pageParam = 0 }) => getReviews({ type, page: pageParam.toString(), size }),
     getNextPageParam: calculatePaigination,
     initialPageParam: 0,
     select: (data) => data.pages.flatMap((page) => page.result.reviews),

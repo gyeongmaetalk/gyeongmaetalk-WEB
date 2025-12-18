@@ -31,36 +31,37 @@ export const formatArea = (pyeong: number): string => {
 export const getTimeDisplay = (date: string) => {
   const now = new Date();
   const createDate = new Date(date);
-  const diffTime = createDate.getTime() - now.getTime();
-  const isFuture = diffTime > 0;
-  const absDiffTime = Math.abs(diffTime);
 
-  const diffMinutes = Math.floor(absDiffTime / (1000 * 60));
-  const diffHours = Math.floor(absDiffTime / (1000 * 60 * 60));
-  const diffDays = Math.floor(absDiffTime / (1000 * 60 * 60 * 24));
-  const diffMonths = Math.floor(diffDays / 30);
-  const diffYears = Math.floor(diffDays / 365);
-
+  const isFuture = createDate.getTime() > now.getTime();
   const suffix = isFuture ? "후" : "전";
 
-  // 하루 이내 (24시간 이내)
+  const diffMinutes = Math.abs(createDate.getMinutes() - now.getMinutes());
+  const diffHours = Math.abs(createDate.getHours() - now.getHours());
+  const diffDays = Math.abs(createDate.getDate() - now.getDate());
+  const diffMonths = Math.abs(createDate.getMonth() - now.getMonth());
+  const diffYears = Math.abs(createDate.getFullYear() - now.getFullYear());
+
+  if (diffMinutes === 0) {
+    return "방금 전";
+  }
+
+  if (diffMinutes < 60) {
+    return `${diffMinutes}분 ${suffix}`;
+  }
+
   if (diffHours < 24) {
-    if (diffMinutes < 60) {
-      return `${diffMinutes}분 ${suffix}`;
-    }
     return `${diffHours}시간 ${suffix}`;
   }
 
-  // 그 이전/이후 시간
-  if (diffYears >= 1) {
-    return `${diffYears}년 ${suffix}`;
+  if (diffDays < 30) {
+    return `${diffDays}일 ${suffix}`;
   }
 
-  if (diffMonths >= 1) {
+  if (diffMonths < 12) {
     return `${diffMonths}달 ${suffix}`;
   }
 
-  return `${diffDays}일 ${suffix}`;
+  return `${diffYears}년 ${suffix}`;
 };
 
 export const formatCounselDate = (dateString: string) => {
