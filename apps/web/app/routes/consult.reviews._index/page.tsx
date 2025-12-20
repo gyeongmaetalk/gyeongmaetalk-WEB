@@ -9,24 +9,23 @@ import { Back, Close } from "~/components/icons";
 import { WithBackHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import { Review, ReviewHeader, ReviewList } from "~/components/review";
-import { SortType } from "~/constants";
+import { CounselStatus, SortType } from "~/constants";
+import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
 import { useGetReviews } from "~/lib/tanstack/query/review";
 
-const reservationStatus: "reservation" | "before-consult" | "after-consult" = "reservation";
-
-const getReservationText = (status: "reservation" | "before-consult" | "after-consult") => {
-  if (status === "reservation") return null;
-  if (status === "before-consult")
+const getReservationText = (status: CounselStatus) => {
+  if (status === CounselStatus.NONE || status === CounselStatus.COUNSEL_BEFORE) {
     return {
       title: "전문가 상담 무료 혜택을 드려요",
       toText: "상담 신청하러 가기",
       to: "/onboarding?mode=apply",
     };
+  }
 
   return {
     title: "나와 딱 맞는 매물을 둘러 보세요",
     toText: "매물 추천받기",
-    to: "/agency/recommend",
+    to: status === CounselStatus.COUNSEL_AFTER ? "/agency" : "/agency/recommend",
   };
 };
 
@@ -34,8 +33,11 @@ const ConsultReviewsPage = () => {
   const [searchParams] = useSearchParams();
   const sort = searchParams.get("sort") || SortType.LATEST;
 
-  const reservationText = getReservationText(reservationStatus);
-  const [isShowModal, setIsShowModal] = useState(Boolean(reservationText));
+  const { data: reservedCounselData } = useCheckCounselStatus();
+
+  const reservationText = getReservationText(reservedCounselData?.status || CounselStatus.NONE);
+
+  const [isShowModal, setIsShowModal] = useState(true);
 
   const {
     data: reviews = [],

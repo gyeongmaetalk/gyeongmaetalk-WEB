@@ -20,7 +20,7 @@ export const getStatus = (status: CounselStatus) => {
         description: "검증된 경매 전문가와 1:1로 시작하세요.",
         hasButton: true,
         buttonText: "무료 상담 신청하기",
-        buttonLink: "/login",
+        buttonLink: "/consult/apply",
       };
     case CounselStatus.COUNSEL_BEFORE:
       return {
