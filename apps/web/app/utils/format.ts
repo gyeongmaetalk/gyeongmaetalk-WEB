@@ -86,8 +86,7 @@ export const formatCounselTime = (timeString: string) => {
 };
 
 export const maskUserName = (name: string): string => {
-  if (name.length <= 4) return name;
-  const visiblePart = name.slice(0, 4);
-  const maskedPart = "*".repeat(name.length - 4);
+  const visiblePart = name.slice(0, 1);
+  const maskedPart = "*".repeat(name.length - 1);
   return visiblePart + maskedPart;
 };

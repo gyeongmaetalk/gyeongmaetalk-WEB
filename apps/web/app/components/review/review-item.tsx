@@ -37,13 +37,15 @@ const ReviewItem = (props: ReviewItemProps) => {
         <p className="font-label1-normal-medium line-clamp-3 py-2.5 whitespace-pre-line">
           {props.content}
         </p>
-        <div className="size-20 shrink-0 rounded-[12px]">
-          <Image
-            src={props.thumbnail}
-            alt="리뷰 이미지"
-            className="w-full rounded-[12px] object-cover"
-          />
-        </div>
+        {props.thumbnail && (
+          <div className="size-20 shrink-0 rounded-[12px]">
+            <Image
+              src={props.thumbnail}
+              alt="리뷰 이미지"
+              className="w-full rounded-[12px] object-cover"
+            />
+          </div>
+        )}
       </Link>
     </div>
   );

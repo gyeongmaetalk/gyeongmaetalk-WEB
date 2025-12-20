@@ -31,7 +31,7 @@ export const useGetConsultantReviews = ({
 
 export const useGetReviews = (type: SortType, size: string = "10") => {
   return useInfiniteQuery({
-    queryKey: [REVIEW.REVIEWS, type],
+    queryKey: [REVIEW.REVIEWS, type, size],
     queryFn: ({ pageParam = 0 }) => getReviews({ type, page: pageParam.toString(), size }),
     getNextPageParam: calculatePaigination,
     initialPageParam: 0,

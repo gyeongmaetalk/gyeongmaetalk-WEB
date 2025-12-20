@@ -99,7 +99,6 @@ export default function HomePage() {
               ))}
             </DragCarousel>
           </SectionField>
-
           <SectionField
             title={HOME_SECTION_TITLES.USER_REVIEWS}
             viewMore
@@ -117,13 +116,7 @@ export default function HomePage() {
                   </p>
                 </div>
               ) : reviews.length > 0 ? (
-                reviews.map((review) => (
-                  <ReviewPreview
-                    key={review.reviewId}
-                    {...review}
-                    onClick={() => navigate(`/consult/reviews/${review.reviewId}`)}
-                  />
-                ))
+                reviews.map((review) => <ReviewPreview key={review.reviewId} {...review} />)
               ) : (
                 <div className="flex h-full items-center justify-center py-10">
                   <p className="font-label1-normal-medium text-label-neutral">리뷰가 없어요.</p>
