@@ -52,7 +52,7 @@ const TermsOfServicePage = () => {
         <li>
           회사는 원칙적으로 이용자의 이용신청을 승낙합니다. 다만, 아래 각 호에 해당하는 경우에는
           승낙을 거부하거나 서비스 이용을 제한할 수 있습니다.
-          <ol className="ml-4 mt-1 list-inside list-[lower-alpha] space-y-1 break-keep">
+          <ol className="mt-1 ml-4 list-inside list-[lower-alpha] space-y-1 break-keep">
             <li>이용신청 내용에 허위 사실을 기재한 경우</li>
             <li>타인의 정보 또는 명의를 도용한 경우</li>
             <li>본 약관에서 규정한 이용 제한 사유에 해당하는 경우</li>
@@ -69,7 +69,7 @@ const TermsOfServicePage = () => {
       <ol className="font-label1-normal-regular text-label-neutral list-inside list-decimal space-y-2 break-keep">
         <li>
           회사는 회원에게 다음과 같은 서비스를 제공합니다.
-          <ol className="ml-4 mt-1 list-inside list-[lower-alpha] space-y-1 break-keep">
+          <ol className="mt-1 ml-4 list-inside list-[lower-alpha] space-y-1 break-keep">
             <li>부동산 경매 물건 정보 제공 (대법원 공개 자료 및 자체 가공 정보)</li>
             <li>회원과 경매지도사의 매칭 및 연결</li>
             <li>경매 물건 대행 의뢰 시스템 제공</li>
@@ -152,7 +152,7 @@ const TermsOfServicePage = () => {
       <ol className="font-label1-normal-regular text-label-neutral list-inside list-decimal space-y-2 break-keep">
         <li>
           회원은 다음 행위를 하여서는 안 됩니다.
-          <ol className="ml-4 mt-1 list-inside list-[lower-alpha] space-y-1 break-keep">
+          <ol className="mt-1 ml-4 list-inside list-[lower-alpha] space-y-1 break-keep">
             <li>허위 정보를 기재하거나 타인의 정보를 도용하는 행위</li>
             <li>회사의 서비스를 부정한 방법으로 이용하거나 회사의 업무를 방해하는 행위</li>
             <li>기타 관련 법령이나 본 약관에 위배되는 행위</li>
@@ -190,6 +190,67 @@ const TermsOfServicePage = () => {
         <li>본 약관의 해석 및 회원 간에 발생한 분쟁에 대해서는 대한민국의 법률을 적용합니다.</li>
         <li>
           서비스 이용과 관련하여 분쟁이 발생한 경우, 소송의 관할 법원은 민사소송법에 따릅니다.
+        </li>
+      </ol>
+      <Divider className="bg-cool-neutral-95 my-4" />
+
+      <h1 className="font-body1-normal-bold mb-2">제 13조 (청약철회 및 서비스 이용료의 환불)</h1>
+      <div className="font-label1-normal-regular text-label-neutral mb-4 break-keep">
+        본 조항은 「전자상거래 등에서의 소비자보호에 관한 법률」 등 관련 법령에 의거하여 회사가
+        제공하는 서비스의 환불 및 청약철회 기준을 규정합니다.
+      </div>
+      <ol className="font-label1-normal-regular text-label-neutral list-inside list-decimal space-y-2 break-keep">
+        <li>
+          기본 매칭 서비스 (300,000원)
+          <ol className="mt-1 ml-4 list-inside list-[lower-alpha] space-y-1 break-keep">
+            <li>
+              청약철회 기간: 회원은 &apos;경매지도사 매칭 서비스&apos;를 결제한 날로부터 14일 이내에
+              회사에 청약철회(환불)를 요청할 수 있습니다.
+            </li>
+            <li>
+              환불 제한 조건: 위 1항의 기간 이내라 하더라도, 다음 각 호의 어느 하나에 해당하는 경우
+              청약철회가 제한될 수 있습니다.
+              <ol className="mt-1 ml-4 list-inside list-[lower-roman] space-y-1 break-keep">
+                <li>
+                  회원이 경매지도사로부터 매물 리스트를 수령하고, 그중 특정 매물의 상세 내용을
+                  확인하기 위해 별도의 정보 이용료(30,000원)를 결제한 경우.
+                </li>
+                <li>
+                  경매지도사와의 실질적인 개별 상담 및 맞춤형 컨설팅이 개시되어 서비스의 고유한
+                  가치가 훼손된 경우.
+                </li>
+              </ol>
+            </li>
+            <li>
+              환불 금액: 청약철회 조건 충족 시 회사는 회원이 결제한 대금 전액을 환불합니다. 단, 이미
+              서비스가 일부 이행된 경우 회사는 일정 비율의 위약금을 공제할 수 있습니다.
+            </li>
+          </ol>
+        </li>
+        <li>
+          매물 상세 정보 이용료 (30,000원)
+          <ol className="mt-1 ml-4 list-inside list-[lower-alpha] space-y-1 break-keep">
+            <li>
+              청약철회 제한: 본 서비스는 결제와 동시에 디지털 콘텐츠(매물 상세 정보) 제공이 개시되는
+              서비스입니다. 「전자상거래 등에서의 소비자보호에 관한 법률」 제17조 제2항에 의거하여,
+              상세 내용을 확인하기 위해 결제를 완료한 건에 대해서는 청약철회 및 환불이 엄격히
+              제한됩니다.
+            </li>
+          </ol>
+        </li>
+        <li>
+          환불 절차
+          <ol className="mt-1 ml-4 list-inside list-[lower-alpha] space-y-1 break-keep">
+            <li>회원은 앱 내 [1:1 문의]를 통해 환불 의사를 표시해야 합니다.</li>
+            <li>
+              회사는 환불 요청을 접수한 날로부터 3영업일 이내에 대금의 결제와 동일한 방법으로 결제
+              대금을 환불하며, 동일한 방법으로 환불이 불가능한 경우 이를 사전에 고지합니다.
+            </li>
+            <li>
+              서비스 중도 해지로 인한 환불 시, 결제 수단에 따른 결제 대행 수수료 등이 공제될 수
+              있습니다.
+            </li>
+          </ol>
         </li>
       </ol>
 
