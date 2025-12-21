@@ -3,30 +3,25 @@
 import { PAYMENT_TYPE_LABEL, PaymentType } from "@/constants/payment";
 import { Button, Textfield } from "@gyeongmaetalk/ui";
 
-export interface PaymentFilterValue {
-  type?: PaymentType;
-  startDate?: string;
-  endDate?: string;
-}
+import type { PaymentFilterValue } from "./payment-table";
 
 interface PaymentFilterProps {
   value: PaymentFilterValue;
   onChange: (next: PaymentFilterValue) => void;
 }
 
-const maxDate = new Date().toISOString().split("T")[0];
+const today = new Date().toISOString().split("T")[0];
 
-const TYPES = [PaymentType.SUBSCRIPTION, PaymentType.PAYMENT];
+const TYPES = [PaymentType.SUBSCRIPTION, PaymentType.PROPERTY];
 
 export default function PaymentFilter({ value, onChange }: PaymentFilterProps) {
   const onSelectType = (type: PaymentType) => {
-    // 이미 선택된 타입을 클릭하면 해제, 다른 타입을 클릭하면 선택
-    const nextType = value.type === type ? undefined : type;
-    onChange({ ...value, type: nextType });
+    if (type === value.paymentType) return;
+    onChange({ ...value, paymentType: type });
   };
 
   const onResetFilters = () => {
-    onChange({ type: undefined, startDate: undefined, endDate: undefined });
+    onChange({ paymentType: PaymentType.SUBSCRIPTION, startDate: today, endDate: today });
   };
 
   return (
@@ -42,7 +37,7 @@ export default function PaymentFilter({ value, onChange }: PaymentFilterProps) {
               key={t}
               aria-label={`결제 타입 ${PAYMENT_TYPE_LABEL[t]}`}
               size="md"
-              variant={value.type === t ? "default" : "outlined"}
+              variant={value.paymentType === t ? "default" : "outlined"}
               onClick={() => onSelectType(t)}
             >
               {PAYMENT_TYPE_LABEL[t]}
@@ -67,7 +62,7 @@ export default function PaymentFilter({ value, onChange }: PaymentFilterProps) {
             id="end-date"
             aria-label="종료 날짜"
             type="date"
-            max={maxDate}
+            max={today}
             value={value.endDate ?? ""}
             onChange={(e) => onChange({ ...value, endDate: e.target.value })}
             className="text-xs"

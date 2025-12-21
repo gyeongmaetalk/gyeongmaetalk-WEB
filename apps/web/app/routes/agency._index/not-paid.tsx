@@ -30,7 +30,7 @@ export default function NotPaid({ info }: NotPaidProps) {
         </p>
       </div>
       <ConsultantReviewCard
-        date={info.counselDate}
+        date={`${info.counselDate}T${info.counselTime}`}
         counselorName={info.counselorName}
         experience={info.experience}
         counselorImage={info.counselorImage}

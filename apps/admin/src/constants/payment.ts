@@ -1,6 +1,6 @@
 export enum PaymentType {
   SUBSCRIPTION = "SUBSCRIPTION",
-  PAYMENT = "PAYMENT",
+  PROPERTY = "PROPERTY",
 }
 
 export enum PaymentStatus {
@@ -18,14 +18,7 @@ export enum PaymentMethod {
 
 export const PAYMENT_TYPE_LABEL = {
   [PaymentType.SUBSCRIPTION]: "구독",
-  [PaymentType.PAYMENT]: "결제",
-};
-
-export const PAYMENT_METHOD_LABEL = {
-  [PaymentMethod.CARD]: "카드",
-  [PaymentMethod.BANK_TRANSFER]: "계좌이체",
-  [PaymentMethod.VIRTUAL_ACCOUNT]: "가상계좌",
-  [PaymentMethod.MOBILE]: "휴대폰",
+  [PaymentType.PROPERTY]: "결제",
 };
 
 export const PAYMENT_STATUS_LABEL = {
@@ -44,4 +37,8 @@ export const PAYMENT_STATUS_LABEL = {
     wrap: "bg-red-95 text-red-30 border-red-90 ring-red-90",
     dot: "bg-red-50",
   },
+};
+
+export const PAYMENT = {
+  LIST: "payment-list",
 };

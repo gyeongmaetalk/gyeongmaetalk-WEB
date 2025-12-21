@@ -35,7 +35,7 @@ export default function CounselList({ filters }: CounselListProps) {
     <>
       <div>
         {counsels.length === 0 ? (
-          <p className="text-muted-foreground py-5 text-center text-sm">상담 내역이 없습니다.</p>
+          <p className="text-muted-foreground py-5 text-center">상담 내역이 없습니다.</p>
         ) : (
           counsels.map((r) => (
             <Accordion key={r.counselId} className="w-full">

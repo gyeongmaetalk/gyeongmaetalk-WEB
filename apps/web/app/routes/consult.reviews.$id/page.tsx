@@ -81,7 +81,7 @@ const ConsultReviewsDetailPage = ({ reviewId }: ConsultReviewsDetailPageProps) =
           className="w-full"
           variant="outlined"
           theme="assistive"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/consult/reviews")}
         >
           후기 목록으로 이동
         </Button>

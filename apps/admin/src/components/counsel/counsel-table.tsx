@@ -53,14 +53,12 @@ export default function CounselTable() {
                   aria-hidden="true"
                 />
               </div>
-              <span className="font-caption2-bold text-sm">
-                {COUNSEL_STATUS_LABEL[status].label}
-              </span>
+              <p className="font-caption2-bold text-sm">{COUNSEL_STATUS_LABEL[status].label}</p>
             </div>
           ))}
         </div>
         <div className="border-cool-neutral-95 w-full overflow-x-auto rounded-md border text-left text-sm">
-          <ul className="bg-muted grid grid-cols-4">
+          <ul className="bg-muted grid grid-cols-4 font-bold">
             <li className="px-4 py-3">고객</li>
             <li className="px-4 py-3">상담일시</li>
             <li className="px-4 py-3">신청일시</li>
