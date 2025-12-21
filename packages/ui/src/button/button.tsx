@@ -144,15 +144,15 @@ const buttonVariants = cva(
 
 function Button({
   className,
-  variant,
-  size,
-  theme,
+  variant = "default",
+  size = "default",
+  theme = "default",
   loading = false,
   asChild = false,
   LeftIcon,
   RightIcon,
-  iconOnly,
-  disabled,
+  iconOnly = false,
+  disabled = false,
   children,
   ...props
 }: ButtonProps) {
@@ -161,12 +161,14 @@ function Button({
   const isDisabled = disabled || loading;
 
   const childrenWithLoader = loading ? (
-    <Spinner className={iconSize[size ?? "default"]} />
+    <Spinner
+      className={cn(variant === "default" ? "text-white" : "text-primary-normal", iconSize[size])}
+    />
   ) : (
     <>
-      {LeftIcon && !iconOnly && <LeftIcon className={cn(iconSize[size ?? "default"])} />}
+      {LeftIcon && !iconOnly && <LeftIcon className={cn(iconSize[size])} />}
       {children}
-      {RightIcon && !iconOnly && <RightIcon className={cn(iconSize[size ?? "default"])} />}
+      {RightIcon && !iconOnly && <RightIcon className={cn(iconSize[size])} />}
     </>
   );
 
@@ -185,7 +187,7 @@ function Button({
     <Comp
       className={cn(
         buttonVariants({ variant, size, theme }),
-        iconOnly && `${iconOnlySize[size ?? "default"]} p-0`,
+        iconOnly && `${iconOnlySize[size]} p-0`,
         className
       )}
       data-slot="button"

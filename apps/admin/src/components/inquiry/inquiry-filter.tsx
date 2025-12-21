@@ -1,33 +1,35 @@
 "use client";
 
 import { INQUIRY_STATUS_LABEL, InquiryStatus } from "@/constants/inquiry";
-import type { QnaStatus } from "@/types/qna";
 import { Button, Textfield } from "@gyeongmaetalk/ui";
 
-export interface InquiryFilterValue {
-  status?: QnaStatus;
-  startDate?: string;
-  endDate?: string;
-}
+import type { InquiryFilterValue } from "./inquiry-table";
 
 interface InquiryFilterProps {
   value: InquiryFilterValue;
   onChange: (next: InquiryFilterValue) => void;
 }
 
-const maxDate = new Date().toISOString().split("T")[0];
-
-const STATUS = [InquiryStatus.PENDING, InquiryStatus.ANSWERED];
+const today = new Date().toISOString().split("T")[0];
+const statuses = [InquiryStatus.PENDING, InquiryStatus.ANSWERED];
 
 export default function InquiryFilter({ value, onChange }: InquiryFilterProps) {
   const onSelectStatus = (status: InquiryStatus) => {
-    // 이미 선택된 상태를 클릭하면 해제, 다른 상태를 클릭하면 선택
-    const nextStatus = value.status === status ? undefined : status;
-    onChange({ ...value, status: nextStatus });
+    const has = value.statuses.includes(status);
+    const nextStatus = has
+      ? value.statuses.length > 1
+        ? value.statuses.filter((s) => s !== status)
+        : value.statuses
+      : [...value.statuses, status];
+    onChange({ ...value, statuses: nextStatus });
   };
 
   const onResetFilters = () => {
-    onChange({ status: undefined, startDate: undefined, endDate: undefined });
+    onChange({
+      statuses,
+      startDate: today,
+      endDate: today,
+    });
   };
 
   return (
@@ -38,12 +40,12 @@ export default function InquiryFilter({ value, onChange }: InquiryFilterProps) {
       <div className="flex flex-col gap-2">
         <p className="text-sm font-medium">상태</p>
         <div className="flex flex-wrap gap-2">
-          {STATUS.map((s) => (
+          {statuses.map((s) => (
             <Button
               key={s}
               aria-label={`상태 ${INQUIRY_STATUS_LABEL[s].label}`}
               size="md"
-              variant={value.status === s ? "default" : "outlined"}
+              variant={value.statuses.includes(s) ? "default" : "outlined"}
               onClick={() => onSelectStatus(s)}
             >
               {INQUIRY_STATUS_LABEL[s].label}
@@ -59,19 +61,22 @@ export default function InquiryFilter({ value, onChange }: InquiryFilterProps) {
             id="start-date"
             aria-label="시작 날짜"
             type="date"
+            max={today}
             value={value.startDate ?? ""}
             onChange={(e) => onChange({ ...value, startDate: e.target.value })}
             className="text-xs"
+            onReset={() => onChange({ ...value, startDate: today })}
           />
           <span className="text-muted-foreground text-sm">~</span>
           <Textfield
             id="end-date"
             aria-label="종료 날짜"
             type="date"
-            max={maxDate}
+            max={today}
             value={value.endDate ?? ""}
             onChange={(e) => onChange({ ...value, endDate: e.target.value })}
             className="text-xs"
+            onReset={() => onChange({ ...value, endDate: today })}
           />
         </div>
       </div>

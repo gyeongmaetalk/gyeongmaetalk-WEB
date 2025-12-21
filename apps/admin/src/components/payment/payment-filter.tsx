@@ -53,9 +53,11 @@ export default function PaymentFilter({ value, onChange }: PaymentFilterProps) {
             id="start-date"
             aria-label="시작 날짜"
             type="date"
+            max={today}
             value={value.startDate ?? ""}
             onChange={(e) => onChange({ ...value, startDate: e.target.value })}
             className="text-xs"
+            onReset={() => onChange({ ...value, startDate: today })}
           />
           <span className="text-muted-foreground text-sm">~</span>
           <Textfield
@@ -66,6 +68,7 @@ export default function PaymentFilter({ value, onChange }: PaymentFilterProps) {
             value={value.endDate ?? ""}
             onChange={(e) => onChange({ ...value, endDate: e.target.value })}
             className="text-xs"
+            onReset={() => onChange({ ...value, endDate: today })}
           />
         </div>
       </div>

@@ -30,7 +30,7 @@ export default function InquiryTab() {
     form.setValue("category", value);
   };
 
-  const { mutate: requestQna } = useRequestQna({
+  const { mutateAsync: requestQna } = useRequestQna({
     onSuccess: () => {
       successToast("문의가 접수되었어요.");
       queryClient.invalidateQueries({ queryKey: [QNA.MY_QNA] });
@@ -42,7 +42,7 @@ export default function InquiryTab() {
     },
   });
 
-  const onSubmit = form.handleSubmit((data: InquiryForm) => {
+  const onSubmit = form.handleSubmit(async (data: InquiryForm) => {
     if (!data.category || !data.title || !data.content) {
       return infoToast("모든 필수 항목을 입력해주세요.");
     }
@@ -50,7 +50,7 @@ export default function InquiryTab() {
       return infoToast("개인정보 수집 및 이용 동의를 동의해주세요.");
     }
 
-    requestQna(data);
+    await requestQna(data);
   });
 
   return (
@@ -79,7 +79,12 @@ export default function InquiryTab() {
             <p>개인정보 수집 및 이용 동의 (필수)</p>
           </Label>
         </div>
-        <Button type="submit" className="self-stretch" disabled={form.formState.isSubmitting}>
+        <Button
+          type="submit"
+          className="self-stretch"
+          disabled={form.formState.isSubmitting}
+          loading={form.formState.isSubmitting}
+        >
           문의하기
         </Button>
       </div>

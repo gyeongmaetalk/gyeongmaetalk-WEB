@@ -14,6 +14,7 @@ interface TextfieldProps extends React.ComponentProps<"input"> {
   helperText?: string;
   additionalText?: string;
   containerClassName?: string;
+  onReset?: () => void;
 }
 
 function Textfield({
@@ -23,6 +24,7 @@ function Textfield({
   helperText,
   additionalText,
   containerClassName,
+  onReset,
   ...props
 }: TextfieldProps) {
   const {
@@ -68,6 +70,7 @@ function Textfield({
         target: { value: "" },
       } as React.ChangeEvent<HTMLInputElement>;
       controlledOnChange(syntheticEvent);
+      onReset?.();
     }
   };
 

@@ -1,12 +1,13 @@
+import type { InquiryFilterValue } from "@/components/inquiry/inquiry-table";
 import { QNA } from "@/constants/qna";
 import { getFaqList, getQnaList } from "@/service/qna";
-import { useInfiniteQuery, useSuspenseQuery } from "@gyeongmaetalk/lib/tanstack";
+import { useSuspenseInfiniteQuery, useSuspenseQuery } from "@gyeongmaetalk/lib/tanstack";
 import { calculatePaigination } from "@gyeongmaetalk/utils";
 
-export const useGetQnaList = () => {
-  return useInfiniteQuery({
-    queryKey: [QNA.LIST],
-    queryFn: ({ pageParam = 0 }) => getQnaList({ page: pageParam }),
+export const useGetQnaList = (filters: InquiryFilterValue) => {
+  return useSuspenseInfiniteQuery({
+    queryKey: [QNA.LIST, filters.statuses, filters.startDate, filters.endDate],
+    queryFn: ({ pageParam = 0 }) => getQnaList({ page: pageParam.toString(), ...filters }),
     getNextPageParam: calculatePaigination,
     initialPageParam: 0,
     select: (data) => data.pages.flatMap((page) => page.result.qnas),

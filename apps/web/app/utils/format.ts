@@ -35,33 +35,34 @@ export const getTimeDisplay = (date: string) => {
   const isFuture = createDate.getTime() > now.getTime();
   const suffix = isFuture ? "후" : "전";
 
-  const diffMinutes = Math.abs(createDate.getMinutes() - now.getMinutes());
-  const diffHours = Math.abs(createDate.getHours() - now.getHours());
-  const diffDays = Math.abs(createDate.getDate() - now.getDate());
-  const diffMonths = Math.abs(createDate.getMonth() - now.getMonth());
-  const diffYears = Math.abs(createDate.getFullYear() - now.getFullYear());
+  const absDiffMilliseconds = Math.abs(createDate.getTime() - now.getTime());
+  const absDiffMinutes = Math.floor(absDiffMilliseconds / (1000 * 60));
+  const absDiffHours = Math.floor(absDiffMilliseconds / (1000 * 60 * 60));
+  const absDiffDays = Math.floor(absDiffMilliseconds / (1000 * 60 * 60 * 24));
+  const absDiffMonths = Math.floor(absDiffDays / 30);
+  const absDiffYears = Math.floor(absDiffDays / 365);
 
-  if (diffMinutes === 0) {
+  if (absDiffMinutes < 1) {
     return "방금 전";
   }
 
-  if (diffMinutes < 60) {
-    return `${diffMinutes}분 ${suffix}`;
+  if (absDiffHours < 1) {
+    return `${absDiffMinutes}분 ${suffix}`;
   }
 
-  if (diffHours < 24) {
-    return `${diffHours}시간 ${suffix}`;
+  if (absDiffDays < 1) {
+    return `${absDiffHours}시간 ${suffix}`;
   }
 
-  if (diffDays < 30) {
-    return `${diffDays}일 ${suffix}`;
+  if (absDiffMonths < 1) {
+    return `${absDiffDays}일 ${suffix}`;
   }
 
-  if (diffMonths < 12) {
-    return `${diffMonths}달 ${suffix}`;
+  if (absDiffYears < 1) {
+    return `${absDiffMonths}달 ${suffix}`;
   }
 
-  return `${diffYears}년 ${suffix}`;
+  return `${absDiffYears}년 ${suffix}`;
 };
 
 export const formatCounselDate = (dateString: string) => {

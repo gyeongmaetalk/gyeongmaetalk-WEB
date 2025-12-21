@@ -1,13 +1,23 @@
 import { api, baseApi } from "@/lib/ky";
 import type { AnswerQnaRequest, FaqListResponse, QnaListResponse } from "@/models/qna";
+import type { QnaStatus } from "@/types/qna";
 import type { BaseResponse, PaginationResponse } from "@gyeongmaetalk/types";
 
-export const getQnaList = async ({
-  page,
-}: {
-  page: number;
+export const getQnaList = async (props: {
+  page: string;
+  statuses: QnaStatus[];
+  startDate: string;
+  endDate: string;
 }): Promise<PaginationResponse<QnaListResponse>> => {
-  return api.get("qna/list", { searchParams: { page, size: "10" } }).json();
+  const { statuses, ...restProps } = props;
+  const searchParams = new URLSearchParams({
+    ...restProps,
+    size: "10",
+  });
+  statuses.forEach((status) => {
+    searchParams.append("statuses", status);
+  });
+  return api.get("qna/list", { searchParams }).json();
 };
 
 export const answerQna = async ({
