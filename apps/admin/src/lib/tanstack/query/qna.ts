@@ -6,7 +6,7 @@ import { calculatePaigination } from "@gyeongmaetalk/utils";
 
 export const useGetQnaList = (filters: InquiryFilterValue) => {
   return useSuspenseInfiniteQuery({
-    queryKey: [QNA.LIST, filters.statuses, filters.startDate, filters.endDate],
+    queryKey: [QNA.LIST, filters.status, filters.startDate, filters.endDate],
     queryFn: ({ pageParam = 0 }) => getQnaList({ page: pageParam.toString(), ...filters }),
     getNextPageParam: calculatePaigination,
     initialPageParam: 0,

@@ -11,22 +11,18 @@ interface InquiryFilterProps {
 }
 
 const today = new Date().toISOString().split("T")[0];
-const statuses = [InquiryStatus.PENDING, InquiryStatus.ANSWERED];
 
 export default function InquiryFilter({ value, onChange }: InquiryFilterProps) {
   const onSelectStatus = (status: InquiryStatus) => {
-    const has = value.statuses.includes(status);
-    const nextStatus = has
-      ? value.statuses.length > 1
-        ? value.statuses.filter((s) => s !== status)
-        : value.statuses
-      : [...value.statuses, status];
-    onChange({ ...value, statuses: nextStatus });
+    if (value.status === status) {
+      return;
+    }
+    onChange({ ...value, status });
   };
 
   const onResetFilters = () => {
     onChange({
-      statuses,
+      status: InquiryStatus.PENDING,
       startDate: today,
       endDate: today,
     });
@@ -40,12 +36,12 @@ export default function InquiryFilter({ value, onChange }: InquiryFilterProps) {
       <div className="flex flex-col gap-2">
         <p className="text-sm font-medium">상태</p>
         <div className="flex flex-wrap gap-2">
-          {statuses.map((s) => (
+          {Object.values(InquiryStatus).map((s) => (
             <Button
               key={s}
               aria-label={`상태 ${INQUIRY_STATUS_LABEL[s].label}`}
               size="md"
-              variant={value.statuses.includes(s) ? "default" : "outlined"}
+              variant={value.status === s ? "default" : "outlined"}
               onClick={() => onSelectStatus(s)}
             >
               {INQUIRY_STATUS_LABEL[s].label}

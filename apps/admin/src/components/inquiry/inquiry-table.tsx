@@ -16,7 +16,7 @@ const InquiryList = dynamic(() => import("./inquiry-list"), {
 });
 
 export interface InquiryFilterValue {
-  statuses: QnaStatus[];
+  status: QnaStatus;
   startDate: string;
   endDate: string;
 }
@@ -26,7 +26,7 @@ const today = new Date().toISOString().split("T")[0];
 
 export default function InquiryTable() {
   const [filters, setFilters] = useState<InquiryFilterValue>({
-    statuses,
+    status: InquiryStatus.PENDING,
     startDate: today,
     endDate: today,
   });

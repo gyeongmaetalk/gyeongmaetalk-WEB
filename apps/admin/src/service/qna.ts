@@ -5,19 +5,11 @@ import type { BaseResponse, PaginationResponse } from "@gyeongmaetalk/types";
 
 export const getQnaList = async (props: {
   page: string;
-  statuses: QnaStatus[];
+  status: QnaStatus;
   startDate: string;
   endDate: string;
 }): Promise<PaginationResponse<QnaListResponse>> => {
-  const { statuses, ...restProps } = props;
-  const searchParams = new URLSearchParams({
-    ...restProps,
-    size: "10",
-  });
-  statuses.forEach((status) => {
-    searchParams.append("statuses", status);
-  });
-  return api.get("qna/list", { searchParams }).json();
+  return api.get("qna/list", { searchParams: { ...props, size: "10" } }).json();
 };
 
 export const answerQna = async ({
