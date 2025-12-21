@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { mockProperties } from "@/mock/properties";
 import type { Property } from "@/types";
@@ -11,6 +11,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
 import { type PropertyForm, propertyFormSchema } from "./schema";
+
+interface PropertyDetailPageProps {
+  propertyId: string;
+}
 
 // 추후 tanstack query로 교체
 const isLoading = false;
@@ -35,11 +39,9 @@ const DEFAULT_VALUES: PropertyForm = {
   scheduleInfos: [],
 };
 
-export default function PropertyDetailPage() {
-  const params = useParams();
+export default function PropertyDetailPage({ propertyId }: PropertyDetailPageProps) {
   const router = useRouter();
-  const id = params.id as string;
-  const isNew = id === "new";
+  const isNew = propertyId === "new";
 
   const form = useForm<PropertyForm>({
     resolver: zodResolver(propertyFormSchema),
@@ -60,13 +62,13 @@ export default function PropertyDetailPage() {
 
   // 데이터 로드 여부를 추적하여 중복 reset 방지
   const hasLoadedData = useRef(false);
-  const currentIdRef = useRef(id);
+  const currentIdRef = useRef(propertyId);
 
   useEffect(() => {
     // id가 변경되었으면 플래그 초기화
-    if (currentIdRef.current !== id) {
+    if (currentIdRef.current !== propertyId) {
       hasLoadedData.current = false;
-      currentIdRef.current = id;
+      currentIdRef.current = propertyId;
     }
 
     // 새 매물이거나 이미 데이터를 로드한 경우에는 실행하지 않음
@@ -75,7 +77,7 @@ export default function PropertyDetailPage() {
     }
 
     // TODO: API 호출로 매물 데이터 가져오기
-    const property = mockProperties.find((p) => p.propertyId === id);
+    const property = mockProperties.find((p) => p.propertyId === propertyId);
     if (property) {
       reset({
         name: property.name,
@@ -102,7 +104,7 @@ export default function PropertyDetailPage() {
       });
       hasLoadedData.current = true;
     }
-  }, [id, isNew, reset]);
+  }, [propertyId, isNew, reset]);
 
   const onAddSchedule = () => {
     append({

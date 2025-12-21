@@ -40,7 +40,7 @@ export default function PropertyTable() {
   return (
     <div className="space-y-4 text-nowrap">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium">매물 목록</h3>
+        <h3 className="text-sm font-medium">유저 목록</h3>
         <Button onClick={onOpenAdd} aria-label="매물 추가" size="sm">
           추가
         </Button>

@@ -24,12 +24,16 @@ export const SUBSCRIPTION_STATUS_LABEL = {
   },
   [SubscriptionStatus.PAYMENT_FAILED]: {
     label: "결제 실패",
-    wrap: "bg-gray-95 text-gray-30 border-gray-90 ring-gray-90",
-    dot: "bg-gray-50",
+    wrap: "bg-cool-neutral-95 text-cool-neutral-30 border-cool-neutral-90 ring-cool-neutral-90",
+    dot: "bg-cool-neutral-50",
   },
   [SubscriptionStatus.CANCELED]: {
     label: "취소됨",
     wrap: "bg-red-95 text-red-30 border-red-90 ring-red-90",
     dot: "bg-red-50",
   },
+};
+
+export const SUBSCRIPTION = {
+  LIST: "subscription-list",
 };
