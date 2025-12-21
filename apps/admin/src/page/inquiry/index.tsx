@@ -1,10 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 
-import FaqTable from "@/components/inquiry/faq-table";
 import InquiryTable from "@/components/inquiry/inquiry-table";
+import { Spinner } from "@gyeongmaetalk/ui";
 import { cn } from "@gyeongmaetalk/utils";
+
+const FaqTable = dynamic(() => import("@/components/inquiry/faq-table"), {
+  ssr: false,
+  loading: () => <Spinner className="mx-auto my-5" />,
+});
 
 type TabType = "inquiry" | "faq";
 

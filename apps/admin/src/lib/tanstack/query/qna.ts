@@ -1,6 +1,6 @@
 import { QNA } from "@/constants/qna";
-import { getQnaList } from "@/service/qna";
-import { useInfiniteQuery } from "@gyeongmaetalk/lib/tanstack";
+import { getFaqList, getQnaList } from "@/service/qna";
+import { useInfiniteQuery, useSuspenseQuery } from "@gyeongmaetalk/lib/tanstack";
 import { calculatePaigination } from "@gyeongmaetalk/utils";
 
 export const useGetQnaList = () => {
@@ -10,5 +10,13 @@ export const useGetQnaList = () => {
     getNextPageParam: calculatePaigination,
     initialPageParam: 0,
     select: (data) => data.pages.flatMap((page) => page.result.qnas),
+  });
+};
+
+export const useGetFaqList = () => {
+  return useSuspenseQuery({
+    queryKey: [QNA.FAQ],
+    queryFn: getFaqList,
+    select: (data) => data.result,
   });
 };

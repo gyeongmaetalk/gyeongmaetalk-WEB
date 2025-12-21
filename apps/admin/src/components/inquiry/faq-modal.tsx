@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import type { Faq } from "@/types";
+import type { FaqListItem } from "@/types/qna";
 import {
   Button,
   Sheet,
@@ -15,38 +15,34 @@ import {
 } from "@gyeongmaetalk/ui";
 
 interface FaqModalProps {
-  faq: Faq | null;
+  faq: FaqListItem | null;
   isOpen: boolean;
   isEditMode: boolean;
   onClose: () => void;
-  onSave: (faq: Omit<Faq, "faqId" | "createdAtIso" | "updatedAtIso">) => void;
 }
 
-export default function FaqModal({ faq, isOpen, isEditMode, onClose, onSave }: FaqModalProps) {
+export default function FaqModal({ faq, isOpen, isEditMode, onClose }: FaqModalProps) {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (faq) {
-      setQuestion(faq.question);
-      setAnswer(faq.answer);
-    } else {
-      setQuestion("");
-      setAnswer("");
-    }
-  }, [faq, isOpen]);
 
   const onSaveFaq = async () => {
     if (!question.trim() || !answer.trim()) {
       return;
     }
 
-    setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    onSave({ question: question.trim(), answer: answer.trim() });
-    setIsSubmitting(false);
+    if (isEditMode) {
+      // TODO: FAQ 수정 API 호출
+      return;
+    }
+    // TODO: FAQ 추가 API 호출
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      setQuestion(faq?.question || "");
+      setAnswer(faq?.answer || "");
+    }
+  }, [isOpen, faq]);
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -65,7 +61,6 @@ export default function FaqModal({ faq, isOpen, isEditMode, onClose, onSave }: F
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               placeholder="질문을 입력하세요"
-              disabled={isSubmitting}
             />
           </div>
 
@@ -79,17 +74,16 @@ export default function FaqModal({ faq, isOpen, isEditMode, onClose, onSave }: F
               onChange={(e) => setAnswer(e.target.value)}
               placeholder="답변을 입력하세요"
               rows={8}
-              disabled={isSubmitting}
             />
           </div>
         </div>
 
         <SheetFooter>
-          <Button variant="outlined" onClick={onClose} disabled={isSubmitting}>
+          <Button variant="outlined" onClick={onClose}>
             취소
           </Button>
-          <Button onClick={onSaveFaq} disabled={isSubmitting || !question.trim() || !answer.trim()}>
-            {isSubmitting ? "저장 중..." : "저장"}
+          <Button onClick={onSaveFaq} disabled={!question.trim() || !answer.trim()}>
+            {isEditMode ? "수정" : "추가"}
           </Button>
         </SheetFooter>
       </SheetContent>

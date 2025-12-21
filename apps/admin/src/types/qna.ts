@@ -13,3 +13,9 @@ export interface QnaListItem {
   answerContent: string;
   answerTime: string;
 }
+
+export interface FaqListItem {
+  id: number;
+  question: string;
+  answer: string;
+}

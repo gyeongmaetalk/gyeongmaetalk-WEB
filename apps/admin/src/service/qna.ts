@@ -1,5 +1,5 @@
 import { api, baseApi } from "@/lib/ky";
-import type { AnswerQnaRequest, QnaListResponse } from "@/models/qna";
+import type { AnswerQnaRequest, FaqListResponse, QnaListResponse } from "@/models/qna";
 import type { BaseResponse, PaginationResponse } from "@gyeongmaetalk/types";
 
 export const getQnaList = async ({
@@ -15,4 +15,8 @@ export const answerQna = async ({
   content,
 }: AnswerQnaRequest): Promise<BaseResponse<void>> => {
   return baseApi.post(`qna/${qnaId}/answer`, { searchParams: { content } }).json();
+};
+
+export const getFaqList = async (): Promise<BaseResponse<FaqListResponse>> => {
+  return baseApi.get("qna/faq").json();
 };

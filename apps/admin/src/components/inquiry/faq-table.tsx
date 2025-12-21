@@ -1,30 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { lazy, useState } from "react";
 
-import { mockFaqs } from "@/mock/faqs";
-import type { Faq } from "@/types";
+import { useGetFaqList } from "@/lib/tanstack/query/qna";
+import type { FaqListItem } from "@/types/qna";
 import { Button } from "@gyeongmaetalk/ui";
 
-import FaqModal from "./faq-modal";
-
-// 추후 tanstack query로 교체
-const isLoading = false;
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleString("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-}
+const FaqModal = lazy(() => import("./faq-modal"));
 
 export default function FaqTable() {
-  const [faqs, setFaqs] = useState(mockFaqs);
-  const [selectedFaq, setSelectedFaq] = useState<Faq | null>(null);
+  const { data: faqs } = useGetFaqList();
+
+  const [selectedFaq, setSelectedFaq] = useState<FaqListItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -34,7 +21,7 @@ export default function FaqTable() {
     setIsModalOpen(true);
   };
 
-  const onOpenEditModal = (faq: Faq) => {
+  const onOpenEditModal = (faq: FaqListItem) => {
     setSelectedFaq(faq);
     setIsEditMode(true);
     setIsModalOpen(true);
@@ -46,40 +33,11 @@ export default function FaqTable() {
     setIsEditMode(false);
   };
 
-  const onDeleteFaq = async (faqId: string) => {
+  const onDeleteFaq = async (faqId: number) => {
     if (!confirm("정말 삭제하시겠습니까?")) {
+      // TODO: 삭제 API 호출
       return;
     }
-
-    // TODO: API 호출
-    setFaqs(faqs.filter((f) => f.faqId !== faqId));
-  };
-
-  const onSaveFaq = async (faq: Omit<Faq, "faqId" | "createdAtIso" | "updatedAtIso">) => {
-    if (isEditMode && selectedFaq) {
-      // TODO: API 호출
-      setFaqs(
-        faqs.map((f) =>
-          f.faqId === selectedFaq.faqId
-            ? {
-                ...f,
-                ...faq,
-                updatedAtIso: new Date().toISOString(),
-              }
-            : f
-        )
-      );
-    } else {
-      // TODO: API 호출
-      const newFaq: Faq = {
-        ...faq,
-        faqId: `faq-${Date.now()}`,
-        createdAtIso: new Date().toISOString(),
-        updatedAtIso: new Date().toISOString(),
-      };
-      setFaqs([...faqs, newFaq]);
-    }
-    onCloseModal();
   };
 
   return (
@@ -97,37 +55,25 @@ export default function FaqTable() {
               <tr>
                 <th className="bg-muted px-4 py-3">질문</th>
                 <th className="bg-muted px-4 py-3">답변</th>
-                <th className="bg-muted px-4 py-3">생성 일시</th>
-                <th className="bg-muted px-4 py-3">수정 일시</th>
                 <th className="bg-muted px-4 py-3">작업</th>
               </tr>
             </thead>
             <tbody>
-              {isLoading && (
+              {faqs.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-muted-foreground px-4 py-10 text-center">
-                    로딩 중...
-                  </td>
-                </tr>
-              )}
-              {!isLoading && faqs.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="text-muted-foreground px-4 py-10 text-center">
+                  <td colSpan={3} className="text-muted-foreground py-5 text-center">
                     등록된 FAQ가 없습니다.
                   </td>
                 </tr>
-              )}
-              {!isLoading &&
+              ) : (
                 faqs.map((faq) => (
-                  <tr key={faq.faqId} className="border-t-cool-neutral-95 border-t">
+                  <tr key={faq.id} className="border-t-cool-neutral-95 border-t">
                     <td className="px-4 py-3">{faq.question}</td>
                     <td className="px-4 py-3">
                       <div className="max-w-md truncate" title={faq.answer}>
                         {faq.answer}
                       </div>
                     </td>
-                    <td className="px-4 py-3">{formatDate(faq.createdAtIso)}</td>
-                    <td className="px-4 py-3">{formatDate(faq.updatedAtIso)}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
                         <Button
@@ -142,14 +88,15 @@ export default function FaqTable() {
                           size="sm"
                           variant="outlined"
                           aria-label="삭제"
-                          onClick={() => onDeleteFaq(faq.faqId)}
+                          onClick={() => onDeleteFaq(faq.id)}
                         >
                           삭제
                         </Button>
                       </div>
                     </td>
                   </tr>
-                ))}
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -159,7 +106,6 @@ export default function FaqTable() {
         isOpen={isModalOpen}
         isEditMode={isEditMode}
         onClose={onCloseModal}
-        onSave={onSaveFaq}
       />
     </>
   );
