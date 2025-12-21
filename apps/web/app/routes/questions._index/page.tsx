@@ -30,7 +30,7 @@ export default function QuestionsPage() {
               <p className="font-body2-normal-bold">{fag.question}</p>
             </Accordion.Header>
             <Accordion.Content>
-              <p className="font-label1-normal-regular text-label-neutral">{fag.answer}</p>
+              <p className="font-label1-normal-regular text-label-neutral px-2">{fag.answer}</p>
             </Accordion.Content>
           </Accordion>
         ))

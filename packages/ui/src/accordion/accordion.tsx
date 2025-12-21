@@ -42,7 +42,10 @@ function AccordionHeader({ children, className, iconClassName }: AccordionHeader
   return (
     <button
       onClick={() => setOpen(!open)}
-      className={cn("relative flex w-full items-center justify-between px-2 py-4", className)}
+      className={cn(
+        "relative flex w-full items-center justify-between px-2 py-4 text-left",
+        className
+      )}
     >
       {children}
       <ChevronDown
