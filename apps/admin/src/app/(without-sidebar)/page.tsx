@@ -6,7 +6,7 @@ import { getCookie } from "@/utils/cookie";
 export default async function LoginPage() {
   const loggedIn = await getCookie("loggedIn");
   if (loggedIn) {
-    redirect("/consult", RedirectType.replace);
+    redirect("/counsel", RedirectType.replace);
   }
 
   return (

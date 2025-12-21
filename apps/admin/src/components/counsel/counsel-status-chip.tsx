@@ -2,11 +2,11 @@ import type { CounselStatus } from "@/constants/counsel";
 import { COUNSEL_STATUS_LABEL } from "@/constants/counsel";
 import { cn } from "@gyeongmaetalk/utils";
 
-interface ConsultStatusChipProps {
+interface CounselStatusChipProps {
   status: CounselStatus;
 }
 
-export default function ConsultStatusChip({ status }: ConsultStatusChipProps) {
+export default function CounselStatusChip({ status }: CounselStatusChipProps) {
   const currentStatus = COUNSEL_STATUS_LABEL[status];
 
   return (

@@ -72,7 +72,7 @@ const ConsultReviewsPage = () => {
           </div>
         </section>
       )}
-      <Review className="h-[calc(100%-52px)]">
+      <Review>
         <ReviewHeader sort={sort} totalCount={reviews.length} />
         {isLoading ? (
           <div className="flex h-full items-center">

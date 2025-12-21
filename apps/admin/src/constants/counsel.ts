@@ -27,3 +27,7 @@ export const COUNSEL_STATUS_LABEL = {
     dot: "bg-red-50",
   },
 };
+
+export const COUNSEL = {
+  LIST: "counsel-list",
+};

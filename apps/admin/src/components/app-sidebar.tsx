@@ -21,7 +21,7 @@ import { CreditCard, House, MessageCircle, UserRound } from "lucide-react";
 const items = [
   {
     title: "상담",
-    url: "/consult",
+    url: "/counsel",
     icon: UserRound,
   },
   {

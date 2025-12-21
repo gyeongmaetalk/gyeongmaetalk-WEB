@@ -3,15 +3,15 @@
 import { CounselStatus } from "@/constants/counsel";
 import { Button, Textfield } from "@gyeongmaetalk/ui";
 
-export interface ConsultFilterValue {
+export interface CounselFilterValue {
   statuses: CounselStatus[];
-  startDate?: string;
-  endDate?: string;
+  startDate: string;
+  endDate: string;
 }
 
-interface ConsultFilterProps {
-  value: ConsultFilterValue;
-  onChange: (next: ConsultFilterValue) => void;
+interface CounselFilterProps {
+  value: CounselFilterValue;
+  onChange: (next: CounselFilterValue) => void;
 }
 
 function getLabel(status: CounselStatus) {
@@ -27,21 +27,27 @@ function getLabel(status: CounselStatus) {
   }
 }
 
-const maxDate = new Date().toISOString().split("T")[0];
+const today = new Date().toISOString().split("T")[0];
 
-const STATUS = [CounselStatus.COUNSEL_BEFORE, CounselStatus.COUNSEL_AFTER, CounselStatus.SUBSCRIBE];
+const statuses = [
+  CounselStatus.COUNSEL_BEFORE,
+  CounselStatus.COUNSEL_AFTER,
+  CounselStatus.SUBSCRIBE,
+];
 
-export default function ConsultFilter({ value, onChange }: ConsultFilterProps) {
-  const onToggleStatus = (status: CounselStatus) => {
+export default function CounselFilter({ value, onChange }: CounselFilterProps) {
+  const onSelectStatus = (status: CounselStatus) => {
     const has = value.statuses.includes(status);
     const nextStatuses = has
-      ? value.statuses.filter((s) => s !== status)
+      ? value.statuses.length > 1
+        ? value.statuses.filter((s) => s !== status)
+        : value.statuses
       : [...value.statuses, status];
     onChange({ ...value, statuses: nextStatuses });
   };
 
   const onResetFilters = () => {
-    onChange({ statuses: [], startDate: undefined, endDate: undefined });
+    onChange({ statuses, startDate: today, endDate: today });
   };
 
   return (
@@ -52,13 +58,13 @@ export default function ConsultFilter({ value, onChange }: ConsultFilterProps) {
       <div className="flex flex-col gap-2">
         <p className="text-sm font-medium">상태</p>
         <div className="flex flex-wrap gap-2">
-          {STATUS.map((s) => (
+          {statuses.map((s) => (
             <Button
               key={s}
               aria-label={`상태 ${getLabel(s)}`}
               size="md"
               variant={value.statuses.includes(s) ? "default" : "outlined"}
-              onClick={() => onToggleStatus(s)}
+              onClick={() => onSelectStatus(s)}
             >
               {getLabel(s)}
             </Button>
@@ -82,7 +88,7 @@ export default function ConsultFilter({ value, onChange }: ConsultFilterProps) {
             id="end-date"
             aria-label="종료 날짜"
             type="date"
-            max={maxDate}
+            max={today}
             value={value.endDate ?? ""}
             onChange={(e) => onChange({ ...value, endDate: e.target.value })}
             className="text-xs"

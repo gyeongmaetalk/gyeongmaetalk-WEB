@@ -19,7 +19,7 @@ export default function LoginForm() {
   } = useLogin({
     onSuccess: () => {
       setCookie("loggedIn", "true");
-      router.push("/consult");
+      router.push("/counsel");
     },
     onError: async (error) => {
       const errorResponse = await error.response.json<BaseResponse>();
