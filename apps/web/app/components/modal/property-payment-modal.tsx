@@ -22,7 +22,7 @@ interface PropertyPaymentModalProps {
   onClose: () => void;
 }
 
-const AMOUNT = 20000;
+const PROPERTY_AMOUNT = 30000;
 const TOSS_PAYMENTS_CLIENT_KEY = import.meta.env.VITE_TOSS_PAYMENTS_CLIENT_KEY;
 
 export default function PropertyPaymentModal({ id, isOpen, onClose }: PropertyPaymentModalProps) {
@@ -55,7 +55,7 @@ export default function PropertyPaymentModal({ id, isOpen, onClose }: PropertyPa
 
       await tossPayments.setAmount({
         currency: "KRW",
-        value: AMOUNT,
+        value: PROPERTY_AMOUNT,
       });
 
       const origin = window.location.origin;
@@ -103,7 +103,7 @@ export default function PropertyPaymentModal({ id, isOpen, onClose }: PropertyPa
           // 결제 금액 설정
           await tossPayments.setAmount({
             currency: "KRW",
-            value: AMOUNT,
+            value: PROPERTY_AMOUNT,
           });
 
           // 결제 UI 렌더링
@@ -165,7 +165,7 @@ export default function PropertyPaymentModal({ id, isOpen, onClose }: PropertyPa
         <div className="bg-cool-neutral-99 flex items-center justify-between rounded-lg p-3">
           <span className="text-label-neutral font-label2-medium">결제금액</span>
           <span className="text-primary-normal font-body1-normal-bold">
-            {AMOUNT.toLocaleString()}원
+            {PROPERTY_AMOUNT.toLocaleString()}원
           </span>
         </div>
         <div id="payment-method-container" className="bg-cool-neutral-99 min-h-[200px]" />
@@ -176,7 +176,7 @@ export default function PropertyPaymentModal({ id, isOpen, onClose }: PropertyPa
           className="w-full"
           aria-label="결제하기"
         >
-          {isLoading ? "결제 처리 중..." : `${AMOUNT.toLocaleString()}원 결제하기`}
+          {isLoading ? "결제 처리 중..." : `${PROPERTY_AMOUNT.toLocaleString()}원 결제하기`}
         </Button>
       </Modal.Content>
     </Modal>

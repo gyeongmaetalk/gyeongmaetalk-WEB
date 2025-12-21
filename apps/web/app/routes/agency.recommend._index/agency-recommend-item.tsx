@@ -10,6 +10,8 @@ import PropertyPaymentModal from "~/components/modal/property-payment-modal";
 import type { PropertyListItemProps } from "~/types/property";
 import { formatArea, formatDate } from "~/utils/format";
 
+const PROPERTY_AMOUNT = 30000;
+
 export default function AgencyRecommendItem({
   id,
   address,
@@ -48,7 +50,7 @@ export default function AgencyRecommendItem({
               {formatDate({ date: updateDate, shortYear: true })} 업데이트 매물
             </p>
             <p className="font-caption1-bold text-primary-normal">
-              {isPurchased ? "구매완료" : formatPrice(20000)}
+              {isPurchased ? "구매완료" : formatPrice(PROPERTY_AMOUNT)}
             </p>
           </div>
         </div>

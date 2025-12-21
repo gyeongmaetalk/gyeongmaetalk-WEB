@@ -13,7 +13,7 @@ export default function Consulted({ info }: ConsultedProps) {
         경매 대행를 진행해 보세요.
       </p>
       <ConsultantReviewCard
-        date={info.counselDate}
+        date={`${info.counselDate}T${info.counselTime}`}
         counselorName={info.counselorName}
         experience={info.experience}
         counselorImage={info.counselorImage}

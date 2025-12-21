@@ -7,6 +7,7 @@ import { Navigate, useSearchParams } from "react-router";
 import ConsultantReviewCard from "~/components/card/consultant-review-card";
 import Divider from "~/components/divider";
 import { Document } from "~/components/icons";
+import { CounselStatus } from "~/constants/counsel";
 import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
 import { useGetPropertyList } from "~/lib/tanstack/query/property";
 import { useUserStore } from "~/lib/zustand/user";
@@ -47,7 +48,7 @@ const AgencyRecommendPage = () => {
   const { data = [], isLoading } = useGetPropertyList(getStatus(status));
   const { data: counselStatus } = useCheckCounselStatus();
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || (counselStatus && counselStatus.status !== CounselStatus.SUBSCRIBE)) {
     return <Navigate to="/agency" replace />;
   }
 
