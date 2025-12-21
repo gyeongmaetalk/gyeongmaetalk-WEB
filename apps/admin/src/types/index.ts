@@ -1,22 +1,10 @@
 import type { InquiryStatus } from "@/constants/inquiry";
-import type { PaymentMethod, PaymentStatus, PaymentType } from "@/constants/payment";
 
 export type ReservationId = string;
 export type PaymentId = string;
 export type InquiryId = string;
 export type FaqId = string;
 export type PropertyId = string;
-
-export interface Payment {
-  paymentId: PaymentId;
-  type: PaymentType;
-  status: PaymentStatus;
-  amount: number;
-  paidAtIso: string;
-  userName: string;
-  userPhone: string;
-  paymentMethod: PaymentMethod;
-}
 
 export interface Inquiry {
   inquiryId: InquiryId;

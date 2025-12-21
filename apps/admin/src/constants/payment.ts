@@ -9,13 +9,6 @@ export enum PaymentStatus {
   FAIL = "FAIL",
 }
 
-export enum PaymentMethod {
-  CARD = "CARD",
-  BANK_TRANSFER = "BANK_TRANSFER",
-  VIRTUAL_ACCOUNT = "VIRTUAL_ACCOUNT",
-  MOBILE = "MOBILE",
-}
-
 export const PAYMENT_TYPE_LABEL = {
   [PaymentType.SUBSCRIPTION]: "구독",
   [PaymentType.PROPERTY]: "결제",

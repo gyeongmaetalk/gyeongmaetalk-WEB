@@ -41,7 +41,7 @@ export const getStatus = (status: CounselStatus) => {
         description: "수익률, 입지, 권리분석까지 고려해 드려요.",
         hasButton: true,
         buttonText: "매물 추천받기",
-        buttonLink: "/agency/recommend",
+        buttonLink: "/agency",
       };
   }
 };
