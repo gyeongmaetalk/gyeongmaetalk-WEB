@@ -9,5 +9,5 @@ interface PropertyByMemberPageProps {
 export default async function PropertyByMember({ params }: PropertyByMemberPageProps) {
   const { "member-id": memberId } = await params;
 
-  return <PropertyByMemberPage memberId={memberId} />;
+  return <PropertyByMemberPage memberId={+memberId} />;
 }
