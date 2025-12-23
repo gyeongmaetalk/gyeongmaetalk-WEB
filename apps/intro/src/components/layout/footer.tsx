@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { StoreType } from "@/constants/store";
 
 import LinkButton from "../button/link-button";
@@ -21,13 +23,41 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-start bg-white px-5 pt-5 pb-[50px]">
-        <p className="font-label2-medium text-label-neutral mb-2.5">경매톡</p>
-        <p className="font-caption1-regular text-label-alternative mb-7.5">
-          © Bid Talk. All rights reserved.
-        </p>
-
-        <p className="font-label2-medium text-label-neutral">개인정보 처리방침</p>
+      <div className="bg-white px-5 py-6">
+        <div className="flex flex-col gap-4">
+          <div className="font-label2-medium text-label-neutral">주식회사 데벨</div>
+          <div className="flex flex-col gap-2">
+            <div className="font-caption1-regular text-label-alternative">대표자명: 박승민</div>
+            <div className="font-caption1-regular text-label-alternative">
+              사업자등록번호: 710-86-0382
+            </div>
+            <div className="font-caption1-regular text-label-alternative">
+              사업장 주소: 서울특별시 서초구 사임당로8길 13, 4층 402-제이79호 (서초동, 제일빌딩)
+            </div>
+            <div className="font-caption1-regular text-label-alternative">
+              유선번호: 010-9805-8736
+            </div>
+          </div>
+          <div className="border-cool-neutral-95 mt-2 border-t pt-4">
+            <div className="mb-3 flex flex-row gap-4">
+              <Link
+                href="/terms-of-service"
+                className="font-caption1-regular text-label-alternative hover:text-label-neutral transition-colors"
+              >
+                이용약관
+              </Link>
+              <Link
+                href="/privacy-policy"
+                className="font-caption1-regular text-label-alternative hover:text-label-neutral transition-colors"
+              >
+                개인정보 처리방침
+              </Link>
+            </div>
+            <div className="font-caption1-regular text-label-alternative">
+              © 경매톡. All rights reserved.
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   );

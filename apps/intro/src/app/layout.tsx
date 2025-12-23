@@ -6,7 +6,7 @@ import localFont from "next/font/local";
 import RootProvider from "@/components/layout/root-provider";
 
 const pretendard = localFont({
-  src: "./fonts/PretendardVariable.woff2",
+  src: "../assets/fonts/PretendardVariable.woff2",
   variable: "--font-pretendard",
   display: "swap",
 });
