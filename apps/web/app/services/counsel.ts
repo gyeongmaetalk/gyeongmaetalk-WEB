@@ -37,21 +37,15 @@ export const getAvailableTimes = async (props: {
 export const reserveConsult = async (
   props: ReserveConsultRequest
 ): Promise<BaseResponse<ReserveConsultResponse>> => {
-  return api
-    .post(`counsels/${props.counseldorId}`, {
-      searchParams: {
-        counselFormId: props.counselFormId,
-        date: props.date,
-      },
-    })
-    .json();
+  const { counseldorId, ...restProps } = props;
+  return api.post(`counsels/${counseldorId}`, { json: restProps }).json();
 };
 
 export const changeReserveConsult = async (
   props: ChangeReserveConsultRequest
 ): Promise<BaseResponse<ReserveConsultResponse>> => {
   const { counselId, ...restProps } = props;
-  return api.patch(`counsels/${counselId}`, { searchParams: restProps }).json();
+  return api.patch(`counsels/${counselId}/update`, { searchParams: restProps }).json();
 };
 
 export const getReservedCounselData = async (): Promise<

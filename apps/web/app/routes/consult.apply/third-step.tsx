@@ -13,9 +13,10 @@ import Select from "./select";
 
 interface ThirdStepProps {
   form: UseFormReturn<ApplyConsultForm>;
+  mode?: string;
 }
 
-const ThirdStep = ({ form }: ThirdStepProps) => {
+const ThirdStep = ({ form, mode }: ThirdStepProps) => {
   const [service, setService] = useState(form.getValues("service"));
 
   const navigate = useNavigate();
@@ -32,7 +33,12 @@ const ThirdStep = ({ form }: ThirdStepProps) => {
 
   const onNext = () => {
     form.setValue("service", service);
-    navigate("?step=4");
+    const searchParams = new URLSearchParams();
+    searchParams.set("step", "4");
+    if (mode) {
+      searchParams.set("mode", mode);
+    }
+    navigate(`?${searchParams.toString()}`);
   };
 
   const onPrev = () => {

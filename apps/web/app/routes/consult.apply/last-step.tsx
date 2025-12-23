@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button, Spinner } from "@gyeongmaetalk/ui";
 
 import type { UseFormReturn } from "react-hook-form";
@@ -9,6 +10,7 @@ import FloatingContainer from "~/components/container/floating-container";
 import Modal from "~/components/modal";
 import SuggestLogin from "~/components/modal/suggest-login";
 import SuggestSignup from "~/components/modal/suggest-signup";
+import { COUNSEL } from "~/constants";
 import { useChangeMatchCounsel, useMatchCounsel } from "~/lib/tanstack/mutation/counsel";
 import { useUserStore } from "~/lib/zustand/user";
 import { type ApplyConsultForm } from "~/routes/consult.apply/schema";
@@ -26,16 +28,28 @@ interface LastStepProps {
 const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
   const { isLoggedIn, user, isRegistered } = useUserStore();
 
-  const [name, setName] = useState(form.getValues("name"));
-  const [innerOption, setInnerOption] = useState("");
+  const defauleName = form.getValues("name").split(",");
+  const [name, setName] = useState(defauleName[0]);
+  const [innerOption, setInnerOption] = useState(defauleName[1] || "");
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
   const [isShowSignupModal, setIsShowSignupModal] = useState(false);
 
   const navigate = useNavigate();
 
-  const { mutate: matchCounsel } = useMatchCounsel({
+  const { mutateAsync: matchCounsel } = useMatchCounsel({
     onSuccess: (data) => {
-      navigate("/consult/matching", { replace: true, state: data.result });
+      const selectedValue = name === "개인" ? `개인,${innerOption}` : name;
+      const body = {
+        purpose: form.getValues("purpose"),
+        area: form.getValues("region"),
+        serviceType: form.getValues("service"),
+        interest: form.getValues("category"),
+        participantType: selectedValue,
+      };
+      navigate("/consult/matching", {
+        replace: true,
+        state: { result: data.result, matchCounselRequest: body },
+      });
     },
     onError: (error) => {
       errorToast("상담 신청에 실패했어요.");
@@ -43,9 +57,13 @@ const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
     },
   });
 
-  const { mutate: changeMatchCounsel } = useChangeMatchCounsel({
+  const { mutateAsync: changeMatchCounsel } = useChangeMatchCounsel({
     onSuccess: (data) => {
-      navigate("/consult/matching?mode=change", { replace: true, state: data.result });
+      queryClient.invalidateQueries({ queryKey: [COUNSEL.COUNSEL_STATUS] });
+      navigate("/consult/matching?mode=change", {
+        replace: true,
+        state: { result: data.result },
+      });
     },
     onError: (error) => {
       errorToast("상담 신청에 실패했어요.");
@@ -96,9 +114,9 @@ const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
       };
 
       if (isChangeMode && counselFormId) {
-        changeMatchCounsel({ ...body, counselFormId });
+        await changeMatchCounsel({ ...body, counselFormId });
       } else {
-        matchCounsel(body);
+        await matchCounsel(body);
       }
     },
     (errors) => {
@@ -149,7 +167,12 @@ const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
         <Button onClick={onPrev} theme="assistive" className="flex-1 transition-none">
           이전
         </Button>
-        <Button onClick={onComplete} disabled={submitDisabled} className="flex-1 transition-none">
+        <Button
+          onClick={onComplete}
+          disabled={submitDisabled}
+          loading={form.formState.isSubmitting}
+          className="flex-1 transition-none"
+        >
           완료
         </Button>
       </FloatingContainer>

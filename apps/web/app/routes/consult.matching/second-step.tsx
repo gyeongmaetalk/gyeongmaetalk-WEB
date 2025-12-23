@@ -13,7 +13,11 @@ import CancelApplyConsult from "~/components/modal/cancel-apply-consult";
 import { COUNSEL } from "~/constants";
 import { useChangeReserveConsult, useReserveConsult } from "~/lib/tanstack/mutation/counsel";
 import { useGetAvailableTimes } from "~/lib/tanstack/query/counsel";
-import type { MatchCounselResponse, ReserveConsultResponse } from "~/models/counsel";
+import type {
+  MatchCounselRequest,
+  MatchCounselResponse,
+  ReserveConsultResponse,
+} from "~/models/counsel";
 import { errorToast } from "~/utils/toast";
 
 import Calendar from "./calendar";
@@ -22,7 +26,9 @@ import TimeSelect from "./time-select";
 
 interface SecondStepProps {
   consultant: MatchCounselResponse;
+  matchCounselRequest: MatchCounselRequest;
   isChangeMode?: boolean;
+  counselId: number | null;
   counselDate: string | null;
   counselTime: string | null;
   setReservationResult: (result: ReserveConsultResponse) => void;
@@ -38,7 +44,9 @@ const formatDate = (date: Date): string => {
 
 const SecondStep = ({
   consultant,
+  matchCounselRequest,
   isChangeMode,
+  counselId,
   counselDate,
   counselTime,
   onChangeMode,
@@ -85,21 +93,21 @@ const SecondStep = ({
   const reservationDisabled = !selectedDate || !selectedTime;
   const isPending = isReservePending || isChangePending;
 
-  const onReservation = () => {
-    if (isChangeMode) {
-      changeReserveConsult({
-        counseldorId: consultant.counselorId,
-        counselId: consultant.counselorId,
+  const onReservation = async () => {
+    if (isChangeMode && counselId) {
+      await changeReserveConsult({
+        counselId: counselId,
         counselFormId: consultant.counselFormId,
+        counselorId: consultant.counselorId,
         date: `${formatedDate}T${selectedTime}`,
       });
       return;
     }
 
-    reserveConsult({
+    await reserveConsult({
       counseldorId: consultant.counselorId,
-      counselFormId: consultant.counselFormId,
-      date: `${formatedDate}T${selectedTime}`,
+      counselFormCreateRequest: matchCounselRequest,
+      counselTime: `${formatedDate}T${selectedTime}`,
     });
   };
 

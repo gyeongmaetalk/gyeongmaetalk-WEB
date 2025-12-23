@@ -13,9 +13,10 @@ import Select from "./select";
 
 interface FirstStepProps {
   form: UseFormReturn<ApplyConsultForm>;
+  mode?: string;
 }
 
-const FirstStep = ({ form }: FirstStepProps) => {
+const FirstStep = ({ form, mode }: FirstStepProps) => {
   const [purpose, setPurpose] = useState(form.getValues("purpose"));
 
   const navigate = useNavigate();
@@ -23,7 +24,12 @@ const FirstStep = ({ form }: FirstStepProps) => {
   const nextDisabled = !purpose;
 
   const onNext = () => {
-    navigate("?step=2");
+    const searchParams = new URLSearchParams();
+    searchParams.set("step", "2");
+    if (mode) {
+      searchParams.set("mode", mode);
+    }
+    navigate(`?${searchParams.toString()}`);
     form.setValue("purpose", purpose);
   };
 

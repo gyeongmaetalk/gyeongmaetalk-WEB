@@ -4,12 +4,23 @@ import { Navigate, useLocation, useSearchParams } from "react-router";
 
 import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
 import { useUserStore } from "~/lib/zustand/user";
-import type { MatchCounselResponse, ReserveConsultResponse } from "~/models/counsel";
+import type {
+  MatchCounselRequest,
+  MatchCounselResponse,
+  ReserveConsultResponse,
+} from "~/models/counsel";
 import FirstStep from "~/routes/consult.matching/first-step";
 import LastStep from "~/routes/consult.matching/last-step";
 import SecondStep from "~/routes/consult.matching/second-step";
 
 export type Mode = "reservation" | "complete" | null;
+
+interface ConsultMatchingState {
+  state: {
+    result: MatchCounselResponse;
+    matchCounselRequest: MatchCounselRequest;
+  };
+}
 
 const ConsultMatchingPage = () => {
   const [reservationResult, setReservationResult] = useState<ReserveConsultResponse | null>(null);
@@ -21,7 +32,7 @@ const ConsultMatchingPage = () => {
   const { data: counselStatus } = useCheckCounselStatus();
   const user = useUserStore((state) => state.user);
 
-  const { state }: { state: MatchCounselResponse } = useLocation();
+  const { state }: ConsultMatchingState = useLocation();
 
   if (!state || !user) {
     return <Navigate to="/" replace />;
@@ -31,8 +42,10 @@ const ConsultMatchingPage = () => {
     case "reservation":
       return (
         <SecondStep
-          consultant={state}
+          consultant={state.result}
+          matchCounselRequest={state.matchCounselRequest}
           isChangeMode={isChangeMode}
+          counselId={counselStatus?.info?.counselId ?? null}
           counselDate={counselStatus?.info?.counselDate ?? null}
           counselTime={counselStatus?.info?.counselTime ?? null}
           onChangeMode={setMode}
@@ -40,9 +53,9 @@ const ConsultMatchingPage = () => {
         />
       );
     case "complete":
-      return <LastStep consultant={state} reservationResult={reservationResult} />;
+      return <LastStep consultant={state.result} reservationResult={reservationResult} />;
     default:
-      return <FirstStep consultant={state} name={user.name || ""} onChangeMode={setMode} />;
+      return <FirstStep consultant={state.result} name={user.name || ""} onChangeMode={setMode} />;
   }
 };
 

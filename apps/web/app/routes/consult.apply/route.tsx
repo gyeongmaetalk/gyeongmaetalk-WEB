@@ -1,6 +1,9 @@
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
+import type { BaseResponse } from "@gyeongmaetalk/types";
 import { Spinner } from "@gyeongmaetalk/ui";
 
-import { getReservedCounselData } from "~/services/counsel";
+import { COUNSEL } from "~/constants";
+import type { ReservedCounselDataResponse } from "~/models/counsel";
 
 import type { Route } from "./+types/route";
 import ConsultApplyPage from "./page";
@@ -12,20 +15,27 @@ export function meta() {
 export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const url = new URL(request.url);
   const mode = url.searchParams.get("mode");
+  const step = url.searchParams.get("step");
   if (!mode) {
-    return null;
+    return {
+      step,
+    };
   }
-  try {
-    const { result } = await getReservedCounselData();
+  const cachedData = queryClient.getQueryData<BaseResponse<ReservedCounselDataResponse>>([
+    COUNSEL.COUNSEL_STATUS,
+  ]);
+  if (cachedData) {
+    const { result } = cachedData;
     return {
       mode,
+      step,
       result: result.info,
       counselFormId: result.info.counselFormId,
     };
-  } catch (error) {
-    console.error(error);
-    return null;
   }
+  return {
+    step,
+  };
 }
 
 export function HydrateFallback() {
@@ -45,7 +55,6 @@ const DEFAULT_VALUES = {
 };
 
 export default function ConsultApplyLayout({ loaderData }: Route.ComponentProps) {
-  const isChangeMode = loaderData?.mode === "change";
   let defaultValues = DEFAULT_VALUES;
   if (loaderData && loaderData.mode) {
     defaultValues = {
@@ -60,7 +69,8 @@ export default function ConsultApplyLayout({ loaderData }: Route.ComponentProps)
   return (
     <ConsultApplyPage
       defaultValues={defaultValues}
-      isChangeMode={isChangeMode}
+      mode={loaderData?.mode}
+      step={Number(loaderData.step || "1")}
       counselFormId={loaderData?.counselFormId}
     />
   );

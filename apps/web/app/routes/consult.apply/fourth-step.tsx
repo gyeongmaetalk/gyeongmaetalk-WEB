@@ -13,9 +13,10 @@ import Select from "./select";
 
 interface FourthStepProps {
   form: UseFormReturn<ApplyConsultForm>;
+  mode?: string;
 }
 
-const FourthStep = ({ form }: FourthStepProps) => {
+const FourthStep = ({ form, mode }: FourthStepProps) => {
   const [category, setCategory] = useState(form.getValues("category"));
 
   const navigate = useNavigate();
@@ -32,7 +33,12 @@ const FourthStep = ({ form }: FourthStepProps) => {
 
   const onNext = () => {
     form.setValue("category", category);
-    navigate("?step=5");
+    const searchParams = new URLSearchParams();
+    searchParams.set("step", "5");
+    if (mode) {
+      searchParams.set("mode", mode);
+    }
+    navigate(`?${searchParams.toString()}`);
   };
 
   const onPrev = () => {

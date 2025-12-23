@@ -13,9 +13,10 @@ import Select from "./select";
 
 interface SecondStepProps {
   form: UseFormReturn<ApplyConsultForm>;
+  mode?: string;
 }
 
-const SecondStep = ({ form }: SecondStepProps) => {
+const SecondStep = ({ form, mode }: SecondStepProps) => {
   const regionValue = form.getValues("region");
   const isCustomRegion = !REGION_OPTIONS.includes(regionValue);
   const initialRegion = regionValue === "" ? "" : isCustomRegion ? "직접 입력" : regionValue;
@@ -39,7 +40,12 @@ const SecondStep = ({ form }: SecondStepProps) => {
   const onNext = () => {
     const value = region === "직접 입력" ? customRegion : region;
     form.setValue("region", value);
-    navigate("?step=3");
+    const searchParams = new URLSearchParams();
+    searchParams.set("step", "3");
+    if (mode) {
+      searchParams.set("mode", mode);
+    }
+    navigate(`?${searchParams.toString()}`);
   };
 
   const onPrev = () => {

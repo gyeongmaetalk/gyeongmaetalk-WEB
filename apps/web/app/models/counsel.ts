@@ -33,12 +33,15 @@ export interface AvailableTimesRequest {
 
 export interface ReserveConsultRequest {
   counseldorId: number;
-  counselFormId: number;
-  date: string;
+  counselFormCreateRequest: MatchCounselRequest;
+  counselTime: string;
 }
 
-export interface ChangeReserveConsultRequest extends ReserveConsultRequest {
+export interface ChangeReserveConsultRequest {
   counselId: number;
+  counselFormId: number;
+  counselorId: number;
+  date: string;
 }
 
 export interface ReserveConsultResponse extends MatchCounselRequest {
@@ -49,7 +52,7 @@ export interface ReserveConsultResponse extends MatchCounselRequest {
 
 export interface ReservedCounselDataResponse {
   status: CounselStatus;
-  info: ReserveConsultResponse & MatchCounselResponse & { reviewed: boolean };
+  info: ReserveConsultResponse & MatchCounselResponse & { counselId: number; reviewed: boolean };
 }
 
 export interface CounselInfoResponse {
