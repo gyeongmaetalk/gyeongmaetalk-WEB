@@ -1,8 +1,7 @@
 import { useOutsideClick } from "@gyeongmaetalk/hooks";
-import { Button } from "@gyeongmaetalk/ui";
+import { Button, Modal } from "@gyeongmaetalk/ui";
 
 import { Close } from "~/components/icons";
-import Modal from "~/components/modal";
 import { resetUserQueries } from "~/lib/tanstack";
 import { useLogout } from "~/lib/tanstack/mutation/auth";
 import { useUserStore } from "~/lib/zustand/user";

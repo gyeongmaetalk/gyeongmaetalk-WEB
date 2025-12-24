@@ -5,6 +5,7 @@ export * from "./carousel";
 export * from "./checkbox";
 export * from "./drawer";
 export * from "./label";
+export * from "./modal";
 export * from "./radio";
 export * from "./separator";
 export * from "./sheet";

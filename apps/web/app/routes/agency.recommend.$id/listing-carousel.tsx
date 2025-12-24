@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useOutsideClick } from "@gyeongmaetalk/hooks";
-import { Carousel, type CarouselApi, CarouselContent, CarouselItem } from "@gyeongmaetalk/ui";
+import {
+  Carousel,
+  type CarouselApi,
+  CarouselContent,
+  CarouselItem,
+  Modal,
+} from "@gyeongmaetalk/ui";
 
 import insideBuilding from "~/assets/agency-recommend/inside-building.png";
 import outsideBuilding from "~/assets/agency-recommend/outside-building.png";
 import Image from "~/components/image";
-import Modal from "~/components/modal";
 
 const CAROUSEL_ITEMS = [
   {

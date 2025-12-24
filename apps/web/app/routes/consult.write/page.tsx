@@ -7,6 +7,7 @@ import {
   DragCarousel,
   DragCarouselItem,
   Label,
+  Modal,
   Spinner,
   Textarea,
 } from "@gyeongmaetalk/ui";
@@ -23,7 +24,6 @@ import { Close } from "~/components/icons";
 import Image from "~/components/image";
 import { WithBackHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
-import Modal from "~/components/modal";
 import StarRating from "~/components/star-rating";
 import { REVIEW } from "~/constants";
 import { useCreateReview, useUpdateReview } from "~/lib/tanstack/mutation/review";

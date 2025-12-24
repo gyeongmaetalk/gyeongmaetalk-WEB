@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Button } from "@gyeongmaetalk/ui";
+import { Button, Modal } from "@gyeongmaetalk/ui";
 import {
   ANONYMOUS,
   loadTossPayments,
@@ -13,8 +13,6 @@ import { X } from "lucide-react";
 
 import { useReadySubscribe } from "~/lib/tanstack/mutation/property";
 import { errorToast } from "~/utils/toast";
-
-import Modal from ".";
 
 interface SubscribePaymentModalProps {
   id: number;

@@ -1,13 +1,12 @@
 import { useState } from "react";
 
 import { queryClient } from "@gyeongmaetalk/lib/tanstack";
-import { Button, Spinner } from "@gyeongmaetalk/ui";
+import { Button, Modal, Spinner } from "@gyeongmaetalk/ui";
 
 import type { UseFormReturn } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
-import Modal from "~/components/modal";
 import SuggestLogin from "~/components/modal/suggest-login";
 import SuggestSignup from "~/components/modal/suggest-signup";
 import { COUNSEL } from "~/constants";

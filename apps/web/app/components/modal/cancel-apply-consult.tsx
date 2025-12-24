@@ -1,9 +1,7 @@
 import { useOutsideClick } from "@gyeongmaetalk/hooks";
-import { Button } from "@gyeongmaetalk/ui";
+import { Button, Modal } from "@gyeongmaetalk/ui";
 
 import { useNavigate } from "react-router";
-
-import Modal from ".";
 
 interface CancelApplyConsultProps {
   isOpen: boolean;
