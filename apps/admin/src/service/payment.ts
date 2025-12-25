@@ -13,5 +13,5 @@ export const getPaymentList = async (
 };
 
 export const refundPayment = async (props: RefundPaymentRequest): Promise<BaseResponse<void>> => {
-  return api.post("/payments/refund", { json: props }).json();
+  return api.post("payments/refund", { json: props }).json();
 };

@@ -1,7 +1,9 @@
 import { useState } from "react";
 
+import { PAYMENT } from "@/constants/payment";
 import { useRefundPayment } from "@/lib/tanstack/mutation/payment";
 import { useOutsideClick } from "@gyeongmaetalk/hooks";
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button, Modal } from "@gyeongmaetalk/ui";
 import { cn } from "@gyeongmaetalk/utils";
 
@@ -24,6 +26,7 @@ export default function RefundModal({ refundModalState, onClose }: RefundModalPr
 
   const { mutateAsync: refundPayment, isPending } = useRefundPayment({
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [PAYMENT.LIST] });
       setSelectedReason("");
       setIsDropdownOpen(false);
       onClose();
