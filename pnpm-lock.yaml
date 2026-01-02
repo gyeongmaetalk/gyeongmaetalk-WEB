@@ -187,9 +187,6 @@ importers:
       '@react-router/serve':
         specifier: ^7.5.3
         version: 7.9.5(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.2)
-      '@tosspayments/tosspayments-sdk':
-        specifier: ^2.4.0
-        version: 2.4.1
       '@vercel/react-router':
         specifier: ^1.2.4
         version: 1.2.4(@react-router/dev@7.9.5(@react-router/serve@7.9.5(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.2))(@types/node@20.19.24)(jiti@2.6.1)(lightningcss@1.30.2)(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.2)(vite@6.4.1(@types/node@20.19.24)(jiti@2.6.1)(lightningcss@1.30.2)))(@react-router/node@7.9.5(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.2))(isbot@5.1.32)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -2382,9 +2379,6 @@ packages:
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
-
-  '@tosspayments/tosspayments-sdk@2.4.1':
-    resolution: {integrity: sha512-FGBwiPKUeU9A+Hk+EgmPZ5NCjz/4P3dQESBlRBX3aYc6Qg1RprhdizceudV8VN13fbFEGnPfizP4U494+gbP/w==}
 
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
@@ -7084,8 +7078,6 @@ snapshots:
   '@testing-library/user-event@14.6.1(@testing-library/dom@10.4.1)':
     dependencies:
       '@testing-library/dom': 10.4.1
-
-  '@tosspayments/tosspayments-sdk@2.4.1': {}
 
   '@trysound/sax@0.2.0': {}
 
