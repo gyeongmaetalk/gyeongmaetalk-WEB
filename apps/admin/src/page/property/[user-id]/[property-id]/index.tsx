@@ -4,10 +4,10 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { PROPERTY } from "@/constants/property";
-import { useUpdateProperty } from "@/lib/tanstack/mutation/payment";
+import { useDeleteProperty, useUpdateProperty } from "@/lib/tanstack/mutation/property";
 import { useGetPropertyDetail } from "@/lib/tanstack/query/property";
 import { type PropertyForm, propertyFormSchema } from "@/schema/property";
-import { errorToast } from "@/utils/toast";
+import { errorToast, successToast } from "@/utils/toast";
 import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button, Spinner, Textarea, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,14 +45,28 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
   const isNew = propertyId === "new";
 
   const { data: propertyDetail, isLoading } = useGetPropertyDetail(propertyId);
+
   const { mutateAsync: updateProperty } = useUpdateProperty({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [PROPERTY.DETAIL, propertyId] });
       queryClient.invalidateQueries({ queryKey: [PROPERTY.LIST, memberId] });
+      successToast("매물이 수정되었어요.");
       router.back();
     },
     onError: (error) => {
       errorToast("매물 수정에 실패했어요.");
+      console.error(error);
+    },
+  });
+  const { mutateAsync: deleteProperty, isPending: isDeleting } = useDeleteProperty({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [PROPERTY.DETAIL, propertyId] });
+      queryClient.invalidateQueries({ queryKey: [PROPERTY.LIST, memberId] });
+      successToast("매물이 삭제되었어요.");
+      router.push(`/property/${memberId}`);
+    },
+    onError: (error) => {
+      errorToast("매물 삭제에 실패했어요.");
       console.error(error);
     },
   });
@@ -72,23 +86,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
     name: "scheduleInfos",
   });
 
-  useEffect(() => {
-    // 새 매물인 경우 기본 폼 값으로 유지
-    if (isNew || !propertyDetail) {
-      return;
-    }
-
-    reset(propertyDetail);
-  }, [propertyId, isNew, reset, propertyDetail]);
-
-  const onAddSchedule = () => {
-    append({
-      round: fields.length + 1,
-      date: new Date().toISOString().split("T")[0],
-      price: 0,
-      result: "예정",
-    });
-  };
+  const isDisabled = isSubmitting || isDeleting;
 
   const onRemoveSchedule = (index: number) => {
     remove(index);
@@ -115,11 +113,31 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
     router.push("/property");
   };
 
-  const onDeleteProperty = () => {
-    // TODO: 매물 삭제 API 호출
-    if (confirm("정말로 이 매물을 삭제하시겠습니까?")) {
-      // 삭제 로직
+  const onDeleteProperty = async () => {
+    const isConfirmed = confirm("정말로 이 매물을 삭제하시겠습니까?");
+    if (!isConfirmed) {
+      return;
     }
+
+    await deleteProperty(propertyId);
+  };
+
+  useEffect(() => {
+    // 새 매물인 경우 기본 폼 값으로 유지
+    if (isNew || !propertyDetail) {
+      return;
+    }
+
+    reset(propertyDetail);
+  }, [propertyId, isNew, reset, propertyDetail]);
+
+  const onAddSchedule = () => {
+    append({
+      round: fields.length + 1,
+      date: new Date().toISOString().split("T")[0],
+      price: 0,
+      result: "예정",
+    });
   };
 
   if (isLoading) {
@@ -143,15 +161,15 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
               variant="outlined"
               theme="destructive"
               onClick={onDeleteProperty}
-              disabled={isSubmitting}
+              disabled={isDisabled}
             >
               삭제
             </Button>
           )}
-          <Button variant="outlined" onClick={onCancel} disabled={isSubmitting}>
+          <Button variant="outlined" onClick={onCancel} disabled={isDisabled}>
             취소
           </Button>
-          <Button onClick={onSaveProperty} disabled={isSubmitting}>
+          <Button onClick={onSaveProperty} disabled={isDisabled}>
             {isNew ? "추가" : isSubmitting ? "저장 중..." : "저장"}
           </Button>
         </div>
@@ -175,7 +193,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="매물명을 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.name?.message}
                   />
                 )}
@@ -194,7 +212,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="예: 아파트, 오피스텔, 상가"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.buildingType?.message}
                   />
                 )}
@@ -215,7 +233,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="면적을 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.area?.message}
                   />
                 )}
@@ -234,7 +252,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="주소를 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.address?.message}
                   />
                 )}
@@ -263,7 +281,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                       field.onChange(numericValue);
                     }}
                     placeholder="감정가를 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.appraisedPrice?.message}
                   />
                 )}
@@ -285,7 +303,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                       field.onChange(numericValue);
                     }}
                     placeholder="최저가를 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.minPrice?.message}
                   />
                 )}
@@ -311,7 +329,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="사건번호를 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.caseNumber?.message}
                   />
                 )}
@@ -330,7 +348,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="사건명을 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.caseTitle?.message}
                   />
                 )}
@@ -349,7 +367,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="법원명을 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.courtName?.message}
                   />
                 )}
@@ -368,7 +386,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     type="date"
                     value={field.value}
                     onChange={field.onChange}
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.registrationDate?.message}
                   />
                 )}
@@ -387,7 +405,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     type="date"
                     value={field.value}
                     onChange={field.onChange}
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.commencementDate?.message}
                   />
                 )}
@@ -406,7 +424,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="상태를 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.status?.message}
                   />
                 )}
@@ -432,7 +450,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="채무자를 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.debtor?.message}
                   />
                 )}
@@ -451,7 +469,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="채권자를 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.creditor?.message}
                   />
                 )}
@@ -470,7 +488,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="소유자를 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.owner?.message}
                   />
                 )}
@@ -489,7 +507,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="임차인을 입력하세요"
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                     errorText={errors.tenant?.message}
                   />
                 )}
@@ -507,7 +525,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
               size="sm"
               variant="outlined"
               onClick={onAddSchedule}
-              disabled={isSubmitting}
+              disabled={isDisabled}
             >
               일정 추가
             </Button>
@@ -524,7 +542,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                   size="sm"
                   variant="outlined"
                   onClick={() => onRemoveSchedule(index)}
-                  disabled={isSubmitting}
+                  disabled={isDisabled}
                 >
                   삭제
                 </Button>
@@ -540,7 +558,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                         type="date"
                         value={field.value}
                         onChange={field.onChange}
-                        disabled={isSubmitting}
+                        disabled={isDisabled}
                         errorText={errors.scheduleInfos?.[index]?.date?.message}
                       />
                     )}
@@ -559,7 +577,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                           field.onChange(numValue);
                         }}
                         placeholder="최저가를 입력하세요"
-                        disabled={isSubmitting}
+                        disabled={isDisabled}
                         errorText={errors.scheduleInfos?.[index]?.price?.message}
                       />
                     )}
@@ -575,7 +593,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                         value={field.value}
                         onChange={field.onChange}
                         placeholder="예: 예정, 유찰, 낙찰"
-                        disabled={isSubmitting}
+                        disabled={isDisabled}
                         errorText={errors.scheduleInfos?.[index]?.result?.message}
                       />
                     )}
@@ -599,7 +617,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                   onChange={field.onChange}
                   placeholder="전문가 코멘트를 입력하세요"
                   rows={4}
-                  disabled={isSubmitting}
+                  disabled={isDisabled}
                   errorText={errors.expertComment?.message}
                 />
               )}

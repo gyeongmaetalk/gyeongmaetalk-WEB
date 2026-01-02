@@ -22,3 +22,7 @@ export const getPropertyDetail = async (
 export const updateProperty = async (props: UpdatePropertyRequest): Promise<BaseResponse<void>> => {
   return api.patch(`properties/${props.propertyId}`, { json: props.body }).json();
 };
+
+export const deleteProperty = async (propertyId: string): Promise<BaseResponse<void>> => {
+  return api.delete(`properties/${propertyId}`).json();
+};
