@@ -1,3 +1,4 @@
+import type { PropertyForm } from "@/schema/property";
 import type { PropertyListItemProps, PropertyScheduleInfoProps } from "@/types/property";
 
 export interface PropertyListResponse {
@@ -22,4 +23,10 @@ export interface PropertyDetailResponse {
   registrationDate: string;
   scheduleInfos: PropertyScheduleInfoProps[];
   tenant: string;
+  status: string;
+}
+
+export interface UpdatePropertyRequest {
+  propertyId: string;
+  body: PropertyForm;
 }

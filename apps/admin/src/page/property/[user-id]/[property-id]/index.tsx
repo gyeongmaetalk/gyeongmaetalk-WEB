@@ -3,25 +3,28 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+import { PROPERTY } from "@/constants/property";
+import { useUpdateProperty } from "@/lib/tanstack/mutation/payment";
 import { useGetPropertyDetail } from "@/lib/tanstack/query/property";
-import { Button, Textarea, Textfield } from "@gyeongmaetalk/ui";
+import { type PropertyForm, propertyFormSchema } from "@/schema/property";
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
+import { Button, Spinner, Textarea, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
-import { type PropertyForm, propertyFormSchema } from "./schema";
-
 interface PropertyDetailPageProps {
   propertyId: string;
+  memberId: number;
 }
 
-const DEFAULT_VALUES: PropertyForm = {
+const DEFAULT_VALUES = {
   name: "",
   buildingType: "",
-  area: "",
+  area: 0,
   address: "",
-  appraisedPrice: "",
-  minPrice: "",
+  appraisedPrice: 0,
+  minPrice: 0,
   caseNumber: "",
   caseTitle: "",
   courtName: "",
@@ -33,19 +36,26 @@ const DEFAULT_VALUES: PropertyForm = {
   tenant: "",
   expertComment: "",
   scheduleInfos: [],
+  status: "",
 };
 
-export default function PropertyDetailPage({ propertyId }: PropertyDetailPageProps) {
+export default function PropertyDetailPage({ propertyId, memberId }: PropertyDetailPageProps) {
   const router = useRouter();
   const isNew = propertyId === "new";
 
   const { data: propertyDetail, isLoading } = useGetPropertyDetail(propertyId);
+  const { mutateAsync: updateProperty } = useUpdateProperty({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [PROPERTY.DETAIL, propertyId] });
+      queryClient.invalidateQueries({ queryKey: [PROPERTY.LIST, memberId] });
+      router.back();
+    },
+  });
 
   const {
     handleSubmit,
     formState: { isSubmitting, errors },
     reset,
-    getValues,
     control,
   } = useForm<PropertyForm>({
     resolver: zodResolver(propertyFormSchema),
@@ -56,36 +66,14 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
     control,
     name: "scheduleInfos",
   });
-  console.log(getValues());
+
   useEffect(() => {
     // 새 매물인 경우 기본 폼 값으로 유지
     if (isNew || !propertyDetail) {
       return;
     }
 
-    reset({
-      name: propertyDetail.name,
-      buildingType: propertyDetail.buildingType,
-      area: propertyDetail.area.toString(),
-      address: propertyDetail.address,
-      appraisedPrice: propertyDetail.appraisedPrice.toString(),
-      minPrice: propertyDetail.minPrice.toString(),
-      caseNumber: propertyDetail.caseNumber,
-      caseTitle: propertyDetail.caseTitle,
-      courtName: propertyDetail.courtName,
-      registrationDate: propertyDetail.registrationDate.split("T")[0],
-      commencementDate: propertyDetail.commencementDate.split("T")[0],
-      debtor: propertyDetail.debtor,
-      creditor: propertyDetail.creditor,
-      owner: propertyDetail.owner,
-      tenant: propertyDetail.tenant,
-      expertComment: propertyDetail.expertComment,
-      scheduleInfos: propertyDetail.scheduleInfos.map((schedule) => ({
-        ...schedule,
-        date: schedule.date.split("T")[0],
-        price: schedule.price,
-      })),
-    });
+    reset(propertyDetail);
   }, [propertyId, isNew, reset, propertyDetail]);
 
   const onAddSchedule = () => {
@@ -103,8 +91,15 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
 
   const onSaveProperty = handleSubmit(
     async (data) => {
-      // TODO: 매물 저장 API 호출
-      console.log(data);
+      if (isNew) {
+        // TODO: 매물 추가 API 호출
+        return;
+      }
+
+      await updateProperty({
+        propertyId,
+        body: data,
+      });
     },
     (error) => {
       console.error(error);
@@ -117,10 +112,9 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
 
   if (isLoading) {
     return (
-      <main>
-        <div className="flex h-screen items-center">
-          <p className="text-muted-foreground mx-auto">로딩 중...</p>
-        </div>
+      <main className="flex h-screen flex-col items-center justify-center">
+        <Spinner className="size-8" />
+        <p className="text-muted-foreground">로딩 중...</p>
       </main>
     );
   }
@@ -160,15 +154,10 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                     onChange={field.onChange}
                     placeholder="매물명을 입력하세요"
                     disabled={isSubmitting}
-                    aria-invalid={errors.name ? "true" : "false"}
+                    errorText={errors.name?.message}
                   />
                 )}
               />
-              {errors.name && (
-                <p className="text-sm text-red-500" role="alert">
-                  {errors.name.message}
-                </p>
-              )}
             </div>
             <div className="space-y-2">
               <label htmlFor="buildingType" className="text-sm font-medium">
@@ -184,15 +173,10 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                     onChange={field.onChange}
                     placeholder="예: 아파트, 오피스텔, 상가"
                     disabled={isSubmitting}
-                    aria-invalid={errors.buildingType ? "true" : "false"}
+                    errorText={errors.buildingType?.message}
                   />
                 )}
               />
-              {errors.buildingType && (
-                <p className="text-sm text-red-500" role="alert">
-                  {errors.buildingType.message}
-                </p>
-              )}
             </div>
             <div className="space-y-2">
               <label htmlFor="area" className="text-sm font-medium">
@@ -210,15 +194,10 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                     onChange={field.onChange}
                     placeholder="면적을 입력하세요"
                     disabled={isSubmitting}
-                    aria-invalid={errors.area ? "true" : "false"}
+                    errorText={errors.area?.message}
                   />
                 )}
               />
-              {errors.area && (
-                <p className="text-sm text-red-500" role="alert">
-                  {errors.area.message}
-                </p>
-              )}
             </div>
             <div className="space-y-2">
               <label htmlFor="address" className="text-sm font-medium">
@@ -234,15 +213,10 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                     onChange={field.onChange}
                     placeholder="주소를 입력하세요"
                     disabled={isSubmitting}
-                    aria-invalid={errors.address ? "true" : "false"}
+                    errorText={errors.address?.message}
                   />
                 )}
               />
-              {errors.address && (
-                <p className="text-sm text-red-500" role="alert">
-                  {errors.address.message}
-                </p>
-              )}
             </div>
           </div>
         </div>
@@ -268,15 +242,10 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                     }}
                     placeholder="감정가를 입력하세요"
                     disabled={isSubmitting}
-                    aria-invalid={errors.appraisedPrice ? "true" : "false"}
+                    errorText={errors.appraisedPrice?.message}
                   />
                 )}
               />
-              {errors.appraisedPrice && (
-                <p className="text-sm text-red-500" role="alert">
-                  {errors.appraisedPrice.message}
-                </p>
-              )}
             </div>
             <div className="space-y-2">
               <label htmlFor="minPrice" className="text-sm font-medium">
@@ -295,15 +264,10 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                     }}
                     placeholder="최저가를 입력하세요"
                     disabled={isSubmitting}
-                    aria-invalid={errors.minPrice ? "true" : "false"}
+                    errorText={errors.minPrice?.message}
                   />
                 )}
               />
-              {errors.minPrice && (
-                <p className="text-sm text-red-500" role="alert">
-                  {errors.minPrice.message}
-                </p>
-              )}
             </div>
           </div>
         </div>
@@ -326,15 +290,10 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                     onChange={field.onChange}
                     placeholder="사건번호를 입력하세요"
                     disabled={isSubmitting}
-                    aria-invalid={errors.caseNumber ? "true" : "false"}
+                    errorText={errors.caseNumber?.message}
                   />
                 )}
               />
-              {errors.caseNumber && (
-                <p className="text-sm text-red-500" role="alert">
-                  {errors.caseNumber.message}
-                </p>
-              )}
             </div>
             <div className="space-y-2">
               <label htmlFor="caseTitle" className="text-sm font-medium">
@@ -346,10 +305,11 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                 render={({ field }) => (
                   <Textfield
                     id="caseTitle"
-                    value={field.value || ""}
+                    value={field.value}
                     onChange={field.onChange}
                     placeholder="사건명을 입력하세요"
                     disabled={isSubmitting}
+                    errorText={errors.caseTitle?.message}
                   />
                 )}
               />
@@ -364,10 +324,11 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                 render={({ field }) => (
                   <Textfield
                     id="courtName"
-                    value={field.value || ""}
+                    value={field.value}
                     onChange={field.onChange}
                     placeholder="법원명을 입력하세요"
                     disabled={isSubmitting}
+                    errorText={errors.courtName?.message}
                   />
                 )}
               />
@@ -383,9 +344,10 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                   <Textfield
                     id="registrationDate"
                     type="date"
-                    value={field.value || ""}
+                    value={field.value}
                     onChange={field.onChange}
                     disabled={isSubmitting}
+                    errorText={errors.registrationDate?.message}
                   />
                 )}
               />
@@ -401,9 +363,29 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                   <Textfield
                     id="commencementDate"
                     type="date"
-                    value={field.value || ""}
+                    value={field.value}
                     onChange={field.onChange}
                     disabled={isSubmitting}
+                    errorText={errors.commencementDate?.message}
+                  />
+                )}
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="status" className="text-sm font-medium">
+                상태
+              </label>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Textfield
+                    id="status"
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="상태를 입력하세요"
+                    disabled={isSubmitting}
+                    errorText={errors.status?.message}
                   />
                 )}
               />
@@ -425,10 +407,11 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                 render={({ field }) => (
                   <Textfield
                     id="debtor"
-                    value={field.value || ""}
+                    value={field.value}
                     onChange={field.onChange}
                     placeholder="채무자를 입력하세요"
                     disabled={isSubmitting}
+                    errorText={errors.debtor?.message}
                   />
                 )}
               />
@@ -443,10 +426,11 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                 render={({ field }) => (
                   <Textfield
                     id="creditor"
-                    value={field.value || ""}
+                    value={field.value}
                     onChange={field.onChange}
                     placeholder="채권자를 입력하세요"
                     disabled={isSubmitting}
+                    errorText={errors.creditor?.message}
                   />
                 )}
               />
@@ -461,10 +445,11 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                 render={({ field }) => (
                   <Textfield
                     id="owner"
-                    value={field.value || ""}
+                    value={field.value}
                     onChange={field.onChange}
                     placeholder="소유자를 입력하세요"
                     disabled={isSubmitting}
+                    errorText={errors.owner?.message}
                   />
                 )}
               />
@@ -479,10 +464,11 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                 render={({ field }) => (
                   <Textfield
                     id="tenant"
-                    value={field.value || ""}
+                    value={field.value}
                     onChange={field.onChange}
                     placeholder="임차인을 입력하세요"
                     disabled={isSubmitting}
+                    errorText={errors.tenant?.message}
                   />
                 )}
               />
@@ -530,9 +516,10 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                     render={({ field }) => (
                       <Textfield
                         type="date"
-                        value={field.value || ""}
+                        value={field.value}
                         onChange={field.onChange}
                         disabled={isSubmitting}
+                        errorText={errors.scheduleInfos?.[index]?.date?.message}
                       />
                     )}
                   />
@@ -544,13 +531,14 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                     control={control}
                     render={({ field }) => (
                       <Textfield
-                        value={field.value?.toString() || ""}
+                        value={field.value?.toString()}
                         onChange={(e) => {
                           const numValue = parseInt(e.target.value.replace(/\D/g, ""), 10) || 0;
                           field.onChange(numValue);
                         }}
                         placeholder="최저가를 입력하세요"
                         disabled={isSubmitting}
+                        errorText={errors.scheduleInfos?.[index]?.price?.message}
                       />
                     )}
                   />
@@ -562,10 +550,11 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
                     control={control}
                     render={({ field }) => (
                       <Textfield
-                        value={field.value || ""}
+                        value={field.value}
                         onChange={field.onChange}
                         placeholder="예: 예정, 유찰, 낙찰"
                         disabled={isSubmitting}
+                        errorText={errors.scheduleInfos?.[index]?.result?.message}
                       />
                     )}
                   />
@@ -584,11 +573,12 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
               control={control}
               render={({ field }) => (
                 <Textarea
-                  value={field.value || ""}
+                  value={field.value}
                   onChange={field.onChange}
                   placeholder="전문가 코멘트를 입력하세요"
                   rows={4}
                   disabled={isSubmitting}
+                  errorText={errors.expertComment?.message}
                 />
               )}
             />

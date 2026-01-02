@@ -1,5 +1,9 @@
 import { api } from "@/lib/ky";
-import type { PropertyDetailResponse, PropertyListResponse } from "@/models/property";
+import type {
+  PropertyDetailResponse,
+  PropertyListResponse,
+  UpdatePropertyRequest,
+} from "@/models/property";
 import type { BaseResponse, PaginationResponse } from "@gyeongmaetalk/types";
 
 export const getPropertyList = async (props: {
@@ -13,4 +17,8 @@ export const getPropertyDetail = async (
   propertyId: string
 ): Promise<BaseResponse<PropertyDetailResponse>> => {
   return api.get(`properties/${propertyId}/detail`).json();
+};
+
+export const updateProperty = async (props: UpdatePropertyRequest): Promise<BaseResponse<void>> => {
+  return api.patch(`properties/${props.propertyId}`, { json: props.body }).json();
 };
