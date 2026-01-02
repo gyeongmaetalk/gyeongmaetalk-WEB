@@ -1,5 +1,15 @@
+import type {
+  ChangePropertyStatusRequest,
+  ChangeSubscriptionStatusRequest,
+} from "@/models/payment";
 import type { AddPropertyRequest, UpdatePropertyRequest } from "@/models/property";
-import { addProperty, deleteProperty, updateProperty } from "@/service/property";
+import {
+  addProperty,
+  changePropertyStatus,
+  changeSubscriptionStatus,
+  deleteProperty,
+  updateProperty,
+} from "@/service/property";
 import type { HTTPError } from "@gyeongmaetalk/lib/ky";
 import type { UseMutationOptions } from "@gyeongmaetalk/lib/tanstack";
 import { useMutation } from "@gyeongmaetalk/lib/tanstack";
@@ -28,6 +38,24 @@ export const useAddProperty = (
 ) => {
   return useMutation({
     mutationFn: addProperty,
+    ...options,
+  });
+};
+
+export const useChangeSubscriptionStatus = (
+  options?: UseMutationOptions<void, HTTPError, ChangeSubscriptionStatusRequest>
+) => {
+  return useMutation({
+    mutationFn: changeSubscriptionStatus,
+    ...options,
+  });
+};
+
+export const useChangePropertyStatus = (
+  options?: UseMutationOptions<void, HTTPError, ChangePropertyStatusRequest>
+) => {
+  return useMutation({
+    mutationFn: changePropertyStatus,
     ...options,
   });
 };

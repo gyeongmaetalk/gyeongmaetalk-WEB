@@ -1,19 +1,21 @@
 import { useState } from "react";
 
+import { PaymentStatus, PaymentType } from "@/constants/payment";
 import { useGetPaymentList } from "@/lib/tanstack/query/payment";
 import { Button } from "@gyeongmaetalk/ui";
 
+import ChangePaymentStatusModal from "./change-payment-status-modal";
+import PaymentStatusChip from "./payment-status-chip";
 import type { PaymentFilterValue } from "./payment-table";
-import RefundModal from "./refund-modal";
 
 interface PaymentListProps {
   filters: PaymentFilterValue;
 }
 
-export interface RefundModalState {
+export interface ChangePaymentStatusModalState {
   isOpen: boolean;
-  paymentKey: string;
-  cancelAmount: number;
+  id: number;
+  paymentStatus: PaymentStatus;
 }
 
 function formatDate(date: string) {
@@ -27,34 +29,30 @@ function formatDate(date: string) {
   });
 }
 
-function formatAmount(amount: number) {
-  return new Intl.NumberFormat("ko-KR", {
-    style: "currency",
-    currency: "KRW",
-  }).format(amount);
-}
-
 export default function PaymentList({ filters }: PaymentListProps) {
   const { data: payments } = useGetPaymentList(filters);
-  const [refundModalState, setRefundModalState] = useState<RefundModalState>({
-    isOpen: false,
-    paymentKey: "",
-    cancelAmount: 0,
-  });
+  const [changePaymentStatusModalState, setChangePaymentStatusModalState] =
+    useState<ChangePaymentStatusModalState>({
+      isOpen: false,
+      id: 0,
+      paymentStatus: PaymentStatus.READY,
+    });
 
-  const onRefund = (paymentKey: string, cancelAmount: number) => {
-    setRefundModalState({
+  const isPropertyPaymentType = filters.paymentType === PaymentType.PROPERTY;
+
+  const onChangePaymentStatus = (id: number, paymentStatus: PaymentStatus) => {
+    setChangePaymentStatusModalState({
       isOpen: true,
-      paymentKey,
-      cancelAmount,
+      id,
+      paymentStatus,
     });
   };
 
-  const onRefundModalClose = () => {
-    setRefundModalState({
+  const onChangePaymentStatusModalClose = () => {
+    setChangePaymentStatusModalState({
       isOpen: false,
-      paymentKey: "",
-      cancelAmount: 0,
+      id: 0,
+      paymentStatus: PaymentStatus.READY,
     });
   };
 
@@ -63,9 +61,8 @@ export default function PaymentList({ filters }: PaymentListProps) {
       <table className="w-full text-left text-sm">
         <thead className="bg-muted">
           <tr>
+            <th className="px-4 py-3">결제 상태</th>
             <th className="px-4 py-3">결제 일시</th>
-            <th className="px-4 py-3">결제 금액</th>
-            <th className="px-4 py-3">결제 ID</th>
             <th className="px-4 py-3">유저 이름</th>
             <th className="px-4 py-3">유저 전화번호</th>
             <th className="px-4 py-3">작업</th>
@@ -80,20 +77,21 @@ export default function PaymentList({ filters }: PaymentListProps) {
             </tr>
           ) : (
             payments.map((p) => (
-              <tr key={p.orderId} className="border-t-cool-neutral-95 border-t">
+              <tr key={p.id} className="border-t-cool-neutral-95 border-t">
+                <td className="px-4 py-3">
+                  <PaymentStatusChip status={p.paymentStatus} />
+                </td>
                 <td className="px-4 py-3">{formatDate(p.payDate)}</td>
-                <td className="px-4 py-3">{formatAmount(p.amount)}</td>
-                <td className="px-4 py-3">{p.orderId}</td>
                 <td className="px-4 py-3">{p.userName}</td>
                 <td className="px-4 py-3">{p.cellPhone}</td>
                 <td className="px-4 py-3">
                   <Button
                     size="sm"
                     variant="outlined"
-                    aria-label="환불"
-                    onClick={() => onRefund(p.paymentKey, p.amount)}
+                    aria-label="상태 변경"
+                    onClick={() => onChangePaymentStatus(p.id, p.paymentStatus)}
                   >
-                    환불
+                    상태 변경
                   </Button>
                 </td>
               </tr>
@@ -101,7 +99,13 @@ export default function PaymentList({ filters }: PaymentListProps) {
           )}
         </tbody>
       </table>
-      <RefundModal refundModalState={refundModalState} onClose={onRefundModalClose} />
+      {changePaymentStatusModalState.isOpen && (
+        <ChangePaymentStatusModal
+          changePaymentStatusModalState={changePaymentStatusModalState}
+          isPropertyPaymentType={isPropertyPaymentType}
+          onClose={onChangePaymentStatusModalClose}
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import type { PaymentType } from "@/constants/payment";
+import type { PaymentStatus, PaymentType } from "@/constants/payment";
 import type { PaymentListItemProps } from "@/types/payment";
 
 export interface PaymentListRequest {
@@ -12,8 +12,12 @@ export interface PaymentListResponse {
   payments: PaymentListItemProps[];
 }
 
-export interface RefundPaymentRequest {
-  paymentKey: string;
-  cancelReason: string;
-  cancelAmount: number;
+export interface ChangeSubscriptionStatusRequest {
+  subscriptionId: number;
+  status: PaymentStatus;
+}
+
+export interface ChangePropertyStatusRequest {
+  propertyId: number;
+  status: PaymentStatus;
 }

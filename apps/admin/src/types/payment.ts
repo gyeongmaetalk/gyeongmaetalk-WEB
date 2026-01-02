@@ -1,8 +1,9 @@
+import type { PaymentStatus } from "@/constants/payment";
+
 export interface PaymentListItemProps {
-  payDate: string;
-  amount: number;
-  orderId: string;
-  paymentKey: string;
+  id: number;
+  paymentStatus: PaymentStatus;
   userName: string;
+  payDate: string;
   cellPhone: string;
 }

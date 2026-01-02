@@ -1,5 +1,9 @@
 import { api } from "@/lib/ky";
 import type {
+  ChangePropertyStatusRequest,
+  ChangeSubscriptionStatusRequest,
+} from "@/models/payment";
+import type {
   AddPropertyRequest,
   PropertyDetailResponse,
   PropertyListResponse,
@@ -30,4 +34,22 @@ export const deleteProperty = async (propertyId: string): Promise<BaseResponse<v
 
 export const addProperty = async (body: AddPropertyRequest): Promise<BaseResponse<void>> => {
   return api.post("properties", { json: body }).json();
+};
+
+export const changeSubscriptionStatus = async (
+  props: ChangeSubscriptionStatusRequest
+): Promise<void> => {
+  const searchParams = new URLSearchParams({
+    status: props.status,
+  });
+  return api
+    .patch(`properties/subscription/${props.subscriptionId}/status`, { searchParams })
+    .json();
+};
+
+export const changePropertyStatus = async (props: ChangePropertyStatusRequest): Promise<void> => {
+  const searchParams = new URLSearchParams({
+    status: props.status,
+  });
+  return api.patch(`properties/${props.propertyId}/status`, { searchParams }).json();
 };
