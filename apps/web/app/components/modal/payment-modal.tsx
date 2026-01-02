@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { HTTPError } from "@gyeongmaetalk/lib/ky";
 import { Button, Modal } from "@gyeongmaetalk/ui";
 
 import { X } from "lucide-react";
@@ -27,11 +28,16 @@ export default function PaymentModal({ isOpen, amount, onClose, onConfirm }: Pay
       setIsLoading(true);
       await onConfirm();
       successToast("입금 완료 요청이 접수되었어요.");
-      onClose();
-    } catch (error) {
+    } catch (error: unknown) {
+      if (error instanceof HTTPError) {
+        errorToast("이미 추천 매물 구독 신청을 했어요.");
+        return;
+      }
+
       console.error("입금 완료 요청 처리 중 오류 발생:", error);
-      errorToast("입금 완료 처리에 실패했어요. 다시 시도해주세요.");
+      errorToast("입금 완료 요청 처리 중 오류가 발생했어요.");
     } finally {
+      onClose();
       setIsLoading(false);
     }
   };
