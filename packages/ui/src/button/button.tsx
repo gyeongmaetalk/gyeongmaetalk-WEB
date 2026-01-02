@@ -23,8 +23,9 @@ interface ButtonProps extends React.ComponentProps<"button"> {
    * default(primary): 기본 버튼
    * secondary: 보조 버튼
    * assistive: 부정적 의미의 버튼
+   * destructive: 위험한 액션(삭제 등)에 사용하는 빨간색 버튼
    */
-  theme?: "default" | "secondary" | "assistive";
+  theme?: "default" | "secondary" | "assistive" | "destructive";
 
   /**
    * 버튼 크기
@@ -68,6 +69,11 @@ const buttonCompoundVariants = [
     class:
       "bg-cool-neutral-50/8 text-label-neutral/88 hover:bg-label-assistive/60 active:bg-label-assistive/80",
   } as const,
+  {
+    variant: "default",
+    theme: "destructive",
+    class: "bg-status-negative text-white hover:bg-red-60 active:bg-red-40",
+  } as const,
   // outlined variant + theme combinations
   {
     variant: "outlined",
@@ -87,6 +93,12 @@ const buttonCompoundVariants = [
     class:
       "border-cool-neutral-50/16 text-label-neutral/88 hover:bg-label-assistive/60 active:bg-label-assistive/80",
   } as const,
+  {
+    variant: "outlined",
+    theme: "destructive",
+    class:
+      "border-status-negative text-status-negative hover:bg-status-negative/10 active:bg-status-negative/20",
+  } as const,
   // text variant + theme combinations
   {
     variant: "text",
@@ -97,6 +109,11 @@ const buttonCompoundVariants = [
     variant: "text",
     theme: "assistive",
     class: "text-label-neutral/88 hover:bg-label-assistive/60 active:bg-label-assistive/80",
+  } as const,
+  {
+    variant: "text",
+    theme: "destructive",
+    class: "text-status-negative hover:bg-status-negative/10 active:bg-status-negative/20",
   } as const,
 ];
 
@@ -126,6 +143,7 @@ const buttonVariants = cva(
         default: "",
         secondary: "",
         assistive: "",
+        destructive: "",
       },
       size: {
         default: "px-7 py-3 rounded-[0.75rem] gap-1.5 font-body1-normal-bold",
@@ -162,7 +180,16 @@ function Button({
 
   const childrenWithLoader = loading ? (
     <Spinner
-      className={cn(variant === "default" ? "text-white" : "text-primary-normal", iconSize[size])}
+      className={cn(
+        variant === "default" && theme === "destructive"
+          ? "text-white"
+          : variant === "default"
+            ? "text-white"
+            : theme === "destructive"
+              ? "text-status-negative"
+              : "text-primary-normal",
+        iconSize[size]
+      )}
     />
   ) : (
     <>

@@ -7,6 +7,7 @@ import { PROPERTY } from "@/constants/property";
 import { useUpdateProperty } from "@/lib/tanstack/mutation/payment";
 import { useGetPropertyDetail } from "@/lib/tanstack/query/property";
 import { type PropertyForm, propertyFormSchema } from "@/schema/property";
+import { errorToast } from "@/utils/toast";
 import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button, Spinner, Textarea, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,6 +50,10 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
       queryClient.invalidateQueries({ queryKey: [PROPERTY.DETAIL, propertyId] });
       queryClient.invalidateQueries({ queryKey: [PROPERTY.LIST, memberId] });
       router.back();
+    },
+    onError: (error) => {
+      errorToast("매물 수정에 실패했어요.");
+      console.error(error);
     },
   });
 
@@ -110,6 +115,13 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
     router.push("/property");
   };
 
+  const onDeleteProperty = () => {
+    // TODO: 매물 삭제 API 호출
+    if (confirm("정말로 이 매물을 삭제하시겠습니까?")) {
+      // 삭제 로직
+    }
+  };
+
   if (isLoading) {
     return (
       <main className="flex h-screen flex-col items-center justify-center">
@@ -126,6 +138,16 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
           {isNew ? "매물 추가" : "매물 수정"}
         </h1>
         <div className="flex gap-2">
+          {!isNew && (
+            <Button
+              variant="outlined"
+              theme="destructive"
+              onClick={onDeleteProperty}
+              disabled={isSubmitting}
+            >
+              삭제
+            </Button>
+          )}
           <Button variant="outlined" onClick={onCancel} disabled={isSubmitting}>
             취소
           </Button>
