@@ -3,6 +3,14 @@ export enum AuthProvider {
   APPLE = "apple",
 }
 
+export enum AuctionStatus {
+  PENDING = "PENDING",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
+  PAYMENT_FAILED = "PAYMENT_FAILED",
+  CANCELED = "CANCELED",
+}
+
 export const AUTH = {
   MY_INFO: "my-info",
 };

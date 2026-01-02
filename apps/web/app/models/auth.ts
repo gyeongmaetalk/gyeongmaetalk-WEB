@@ -1,4 +1,4 @@
-import type { AuthProvider } from "~/constants";
+import type { AuctionStatus, AuthProvider } from "~/constants";
 
 export interface UserResponse {
   memberId: number;
@@ -15,7 +15,7 @@ export interface MyInfoResponse {
   loginType: AuthProvider;
   cellPhone: string | null;
   birth: string | null;
-  auctionStatus: boolean;
+  auctionStatus: AuctionStatus;
 }
 
 export interface UpdateNotificationSettingRequest {
