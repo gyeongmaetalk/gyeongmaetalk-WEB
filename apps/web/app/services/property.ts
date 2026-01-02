@@ -2,13 +2,8 @@ import type { BaseResponse, PaginationResponse } from "@gyeongmaetalk/types";
 
 import { api } from "~/lib/ky";
 import type {
-  ConfirmPaymentResponse,
-  ConfirmPurchaseRequest,
-  ConfirmSubscriptionRequest,
   PropertyDetailResponse,
   PropertyListResponse,
-  ReadyPurchaseResponse,
-  ReadySubscribeResponse,
   RequestBidResponse,
 } from "~/models/property";
 
@@ -32,32 +27,14 @@ export const getPropertyDetail = async (
   return api.get(`properties/${id}`).json();
 };
 
-export const readySubscribe = async (
-  counselorId: number
-): Promise<BaseResponse<ReadySubscribeResponse>> => {
+// 경매 대행 서비스 구독 결제 요청
+export const requestSubscribe = async (counselorId: number): Promise<void> => {
   return api.post(`properties/${counselorId}/subscribe`).json();
 };
 
-export const confirmSubscription = async (
-  props: ConfirmSubscriptionRequest
-): Promise<BaseResponse<ConfirmPaymentResponse>> => {
-  const { subscriptionId, ...restProps } = props;
-  return api.post(`properties/subscribe/${subscriptionId}/confirm`, { json: restProps }).json();
-};
-
-// 추천 매물 구매하기 준비
-export const readyPurchase = async (
-  propertyId: number
-): Promise<BaseResponse<ReadyPurchaseResponse>> => {
+// 추천 매물 구매 결제 요청
+export const requestPurchase = async (propertyId: number): Promise<void> => {
   return api.post(`properties/${propertyId}/prepare`).json();
-};
-
-// 추천 매물 구매 확인 요청
-export const confirmPurchase = async (
-  props: ConfirmPurchaseRequest
-): Promise<BaseResponse<ConfirmPaymentResponse>> => {
-  const { propertyId, ...restProps } = props;
-  return api.post(`properties/${propertyId}/confirm`, { json: restProps }).json();
 };
 
 // 입찰 요청

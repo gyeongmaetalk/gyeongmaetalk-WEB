@@ -6,7 +6,8 @@ import { formatPrice } from "@gyeongmaetalk/utils";
 import { useNavigate } from "react-router";
 
 import Image from "~/components/image";
-import PropertyPaymentModal from "~/components/modal/property-payment-modal";
+import PaymentModal from "~/components/modal/payment-modal";
+import { useRequestPurchase } from "~/lib/tanstack/mutation/property";
 import type { PropertyListItemProps } from "~/types/property";
 import { formatArea, formatDate } from "~/utils/format";
 
@@ -25,16 +26,20 @@ export default function AgencyRecommendItem({
   isPurchased,
 }: PropertyListItemProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const { mutateAsync: requestPurchase } = useRequestPurchase();
 
   const navigate = useNavigate();
 
   const onRouteToApplyRecommendDetail = (id: number) => {
-    // 구매하기 버튼이라면 토스 페이먼츠로 이동
     if (!isPurchased) {
       setIsPaymentModalOpen(true);
       return;
     }
     navigate(`/agency/recommend/${id}`);
+  };
+
+  const onConfirmPayment = async () => {
+    await requestPurchase(id);
   };
 
   return (
@@ -100,10 +105,11 @@ export default function AgencyRecommendItem({
         </Button>
       </div>
       {isPaymentModalOpen && (
-        <PropertyPaymentModal
-          id={id}
+        <PaymentModal
           isOpen={isPaymentModalOpen}
+          amount={PROPERTY_AMOUNT}
           onClose={() => setIsPaymentModalOpen(false)}
+          onConfirm={onConfirmPayment}
         />
       )}
     </>

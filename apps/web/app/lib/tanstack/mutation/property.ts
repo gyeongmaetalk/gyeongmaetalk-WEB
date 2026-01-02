@@ -2,62 +2,19 @@ import type { HTTPError } from "@gyeongmaetalk/lib/ky";
 import { useMutation, type UseMutationOptions } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 
-import type {
-  ConfirmPaymentResponse,
-  ConfirmPurchaseRequest,
-  ConfirmSubscriptionRequest,
-  ReadyPurchaseResponse,
-  ReadySubscribeResponse,
-  RequestBidResponse,
-} from "~/models/property";
-import {
-  confirmPurchase,
-  confirmSubscription,
-  readyPurchase,
-  readySubscribe,
-  requestBid,
-} from "~/services/property";
+import type { RequestBidResponse } from "~/models/property";
+import { requestBid, requestPurchase, requestSubscribe } from "~/services/property";
 
-export const useReadySubscribe = (
-  options?: UseMutationOptions<BaseResponse<ReadySubscribeResponse>, HTTPError, number>
-) => {
-  return useMutation<BaseResponse<ReadySubscribeResponse>, HTTPError, number>({
-    mutationFn: readySubscribe,
+export const useRequestSubscribe = (options?: UseMutationOptions<void, HTTPError, number>) => {
+  return useMutation({
+    mutationFn: requestSubscribe,
     ...options,
   });
 };
 
-export const useConfirmSubscription = (
-  options?: UseMutationOptions<
-    BaseResponse<ConfirmPaymentResponse>,
-    HTTPError,
-    ConfirmSubscriptionRequest
-  >
-) => {
-  return useMutation<BaseResponse<ConfirmPaymentResponse>, HTTPError, ConfirmSubscriptionRequest>({
-    mutationFn: confirmSubscription,
-    ...options,
-  });
-};
-
-export const useReadyPurchase = (
-  options?: UseMutationOptions<BaseResponse<ReadyPurchaseResponse>, HTTPError, number>
-) => {
-  return useMutation<BaseResponse<ReadyPurchaseResponse>, HTTPError, number>({
-    mutationFn: readyPurchase,
-    ...options,
-  });
-};
-
-export const useConfirmPurchase = (
-  options?: UseMutationOptions<
-    BaseResponse<ConfirmPaymentResponse>,
-    HTTPError,
-    ConfirmPurchaseRequest
-  >
-) => {
-  return useMutation<BaseResponse<ConfirmPaymentResponse>, HTTPError, ConfirmPurchaseRequest>({
-    mutationFn: confirmPurchase,
+export const useRequestPurchase = (options?: UseMutationOptions<void, HTTPError, number>) => {
+  return useMutation({
+    mutationFn: requestPurchase,
     ...options,
   });
 };

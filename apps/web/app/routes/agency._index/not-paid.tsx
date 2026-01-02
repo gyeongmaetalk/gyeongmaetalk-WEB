@@ -3,8 +3,11 @@ import { useState } from "react";
 import { Button } from "@gyeongmaetalk/ui";
 
 import ConsultantReviewCard from "~/components/card/consultant-review-card";
-import SubscribePaymentModal from "~/components/modal/subscribe-payment-modal";
+import PaymentModal from "~/components/modal/payment-modal";
+import { useRequestSubscribe } from "~/lib/tanstack/mutation/property";
 import type { ReservedCounselDataResponse } from "~/models/counsel";
+
+const SUBSCRIBE_AMOUNT = 300000;
 
 interface NotPaidProps {
   info: ReservedCounselDataResponse["info"];
@@ -12,13 +15,14 @@ interface NotPaidProps {
 
 export default function NotPaid({ info }: NotPaidProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
+  const { mutateAsync: requestSubscribe } = useRequestSubscribe();
 
   const onStartAuction = () => {
     setIsPaymentModalOpen(true);
   };
 
-  const onPaymentModalClose = () => {
-    setIsPaymentModalOpen(false);
+  const onConfirmSubscribePayment = async () => {
+    await requestSubscribe(info.counselorId);
   };
 
   return (
@@ -39,10 +43,11 @@ export default function NotPaid({ info }: NotPaidProps) {
         결제 후 대행 시작하기
       </Button>
 
-      <SubscribePaymentModal
-        id={info.counselorId}
+      <PaymentModal
         isOpen={isPaymentModalOpen}
-        onClose={onPaymentModalClose}
+        amount={SUBSCRIBE_AMOUNT}
+        onClose={() => setIsPaymentModalOpen(false)}
+        onConfirm={onConfirmSubscribePayment}
       />
     </div>
   );
