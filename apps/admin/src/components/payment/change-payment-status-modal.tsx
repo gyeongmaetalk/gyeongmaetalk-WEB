@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-import type { PaymentStatus } from "@/constants/payment";
-import { PAYMENT, PAYMENT_STATUS_LABEL } from "@/constants/payment";
+import { PAYMENT, PAYMENT_STATUS_LABEL, PaymentStatus } from "@/constants/payment";
 import { SUBSCRIPTION } from "@/constants/subscription";
 import {
   useChangePropertyStatus,
@@ -33,7 +32,6 @@ export default function ChangePaymentStatusModal({
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState(
     changePaymentStatusModalState.paymentStatus
   );
-  const initialPaymentStatus = changePaymentStatusModalState.paymentStatus;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const [dropdownRef] = useOutsideClick<HTMLDivElement>(() => setIsDropdownOpen(false));
@@ -68,11 +66,10 @@ export default function ChangePaymentStatusModal({
       },
     });
 
+  const isSamePaymentStatus = changePaymentStatusModalState.paymentStatus === selectedPaymentStatus;
+  const isReadyStatus = changePaymentStatusModalState.paymentStatus === PaymentStatus.READY;
   const isDisabled =
-    !selectedPaymentStatus ||
-    selectedPaymentStatus === initialPaymentStatus ||
-    isSubscriptionPending ||
-    isPropertyPending;
+    !selectedPaymentStatus || isSamePaymentStatus || isSubscriptionPending || isPropertyPending;
   const isLoading = isSubscriptionPending || isPropertyPending;
 
   const onChangePaymentStatus = async () => {
@@ -125,8 +122,9 @@ export default function ChangePaymentStatusModal({
                   <button
                     key={reason}
                     type="button"
+                    disabled={!isReadyStatus && reason === PaymentStatus.READY}
                     className={cn(
-                      "active:bg-cool-neutral-97 rounded-[12px] px-3 py-2 text-start",
+                      "active:bg-cool-neutral-97 rounded-[12px] px-3 py-2 text-start disabled:opacity-50",
                       reason === selectedPaymentStatus && "text-primary-normal"
                     )}
                     onClick={() => {
