@@ -1,6 +1,6 @@
 import { PROPERTY } from "@/constants/property";
-import { getPropertyList } from "@/service/property";
-import { useSuspenseInfiniteQuery } from "@gyeongmaetalk/lib/tanstack";
+import { getPropertyDetail, getPropertyList } from "@/service/property";
+import { useQuery, useSuspenseInfiniteQuery } from "@gyeongmaetalk/lib/tanstack";
 import { calculatePaigination } from "@gyeongmaetalk/utils";
 
 export const useGetPropertyList = (memberId: number) => {
@@ -10,5 +10,16 @@ export const useGetPropertyList = (memberId: number) => {
     getNextPageParam: calculatePaigination,
     initialPageParam: 0,
     select: (data) => data.pages.flatMap((page) => page.result.properties),
+  });
+};
+
+export const useGetPropertyDetail = (propertyId: string) => {
+  const isNew = propertyId === "new";
+
+  return useQuery({
+    queryKey: [PROPERTY.DETAIL, propertyId],
+    queryFn: () => getPropertyDetail(propertyId),
+    select: (data) => data.result,
+    enabled: !isNew,
   });
 };

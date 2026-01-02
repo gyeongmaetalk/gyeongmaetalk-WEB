@@ -12,3 +12,10 @@ export interface PropertyListItemProps {
   purchased: boolean;
   payment: boolean;
 }
+
+export interface PropertyScheduleInfoProps {
+  round: number;
+  date: string;
+  price: number;
+  result: string;
+}

@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import { mockProperties } from "@/mock/properties";
-import type { Property } from "@/types";
+import { useGetPropertyDetail } from "@/lib/tanstack/query/property";
 import { Button, Textarea, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -15,9 +14,6 @@ import { type PropertyForm, propertyFormSchema } from "./schema";
 interface PropertyDetailPageProps {
   propertyId: string;
 }
-
-// 추후 tanstack query로 교체
-const isLoading = false;
 
 const DEFAULT_VALUES: PropertyForm = {
   name: "",
@@ -43,68 +39,54 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
   const router = useRouter();
   const isNew = propertyId === "new";
 
-  const form = useForm<PropertyForm>({
-    resolver: zodResolver(propertyFormSchema),
-    defaultValues: DEFAULT_VALUES,
-  });
+  const { data: propertyDetail, isLoading } = useGetPropertyDetail(propertyId);
 
   const {
     handleSubmit,
     formState: { isSubmitting, errors },
     reset,
+    getValues,
     control,
-  } = form;
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "scheduleInfos",
+  } = useForm<PropertyForm>({
+    resolver: zodResolver(propertyFormSchema),
+    defaultValues: DEFAULT_VALUES,
   });
 
-  // 데이터 로드 여부를 추적하여 중복 reset 방지
-  const hasLoadedData = useRef(false);
-  const currentIdRef = useRef(propertyId);
-
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "scheduleInfos",
+  });
+  console.log(getValues());
   useEffect(() => {
-    // id가 변경되었으면 플래그 초기화
-    if (currentIdRef.current !== propertyId) {
-      hasLoadedData.current = false;
-      currentIdRef.current = propertyId;
-    }
-
-    // 새 매물이거나 이미 데이터를 로드한 경우에는 실행하지 않음
-    if (isNew || hasLoadedData.current) {
+    // 새 매물인 경우 기본 폼 값으로 유지
+    if (isNew || !propertyDetail) {
       return;
     }
 
-    // TODO: API 호출로 매물 데이터 가져오기
-    const property = mockProperties.find((p) => p.propertyId === propertyId);
-    if (property) {
-      reset({
-        name: property.name,
-        buildingType: property.buildingType,
-        area: property.area.toString(),
-        address: property.address,
-        appraisedPrice: property.appraisedPrice.toString(),
-        minPrice: property.minPrice.toString(),
-        caseNumber: property.caseNumber,
-        caseTitle: property.caseTitle,
-        courtName: property.courtName,
-        registrationDate: property.registrationDate.split("T")[0],
-        commencementDate: property.commencementDate.split("T")[0],
-        debtor: property.debtor,
-        creditor: property.creditor,
-        owner: property.owner,
-        tenant: property.tenant,
-        expertComment: property.expertComment,
-        scheduleInfos: property.scheduleInfos.map((schedule) => ({
-          ...schedule,
-          date: schedule.date.split("T")[0],
-          price: schedule.price,
-        })),
-      });
-      hasLoadedData.current = true;
-    }
-  }, [propertyId, isNew, reset]);
+    reset({
+      name: propertyDetail.name,
+      buildingType: propertyDetail.buildingType,
+      area: propertyDetail.area.toString(),
+      address: propertyDetail.address,
+      appraisedPrice: propertyDetail.appraisedPrice.toString(),
+      minPrice: propertyDetail.minPrice.toString(),
+      caseNumber: propertyDetail.caseNumber,
+      caseTitle: propertyDetail.caseTitle,
+      courtName: propertyDetail.courtName,
+      registrationDate: propertyDetail.registrationDate.split("T")[0],
+      commencementDate: propertyDetail.commencementDate.split("T")[0],
+      debtor: propertyDetail.debtor,
+      creditor: propertyDetail.creditor,
+      owner: propertyDetail.owner,
+      tenant: propertyDetail.tenant,
+      expertComment: propertyDetail.expertComment,
+      scheduleInfos: propertyDetail.scheduleInfos.map((schedule) => ({
+        ...schedule,
+        date: schedule.date.split("T")[0],
+        price: schedule.price,
+      })),
+    });
+  }, [propertyId, isNew, reset, propertyDetail]);
 
   const onAddSchedule = () => {
     append({
@@ -119,50 +101,15 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
     remove(index);
   };
 
-  const onSaveProperty = handleSubmit(async (data) => {
-    // 데이터 변환
-    const propertyData: Omit<Property, "propertyId"> = {
-      name: data.name.trim(),
-      buildingType: data.buildingType.trim(),
-      area: parseFloat(data.area),
-      address: data.address.trim(),
-      appraisedPrice: parseInt(data.appraisedPrice.replace(/,/g, ""), 10),
-      minPrice: parseInt(data.minPrice.replace(/,/g, ""), 10),
-      caseNumber: data.caseNumber.trim(),
-      caseTitle: data.caseTitle?.trim() || "",
-      courtName: data.courtName?.trim() || "",
-      registrationDate: data.registrationDate
-        ? new Date(data.registrationDate + "T00:00:00").toISOString()
-        : new Date().toISOString(),
-      commencementDate: data.commencementDate
-        ? new Date(data.commencementDate + "T00:00:00").toISOString()
-        : new Date().toISOString(),
-      scheduleInfos: data.scheduleInfos.map((schedule, index) => ({
-        round: index + 1,
-        date: new Date(schedule.date + "T00:00:00").toISOString(),
-        price:
-          typeof schedule.price === "string"
-            ? parseInt(String(schedule.price).replace(/,/g, ""), 10)
-            : schedule.price,
-        result: schedule.result,
-      })),
-      debtor: data.debtor?.trim() || "",
-      creditor: data.creditor?.trim() || "",
-      owner: data.owner?.trim() || "",
-      tenant: data.tenant?.trim() || "",
-      expertComment: data.expertComment?.trim() || "",
-      images: [],
-      updateDate: new Date().toISOString(),
-      purchased: false,
-    };
-
-    // TODO: API 호출 - propertyData를 사용하여 저장
-    console.log("Property data to save:", propertyData);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    // 저장 후 목록 페이지로 이동
-    router.push("/property");
-  });
+  const onSaveProperty = handleSubmit(
+    async (data) => {
+      // TODO: 매물 저장 API 호출
+      console.log(data);
+    },
+    (error) => {
+      console.error(error);
+    }
+  );
 
   const onCancel = () => {
     router.push("/property");
@@ -189,7 +136,7 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
             취소
           </Button>
           <Button onClick={onSaveProperty} disabled={isSubmitting}>
-            {isSubmitting ? "저장 중..." : "저장"}
+            {isNew ? "추가" : isSubmitting ? "저장 중..." : "저장"}
           </Button>
         </div>
       </div>
@@ -201,7 +148,7 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label htmlFor="name" className="text-sm font-medium">
-                매물명 *
+                매물명
               </label>
               <Controller
                 name="name"
@@ -225,7 +172,7 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
             </div>
             <div className="space-y-2">
               <label htmlFor="buildingType" className="text-sm font-medium">
-                건물 유형 *
+                건물 유형
               </label>
               <Controller
                 name="buildingType"
@@ -249,7 +196,7 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
             </div>
             <div className="space-y-2">
               <label htmlFor="area" className="text-sm font-medium">
-                면적 (㎡) *
+                면적 (㎡)
               </label>
               <Controller
                 name="area"
@@ -275,7 +222,7 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
             </div>
             <div className="space-y-2">
               <label htmlFor="address" className="text-sm font-medium">
-                주소 *
+                주소
               </label>
               <Controller
                 name="address"
@@ -306,7 +253,7 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label htmlFor="appraisedPrice" className="text-sm font-medium">
-                감정가 (원) *
+                감정가 (원)
               </label>
               <Controller
                 name="appraisedPrice"
@@ -333,7 +280,7 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
             </div>
             <div className="space-y-2">
               <label htmlFor="minPrice" className="text-sm font-medium">
-                최저가 (원) *
+                최저가 (원)
               </label>
               <Controller
                 name="minPrice"
@@ -367,7 +314,7 @@ export default function PropertyDetailPage({ propertyId }: PropertyDetailPagePro
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label htmlFor="caseNumber" className="text-sm font-medium">
-                사건번호 *
+                사건번호
               </label>
               <Controller
                 name="caseNumber"

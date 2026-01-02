@@ -1,11 +1,13 @@
 import { z } from "zod";
 
-export const propertyScheduleInfoSchema = z.object({
-  round: z.number().optional(),
-  date: z.string(),
-  price: z.union([z.number(), z.string()]),
-  result: z.string(),
-});
+export const propertyScheduleInfoSchema = z
+  .object({
+    round: z.number(),
+    date: z.string(),
+    price: z.union([z.number(), z.string()]),
+    result: z.string(),
+  })
+  .optional();
 
 export const propertyFormSchema = z.object({
   name: z.string().min(1, "매물명을 입력하세요"),
@@ -15,16 +17,15 @@ export const propertyFormSchema = z.object({
   appraisedPrice: z.string().min(1, "감정가를 입력하세요"),
   minPrice: z.string().min(1, "최저가를 입력하세요"),
   caseNumber: z.string().min(1, "사건번호를 입력하세요"),
-  caseTitle: z.string().optional(),
-  courtName: z.string().optional(),
-  registrationDate: z.string().optional(),
-  commencementDate: z.string().optional(),
-  status: z.string().optional(),
-  debtor: z.string().optional(),
-  creditor: z.string().optional(),
-  owner: z.string().optional(),
-  tenant: z.string().optional(),
-  expertComment: z.string().optional(),
+  caseTitle: z.string(),
+  courtName: z.string(),
+  registrationDate: z.string(),
+  commencementDate: z.string(),
+  debtor: z.string(),
+  creditor: z.string(),
+  owner: z.string(),
+  tenant: z.string(),
+  expertComment: z.string(),
   scheduleInfos: z.array(propertyScheduleInfoSchema),
 });
 
