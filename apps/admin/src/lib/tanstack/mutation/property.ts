@@ -1,5 +1,5 @@
-import type { UpdatePropertyRequest } from "@/models/property";
-import { deleteProperty, updateProperty } from "@/service/property";
+import type { AddPropertyRequest, UpdatePropertyRequest } from "@/models/property";
+import { addProperty, deleteProperty, updateProperty } from "@/service/property";
 import type { HTTPError } from "@gyeongmaetalk/lib/ky";
 import type { UseMutationOptions } from "@gyeongmaetalk/lib/tanstack";
 import { useMutation } from "@gyeongmaetalk/lib/tanstack";
@@ -19,6 +19,15 @@ export const useDeleteProperty = (
 ) => {
   return useMutation({
     mutationFn: deleteProperty,
+    ...options,
+  });
+};
+
+export const useAddProperty = (
+  options?: UseMutationOptions<BaseResponse<void>, HTTPError, AddPropertyRequest>
+) => {
+  return useMutation({
+    mutationFn: addProperty,
     ...options,
   });
 };

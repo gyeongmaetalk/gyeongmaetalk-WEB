@@ -1,5 +1,6 @@
 import { api } from "@/lib/ky";
 import type {
+  AddPropertyRequest,
   PropertyDetailResponse,
   PropertyListResponse,
   UpdatePropertyRequest,
@@ -25,4 +26,8 @@ export const updateProperty = async (props: UpdatePropertyRequest): Promise<Base
 
 export const deleteProperty = async (propertyId: string): Promise<BaseResponse<void>> => {
   return api.delete(`properties/${propertyId}`).json();
+};
+
+export const addProperty = async (body: AddPropertyRequest): Promise<BaseResponse<void>> => {
+  return api.post("properties", { json: body }).json();
 };

@@ -30,3 +30,5 @@ export interface UpdatePropertyRequest {
   propertyId: string;
   body: PropertyForm;
 }
+
+export type AddPropertyRequest = PropertyForm;

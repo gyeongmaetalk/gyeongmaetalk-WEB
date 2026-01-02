@@ -4,7 +4,11 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { PROPERTY } from "@/constants/property";
-import { useDeleteProperty, useUpdateProperty } from "@/lib/tanstack/mutation/property";
+import {
+  useAddProperty,
+  useDeleteProperty,
+  useUpdateProperty,
+} from "@/lib/tanstack/mutation/property";
 import { useGetPropertyDetail } from "@/lib/tanstack/query/property";
 import { type PropertyForm, propertyFormSchema } from "@/schema/property";
 import { errorToast, successToast } from "@/utils/toast";
@@ -70,6 +74,17 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
       console.error(error);
     },
   });
+  const { mutateAsync: addProperty } = useAddProperty({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [PROPERTY.LIST, memberId] });
+      successToast("매물이 추가되었어요.");
+      router.back();
+    },
+    onError: (error) => {
+      errorToast("매물 추가에 실패했어요.");
+      console.error(error);
+    },
+  });
 
   const {
     handleSubmit,
@@ -95,7 +110,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
   const onSaveProperty = handleSubmit(
     async (data) => {
       if (isNew) {
-        // TODO: 매물 추가 API 호출
+        await addProperty(data);
         return;
       }
 
