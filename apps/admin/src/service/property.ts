@@ -32,8 +32,8 @@ export const deleteProperty = async (propertyId: string): Promise<BaseResponse<v
   return api.delete(`properties/${propertyId}`).json();
 };
 
-export const addProperty = async (body: AddPropertyRequest): Promise<BaseResponse<void>> => {
-  return api.post("properties", { json: body }).json();
+export const addProperty = async (props: AddPropertyRequest): Promise<BaseResponse<void>> => {
+  return api.post(`properties/${props.memberId}`, { json: props.body }).json();
 };
 
 export const changeSubscriptionStatus = async (

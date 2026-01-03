@@ -24,6 +24,7 @@ export interface PropertyDetailResponse {
   scheduleInfos: PropertyScheduleInfoProps[];
   tenant: string;
   status: string;
+  images: string[];
 }
 
 export interface UpdatePropertyRequest {
@@ -31,4 +32,7 @@ export interface UpdatePropertyRequest {
   body: PropertyForm;
 }
 
-export type AddPropertyRequest = PropertyForm;
+export interface AddPropertyRequest {
+  memberId: number;
+  body: PropertyForm;
+}

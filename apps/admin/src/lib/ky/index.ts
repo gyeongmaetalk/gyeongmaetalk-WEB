@@ -29,7 +29,9 @@ const refreshAccessToken = async (): Promise<void> => {
         .json<BaseResponse<UserResponse>>();
     } catch (error) {
       console.error("Refresh 실패", error);
-      await removeCookie("loggedIn");
+      removeCookie("loggedIn");
+      removeCookie("accessToken");
+      removeCookie("refreshToken");
       redirect("/", RedirectType.replace);
     } finally {
       // refresh 완료 후 상태 초기화

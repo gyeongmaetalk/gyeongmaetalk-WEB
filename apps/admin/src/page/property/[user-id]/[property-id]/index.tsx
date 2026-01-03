@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { PROPERTY } from "@/constants/property";
@@ -11,11 +12,20 @@ import {
 } from "@/lib/tanstack/mutation/property";
 import { useGetPropertyDetail } from "@/lib/tanstack/query/property";
 import { type PropertyForm, propertyFormSchema } from "@/schema/property";
-import { errorToast, successToast } from "@/utils/toast";
+import { uploadImage } from "@/service/image";
+import { errorToast, infoToast, successToast } from "@/utils/toast";
 import { queryClient } from "@gyeongmaetalk/lib/tanstack";
-import { Button, Spinner, Textarea, Textfield } from "@gyeongmaetalk/ui";
+import {
+  Button,
+  DragCarousel,
+  DragCarouselItem,
+  Spinner,
+  Textarea,
+  Textfield,
+} from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { Camera, X } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
 interface PropertyDetailPageProps {
@@ -23,7 +33,7 @@ interface PropertyDetailPageProps {
   memberId: number;
 }
 
-const DEFAULT_VALUES = {
+const DEFAULT_VALUES: PropertyForm = {
   name: "",
   buildingType: "",
   area: 0,
@@ -42,11 +52,18 @@ const DEFAULT_VALUES = {
   expertComment: "",
   scheduleInfos: [],
   status: "",
+  images: [],
 };
+
+const MAX_IMAGES = 10;
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+const s3BaseUrl = "https://auctiontalk-s3.s3.ap-northeast-2.amazonaws.com";
 
 export default function PropertyDetailPage({ propertyId, memberId }: PropertyDetailPageProps) {
   const router = useRouter();
   const isNew = propertyId === "new";
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: propertyDetail, isLoading } = useGetPropertyDetail(propertyId);
 
@@ -91,10 +108,14 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
     formState: { isSubmitting, errors },
     reset,
     control,
+    watch,
+    setValue,
   } = useForm<PropertyForm>({
     resolver: zodResolver(propertyFormSchema),
     defaultValues: DEFAULT_VALUES,
   });
+
+  const images = watch("images");
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -103,20 +124,41 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
 
   const isDisabled = isSubmitting || isDeleting;
 
+  const onChnageNumber = (value: string, onChange: (value: number) => void) => {
+    if (value === "" || value === null || value === undefined) {
+      onChange(0);
+      return;
+    }
+
+    const numValue = +value;
+
+    if (isNaN(numValue)) {
+      onChange(0);
+      return;
+    }
+
+    onChange(numValue);
+  };
+
   const onRemoveSchedule = (index: number) => {
     remove(index);
   };
 
   const onSaveProperty = handleSubmit(
     async (data) => {
+      const body = {
+        ...data,
+        imageUrls: data.images.map((url) => url.replace(`${s3BaseUrl}/`, "").split("?")[0]),
+      };
+
       if (isNew) {
-        await addProperty(data);
+        await addProperty({ memberId, body });
         return;
       }
 
       await updateProperty({
         propertyId,
-        body: data,
+        body,
       });
     },
     (error) => {
@@ -143,7 +185,10 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
       return;
     }
 
-    reset(propertyDetail);
+    reset({
+      ...propertyDetail,
+      images: propertyDetail.images.map((url) => s3BaseUrl + "/" + url),
+    });
   }, [propertyId, isNew, reset, propertyDetail]);
 
   const onAddSchedule = () => {
@@ -153,6 +198,38 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
       price: 0,
       result: "예정",
     });
+  };
+
+  const onFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+
+    if (files.length === 0) return;
+
+    const currentImageCount = images.length;
+    const remainingSlots = MAX_IMAGES - currentImageCount;
+
+    if (files.length > remainingSlots) {
+      infoToast(`이미지는 최대 ${MAX_IMAGES}개까지 업로드 가능합니다.`);
+      return;
+    }
+
+    try {
+      const newImageUrls = await Promise.all(files.map((file) => uploadImage(file, "property")));
+      const validUrls = newImageUrls.filter((url) => url !== "");
+      setValue("images", [...images, ...validUrls]);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (error) {
+      errorToast("이미지 업로드에 실패했어요.");
+      console.error(error);
+    }
+  };
+
+  const onRemoveImage = (index: number) => {
+    const newImages = [...images];
+    newImages.splice(index, 1);
+    setValue("images", newImages);
   };
 
   if (isLoading) {
@@ -191,6 +268,60 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
       </div>
 
       <form onSubmit={onSaveProperty} className="space-y-6">
+        {/* 매물 이미지 */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">매물 이미지</h3>
+          <div className="flex flex-wrap gap-2">
+            {images.length < MAX_IMAGES && (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="border-cool-neutral-50/16 flex size-20 flex-col items-center justify-center gap-1 rounded-lg border"
+                aria-label="이미지 업로드"
+                disabled={isDisabled}
+              >
+                <Camera className="text-label-alternative size-5" />
+                <p className="font-label2-medium text-label-alternative">
+                  {images.length}/{MAX_IMAGES}
+                </p>
+              </button>
+            )}
+            <DragCarousel>
+              {/* TODO: 이미지 추가하는 로직 추가하기 */}
+              {images.map((url, index) => (
+                <DragCarouselItem key={`${url}-${index}`}>
+                  <div className="relative">
+                    <Image
+                      src={url}
+                      alt={`매물 이미지 ${index + 1}`}
+                      className="rounded-lg object-cover"
+                      width={80}
+                      height={80}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => onRemoveImage(index)}
+                      className="bg-label-neutral absolute top-1 right-1 flex items-center justify-center rounded-full p-1"
+                      aria-label={`이미지 ${index + 1} 삭제`}
+                      disabled={isDisabled}
+                    >
+                      <X className="size-4 text-white" />
+                    </button>
+                  </div>
+                </DragCarouselItem>
+              ))}
+            </DragCarousel>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept={ACCEPTED_IMAGE_TYPES.join(",")}
+              onChange={onFileSelect}
+              className="hidden"
+            />
+          </div>
+        </div>
+
         {/* 기본 정보 */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">기본 정보</h3>
@@ -246,7 +377,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     type="number"
                     step="0.01"
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(e) => onChnageNumber(e.target.value, field.onChange)}
                     placeholder="면적을 입력하세요"
                     disabled={isDisabled}
                     errorText={errors.area?.message}
@@ -290,11 +421,9 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                 render={({ field }) => (
                   <Textfield
                     id="appraisedPrice"
+                    type="number"
                     value={field.value}
-                    onChange={(e) => {
-                      const numericValue = e.target.value.replace(/\D/g, "");
-                      field.onChange(numericValue);
-                    }}
+                    onChange={(e) => onChnageNumber(e.target.value, field.onChange)}
                     placeholder="감정가를 입력하세요"
                     disabled={isDisabled}
                     errorText={errors.appraisedPrice?.message}
@@ -312,11 +441,9 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                 render={({ field }) => (
                   <Textfield
                     id="minPrice"
+                    type="number"
                     value={field.value}
-                    onChange={(e) => {
-                      const numericValue = e.target.value.replace(/\D/g, "");
-                      field.onChange(numericValue);
-                    }}
+                    onChange={(e) => onChnageNumber(e.target.value, field.onChange)}
                     placeholder="최저가를 입력하세요"
                     disabled={isDisabled}
                     errorText={errors.minPrice?.message}
@@ -586,11 +713,9 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                     control={control}
                     render={({ field }) => (
                       <Textfield
-                        value={field.value?.toString()}
-                        onChange={(e) => {
-                          const numValue = parseInt(e.target.value.replace(/\D/g, ""), 10) || 0;
-                          field.onChange(numValue);
-                        }}
+                        type="number"
+                        value={field.value}
+                        onChange={(e) => onChnageNumber(e.target.value, field.onChange)}
                         placeholder="최저가를 입력하세요"
                         disabled={isDisabled}
                         errorText={errors.scheduleInfos?.[index]?.price?.message}

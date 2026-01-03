@@ -1,9 +1,8 @@
+import { baseApi } from "@/lib/ky";
+import { errorToast } from "@/utils/toast";
 import { instance } from "@gyeongmaetalk/lib/ky";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 import { convertImageToWebP } from "@gyeongmaetalk/utils";
-
-import { api } from "~/lib/ky";
-import { errorToast } from "~/utils/toast";
 
 const s3BaseUrl = "https://auctiontalk-s3.s3.ap-northeast-2.amazonaws.com";
 
@@ -17,10 +16,10 @@ export async function uploadImage(file: File, category: string) {
   try {
     const webpFile = await convertImageToWebP(file);
 
-    const { result: preSignedUrl } = await api
-      .get<
-        BaseResponse<string>
-      >("s3/presigned/put", { searchParams: { fileName: webpFile.name, category } })
+    const { result: preSignedUrl } = await baseApi
+      .get<BaseResponse<string>>("s3/presigned/put", {
+        searchParams: { fileName: webpFile.name, category },
+      })
       .json();
 
     // S3 URL을 프록시 URL로 변경
@@ -38,7 +37,7 @@ export async function uploadImage(file: File, category: string) {
 
     const urlObj = new URL(preSignedUrl);
     const fileUrl = urlObj.pathname.substring(1);
-    const { result: returnUrl } = await api
+    const { result: returnUrl } = await baseApi
       .get<BaseResponse<string>>("s3/presigned/get", { searchParams: { fileUrl } })
       .json();
 
