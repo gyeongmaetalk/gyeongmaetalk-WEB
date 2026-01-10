@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 
 import { useGetPropertyList } from "@/lib/tanstack/query/property";
-import { Button } from "@gyeongmaetalk/ui";
+import { Badge, Button } from "@gyeongmaetalk/ui";
 import { formatPrice } from "@gyeongmaetalk/utils";
 
 interface PropertyMemberListProps {
@@ -18,10 +18,6 @@ function formatDate(date: string) {
   });
 }
 
-function formatArea(area: number) {
-  return `${area.toFixed(2)}㎡`;
-}
-
 export default function PropertyMemberList({ memberId }: PropertyMemberListProps) {
   const router = useRouter();
   const { data: properties } = useGetPropertyList(memberId);
@@ -34,7 +30,7 @@ export default function PropertyMemberList({ memberId }: PropertyMemberListProps
             <th className="bg-muted px-4 py-3">매물명</th>
             <th className="bg-muted px-4 py-3">주소</th>
             <th className="bg-muted px-4 py-3">건물 유형</th>
-            <th className="bg-muted px-4 py-3">면적</th>
+            <th className="bg-muted px-4 py-3">구매 여부</th>
             <th className="bg-muted px-4 py-3">감정가</th>
             <th className="bg-muted px-4 py-3">최저가</th>
             <th className="bg-muted px-4 py-3">업데이트</th>
@@ -58,7 +54,11 @@ export default function PropertyMemberList({ memberId }: PropertyMemberListProps
                   </div>
                 </td>
                 <td className="px-4 py-3">{p.buildingType}</td>
-                <td className="px-4 py-3">{formatArea(p.area)}</td>
+                <td className="px-4 py-3">
+                  <Badge theme={p.purchased ? "accent" : "default"} size="xs">
+                    {p.purchased ? "구매완료" : "구매대기"}
+                  </Badge>
+                </td>
                 <td className="px-4 py-3">{formatPrice(p.appraisedPrice)}</td>
                 <td className="px-4 py-3">{formatPrice(p.minPrice)}</td>
                 <td className="px-4 py-3">{formatDate(p.updateDate)}</td>
