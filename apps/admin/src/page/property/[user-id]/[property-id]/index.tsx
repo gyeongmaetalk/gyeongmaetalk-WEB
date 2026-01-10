@@ -60,10 +60,16 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/web
 
 const s3BaseUrl = "https://auctiontalk-s3.s3.ap-northeast-2.amazonaws.com";
 
+// URL을 정규화하여 비교하기 위한 함수 (s3BaseUrl과 쿼리 파라미터 제거)
+const normalizeImageUrl = (url: string): string => {
+  return url.replace(`${s3BaseUrl}/`, "").split("?")[0];
+};
+
 export default function PropertyDetailPage({ propertyId, memberId }: PropertyDetailPageProps) {
   const router = useRouter();
   const isNew = propertyId === "new";
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const originalImageUrlsRef = useRef<string[]>([]);
 
   const { data: propertyDetail, isLoading } = useGetPropertyDetail(propertyId);
 
@@ -146,15 +152,39 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
 
   const onSaveProperty = handleSubmit(
     async (data) => {
-      const body = {
-        ...data,
-        imageUrls: data.images.map((url) => url.replace(`${s3BaseUrl}/`, "").split("?")[0]),
-      };
+      const { images, ...restData } = data;
 
       if (isNew) {
-        await addProperty({ memberId, body });
+        const body = {
+          ...restData,
+          imageUrls: data.images.map((url) => normalizeImageUrl(url)),
+        };
+        await addProperty({ ...body, memberId });
         return;
       }
+
+      // 수정 시 기존 이미지와 새 이미지 분리
+      const normalizedCurrentImages = data.images.map((url) => normalizeImageUrl(url));
+      const normalizedOriginalImages = originalImageUrlsRef.current.map((url) =>
+        normalizeImageUrl(url)
+      );
+
+      const remainImageUrls: string[] = [];
+      const addImageUrls: string[] = [];
+
+      for (const normalizedUrl of normalizedCurrentImages) {
+        if (normalizedOriginalImages.includes(normalizedUrl)) {
+          remainImageUrls.push(normalizedUrl);
+          continue;
+        }
+        addImageUrls.push(normalizedUrl);
+      }
+
+      const body = {
+        ...restData,
+        remainImageUrls,
+        addImageUrls,
+      };
 
       await updateProperty({
         propertyId,
@@ -167,7 +197,7 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
   );
 
   const onCancel = () => {
-    router.push("/property");
+    router.back();
   };
 
   const onDeleteProperty = async () => {
@@ -182,13 +212,13 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
   useEffect(() => {
     // 새 매물인 경우 기본 폼 값으로 유지
     if (isNew || !propertyDetail) {
+      originalImageUrlsRef.current = [];
       return;
     }
 
-    reset({
-      ...propertyDetail,
-      images: propertyDetail.images.map((url) => s3BaseUrl + "/" + url),
-    });
+    originalImageUrlsRef.current = propertyDetail.images;
+
+    reset(propertyDetail);
   }, [propertyId, isNew, reset, propertyDetail]);
 
   const onAddSchedule = () => {
@@ -276,18 +306,17 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="border-cool-neutral-50/16 flex size-20 flex-col items-center justify-center gap-1 rounded-lg border"
+                className="border-cool-neutral-50/16 flex size-60 flex-col items-center justify-center gap-1 rounded-lg border"
                 aria-label="이미지 업로드"
                 disabled={isDisabled}
               >
-                <Camera className="text-label-alternative size-5" />
-                <p className="font-label2-medium text-label-alternative">
+                <Camera className="text-label-alternative size-8" />
+                <p className="font-body2-normal-bold text-label-alternative">
                   {images.length}/{MAX_IMAGES}
                 </p>
               </button>
             )}
             <DragCarousel>
-              {/* TODO: 이미지 추가하는 로직 추가하기 */}
               {images.map((url, index) => (
                 <DragCarouselItem key={`${url}-${index}`}>
                   <div className="relative">
@@ -295,8 +324,8 @@ export default function PropertyDetailPage({ propertyId, memberId }: PropertyDet
                       src={url}
                       alt={`매물 이미지 ${index + 1}`}
                       className="rounded-lg object-cover"
-                      width={80}
-                      height={80}
+                      width={240}
+                      height={240}
                     />
                     <button
                       type="button"

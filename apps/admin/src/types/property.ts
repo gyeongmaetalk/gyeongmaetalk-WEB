@@ -1,3 +1,5 @@
+import type { PropertyForm } from "@/schema/property";
+
 export interface PropertyListItemProps {
   id: number;
   name: string;
@@ -18,4 +20,9 @@ export interface PropertyScheduleInfoProps {
   date: string;
   price: number;
   result: string;
+}
+
+export interface UpdatePropertyRequestBody extends Omit<PropertyForm, "images"> {
+  remainImageUrls: string[];
+  addImageUrls: string[];
 }

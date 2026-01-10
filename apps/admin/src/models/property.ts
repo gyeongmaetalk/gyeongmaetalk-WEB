@@ -1,5 +1,9 @@
 import type { PropertyForm } from "@/schema/property";
-import type { PropertyListItemProps, PropertyScheduleInfoProps } from "@/types/property";
+import type {
+  PropertyListItemProps,
+  PropertyScheduleInfoProps,
+  UpdatePropertyRequestBody,
+} from "@/types/property";
 
 export interface PropertyListResponse {
   properties: PropertyListItemProps[];
@@ -29,10 +33,9 @@ export interface PropertyDetailResponse {
 
 export interface UpdatePropertyRequest {
   propertyId: string;
-  body: PropertyForm;
+  body: UpdatePropertyRequestBody;
 }
 
-export interface AddPropertyRequest {
+export interface AddPropertyRequest extends Omit<PropertyForm, "images"> {
   memberId: number;
-  body: PropertyForm;
 }

@@ -33,7 +33,7 @@ export const deleteProperty = async (propertyId: string): Promise<BaseResponse<v
 };
 
 export const addProperty = async (props: AddPropertyRequest): Promise<BaseResponse<void>> => {
-  return api.post(`properties/${props.memberId}`, { json: props.body }).json();
+  return api.post("properties", { json: props }).json();
 };
 
 export const changeSubscriptionStatus = async (

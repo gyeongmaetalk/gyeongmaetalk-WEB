@@ -12,8 +12,6 @@ interface TimeSlot {
   label: string;
 }
 
-// TODO: 시간 슬롯 백엔드와 논의 후 로직 수정하기
-
 // 오전 시간 슬롯 (10:00 ~ 11:30)
 const morningSlots: TimeSlot[] = [
   { time: "10:00:00", label: "10:00" },
