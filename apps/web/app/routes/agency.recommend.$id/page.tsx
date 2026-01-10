@@ -10,8 +10,7 @@ import PageLayout from "~/components/layout/page-layout";
 import { useGetPropertyDetail } from "~/lib/tanstack/query/property";
 import RequestBidButton from "~/routes/agency.recommend._index/request-bid-button";
 import GyeongmaeMap from "~/routes/agency.recommend.$id/gyeongmae-map";
-// TODO: 내,외부 이미지 로직 반영되면 추가하기
-// import ListingCarousel from "~/routes/agency.recommend.$id/listing-carousel";
+import ListingCarousel from "~/routes/agency.recommend.$id/listing-carousel";
 import { formatArea, formatDate } from "~/utils/format";
 import { errorToast, successToast } from "~/utils/toast";
 
@@ -24,13 +23,46 @@ const AgencyRecommendDetailPage = () => {
 
   const { data, isLoading } = useGetPropertyDetail(id);
 
-  const onCopy = (e: React.MouseEvent) => {
+  const onCopy = async (e: React.MouseEvent) => {
     e.stopPropagation();
 
+    const textToCopy = data?.caseNumber || "";
     const defaultSuccess = () => successToast("복사 완료");
     const defaultFailure = () => errorToast("복사 실패");
 
-    navigator.clipboard.writeText(id).then(defaultSuccess).catch(defaultFailure);
+    // navigator.clipboard API 사용 (HTTPS 환경에서만 동작)
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        defaultSuccess();
+        return;
+      } catch (_error) {
+        defaultFailure();
+        return;
+      }
+    }
+
+    // Fallback: document.execCommand 사용
+    try {
+      const textArea = document.createElement("textarea");
+      textArea.value = textToCopy;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const successful = document.execCommand("copy");
+      document.body.removeChild(textArea);
+
+      if (successful) {
+        defaultSuccess();
+      } else {
+        defaultFailure();
+      }
+    } catch (_error) {
+      defaultFailure();
+    }
   };
 
   if (isLoading || !data) {
@@ -58,7 +90,7 @@ const AgencyRecommendDetailPage = () => {
       }
       withFloating
     >
-      {/* <ListingCarousel /> */}
+      <ListingCarousel images={data.images} />
       <section className="space-y-3 px-4 py-6">
         <div className="space-y-1">
           <Badge size="xs" theme="accent">
@@ -135,16 +167,20 @@ const AgencyRecommendDetailPage = () => {
             <p className="flex-1 shrink-0 text-center">결과</p>
           </div>
           <div>
-            {data.scheduleInfos.map((info) => (
-              <div key={info.round} className="border-t-cool-neutral-98 flex border-t p-2.5">
-                <p className="flex-1 shrink-0 text-center">{info.round}차</p>
-                <p className="flex-2 shrink-0 text-center">{formatDate({ date: info.date })}</p>
-                <p className="flex-2 shrink-0 text-center">
-                  {formatPrice(info.price, { showUnit: true })}
-                </p>
-                <p className="flex-1 shrink-0 text-center">{info.result}</p>
-              </div>
-            ))}
+            {data.scheduleInfos.length === 0 ? (
+              <p className="text-label-neutral py-5 text-center">입찰 일정이 없어요.</p>
+            ) : (
+              data.scheduleInfos.map((info) => (
+                <div key={info.round} className="border-t-cool-neutral-98 flex border-t p-2.5">
+                  <p className="flex-1 shrink-0 text-center">{info.round}차</p>
+                  <p className="flex-2 shrink-0 text-center">{formatDate({ date: info.date })}</p>
+                  <p className="flex-2 shrink-0 text-center">
+                    {formatPrice(info.price, { showUnit: true })}
+                  </p>
+                  <p className="flex-1 shrink-0 text-center">{info.result}</p>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>

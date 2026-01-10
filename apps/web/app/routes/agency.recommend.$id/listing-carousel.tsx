@@ -9,24 +9,13 @@ import {
   Modal,
 } from "@gyeongmaetalk/ui";
 
-import insideBuilding from "~/assets/agency-recommend/inside-building.png";
-import outsideBuilding from "~/assets/agency-recommend/outside-building.png";
 import Image from "~/components/image";
 
-const CAROUSEL_ITEMS = [
-  {
-    id: 1,
-    image: outsideBuilding,
-    title: "외관",
-  },
-  {
-    id: 2,
-    image: insideBuilding,
-    title: "도면",
-  },
-];
+interface ListingCarouselProps {
+  images: string[];
+}
 
-export default function ListingCarousel() {
+export default function ListingCarousel({ images }: ListingCarouselProps) {
   const [api, setApi] = useState<CarouselApi | null>(null);
   const [modalApi, setModalApi] = useState<CarouselApi | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -72,21 +61,19 @@ export default function ListingCarousel() {
     <>
       <Carousel className="relative" setApi={setApi}>
         <div className="bg-label-neutral font-caption1-regular absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 rounded-[18px] px-3 py-1 text-white">
-          {CAROUSEL_ITEMS[currentIndex].title}
-          <div className="size-[3px] rounded-full bg-[#d9d9d9]" />
-          {currentIndex + 1} / {CAROUSEL_ITEMS.length}
+          {currentIndex + 1} / {images.length}
         </div>
         <CarouselContent>
-          {CAROUSEL_ITEMS.map((item, idx) => (
-            <CarouselItem key={item.id}>
+          {images.map((image, idx) => (
+            <CarouselItem key={`${image}-${idx}`}>
               <Image
-                src={item.image}
-                alt={item.title}
-                className="w-full cursor-pointer"
+                src={image}
+                alt={`${idx + 1} 이미지`}
+                className="aspect-image w-full cursor-pointer object-cover"
                 onClick={() => onImageClick(idx)}
                 role="button"
                 tabIndex={0}
-                aria-label={`${item.title} 이미지 확대보기`}
+                aria-label={`${idx + 1} 이미지 확대보기`}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
@@ -103,14 +90,12 @@ export default function ListingCarousel() {
         <Modal className="m-0 bg-transparent p-0">
           <Carousel className="relative" setApi={setModalApi} ref={modalRef}>
             <div className="bg-label-neutral font-caption1-regular absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 rounded-[18px] px-3 py-1 text-white">
-              {CAROUSEL_ITEMS[modalCurrentIndex].title}
-              <div className="size-[3px] rounded-full bg-[#d9d9d9]" />
-              {modalCurrentIndex + 1} / {CAROUSEL_ITEMS.length}
+              {modalCurrentIndex + 1} / {images.length}
             </div>
             <CarouselContent>
-              {CAROUSEL_ITEMS.map((item) => (
-                <CarouselItem key={item.id}>
-                  <Image src={item.image} alt={item.title} className="w-full" />
+              {images.map((image, idx) => (
+                <CarouselItem key={`${image}-${idx}`}>
+                  <Image src={image} alt={`${idx + 1} 이미지`} className="w-full" />
                 </CarouselItem>
               ))}
             </CarouselContent>

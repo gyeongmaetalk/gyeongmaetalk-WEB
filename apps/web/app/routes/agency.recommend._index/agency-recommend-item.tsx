@@ -23,7 +23,7 @@ export default function AgencyRecommendItem({
   images,
   buildingType,
   updateDate,
-  isPurchased,
+  purchased,
 }: PropertyListItemProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const { mutateAsync: requestPurchase } = useRequestPurchase();
@@ -31,7 +31,7 @@ export default function AgencyRecommendItem({
   const navigate = useNavigate();
 
   const onRouteToApplyRecommendDetail = (id: number) => {
-    if (!isPurchased) {
+    if (!purchased) {
       setIsPaymentModalOpen(true);
       return;
     }
@@ -55,7 +55,7 @@ export default function AgencyRecommendItem({
               {formatDate({ date: updateDate, shortYear: true })} 업데이트 매물
             </p>
             <p className="font-caption1-bold text-primary-normal">
-              {isPurchased ? "구매완료" : formatPrice(PROPERTY_AMOUNT)}
+              {purchased ? "구매완료" : formatPrice(PROPERTY_AMOUNT)}
             </p>
           </div>
         </div>
@@ -63,7 +63,7 @@ export default function AgencyRecommendItem({
           {images.map((image) => (
             <DragCarouselItem key={`${id}-${image}`} className="w-4/5">
               <div className="relative overflow-hidden rounded-[12px]">
-                <Image src={image} alt="건물 이미지" className="w-full" />
+                <Image src={image} alt="건물 이미지" className="aspect-image w-full object-cover" />
               </div>
             </DragCarouselItem>
           ))}
@@ -98,10 +98,10 @@ export default function AgencyRecommendItem({
         </div>
         <Button
           className="w-full"
-          theme={isPurchased ? "assistive" : "default"}
+          theme={purchased ? "assistive" : "default"}
           onClick={() => onRouteToApplyRecommendDetail(id)}
         >
-          {isPurchased ? "자세히 보기" : "구매하기"}
+          {purchased ? "자세히 보기" : "구매하기"}
         </Button>
       </div>
       {isPaymentModalOpen && (

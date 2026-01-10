@@ -9,14 +9,14 @@ import type {
 
 export const getPropertyList = async (
   page: number,
-  status: string | null
+  isPurchased: string | null
 ): Promise<PaginationResponse<PropertyListResponse>> => {
   const searchParams = new URLSearchParams({
     page: page.toString(),
     size: "10",
   });
-  if (status) {
-    searchParams.set("status", status);
+  if (isPurchased) {
+    searchParams.set("isPurchased", isPurchased);
   }
   return api.get("properties/list", { searchParams }).json();
 };

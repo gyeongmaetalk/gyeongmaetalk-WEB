@@ -7,8 +7,8 @@ export interface PropertyListItemProps {
   appraisedPrice: number;
   minPrice: number;
   images: string[];
-  isPurchased: boolean;
-  isPayment: boolean;
+  purchased: boolean;
+  payment: boolean;
   buildingType: string;
   updateDate: string;
 }

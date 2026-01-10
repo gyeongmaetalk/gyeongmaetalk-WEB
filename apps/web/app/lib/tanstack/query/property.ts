@@ -7,10 +7,10 @@ import { PROPERTY } from "~/constants";
 import type { PropertyDetailResponse } from "~/models/property";
 import { getPropertyDetail, getPropertyList } from "~/services/property";
 
-export const useGetPropertyList = (status: string | null) => {
+export const useGetPropertyList = (isPurchased: string | null) => {
   return useInfiniteQuery({
-    queryKey: [PROPERTY.PROPERTY_LIST, status],
-    queryFn: ({ pageParam = 0 }) => getPropertyList(pageParam, status),
+    queryKey: [PROPERTY.PROPERTY_LIST, isPurchased],
+    queryFn: ({ pageParam = 0 }) => getPropertyList(pageParam, isPurchased),
     getNextPageParam: calculatePaigination,
     initialPageParam: 0,
     select: (data) => data.pages.flatMap((page) => page.result.properties),
