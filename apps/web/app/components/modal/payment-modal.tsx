@@ -27,10 +27,10 @@ export default function PaymentModal({ isOpen, amount, onClose, onConfirm }: Pay
     try {
       setIsLoading(true);
       await onConfirm();
-      successToast("입금 완료 요청이 접수되었어요.");
+      successToast("입금 신청 완료되었어요.");
     } catch (error: unknown) {
       if (error instanceof HTTPError) {
-        errorToast("이미 추천 매물 구독 신청을 했어요.");
+        errorToast("이미 입금 신청을 완료했어요.");
         return;
       }
 
