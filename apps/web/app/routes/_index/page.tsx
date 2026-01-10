@@ -20,6 +20,8 @@ import SectionField from "~/routes/_index/section-field";
 import TitleSection from "~/routes/_index/title-section";
 import { formatCounselDate, formatCounselTime, getTimeDisplay } from "~/utils/format";
 
+import Footer from "./footer";
+
 const contents = [
   {
     id: 1,
@@ -129,6 +131,7 @@ export default function HomePage() {
             </div>
           </SectionField>
         </div>
+        <Footer />
       </div>
     </PageLayout>
   );
