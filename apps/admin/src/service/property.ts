@@ -41,6 +41,7 @@ export const changeSubscriptionStatus = async (
 ): Promise<void> => {
   const searchParams = new URLSearchParams({
     status: props.status,
+    memberId: props.memberId.toString(),
   });
   return api
     .patch(`properties/subscription/${props.subscriptionId}/status`, { searchParams })
@@ -50,6 +51,7 @@ export const changeSubscriptionStatus = async (
 export const changePropertyStatus = async (props: ChangePropertyStatusRequest): Promise<void> => {
   const searchParams = new URLSearchParams({
     status: props.status,
+    memberId: props.memberId.toString(),
   });
   return api.patch(`properties/${props.propertyId}/status`, { searchParams }).json();
 };

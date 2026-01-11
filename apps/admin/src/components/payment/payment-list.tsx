@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { PaymentStatus, PaymentType } from "@/constants/payment";
 import { useGetPaymentList } from "@/lib/tanstack/query/payment";
+import type { PaymentListItemProps } from "@/types/payment";
 import { Button } from "@gyeongmaetalk/ui";
 
 import ChangePaymentStatusModal from "./change-payment-status-modal";
@@ -15,6 +16,7 @@ interface PaymentListProps {
 export interface ChangePaymentStatusModalState {
   isOpen: boolean;
   id: number;
+  memberId: number;
   paymentStatus: PaymentStatus;
 }
 
@@ -35,16 +37,18 @@ export default function PaymentList({ filters }: PaymentListProps) {
     useState<ChangePaymentStatusModalState>({
       isOpen: false,
       id: 0,
+      memberId: 0,
       paymentStatus: PaymentStatus.READY,
     });
 
   const isPropertyPaymentType = filters.paymentType === PaymentType.PROPERTY;
 
-  const onChangePaymentStatus = (id: number, paymentStatus: PaymentStatus) => {
+  const onChangePaymentStatus = (payment: PaymentListItemProps) => {
     setChangePaymentStatusModalState({
       isOpen: true,
-      id,
-      paymentStatus,
+      id: payment.id,
+      memberId: payment.memberId,
+      paymentStatus: payment.paymentStatus,
     });
   };
 
@@ -52,6 +56,7 @@ export default function PaymentList({ filters }: PaymentListProps) {
     setChangePaymentStatusModalState({
       isOpen: false,
       id: 0,
+      memberId: 0,
       paymentStatus: PaymentStatus.READY,
     });
   };
@@ -89,7 +94,7 @@ export default function PaymentList({ filters }: PaymentListProps) {
                     size="sm"
                     variant="outlined"
                     aria-label="상태 변경"
-                    onClick={() => onChangePaymentStatus(p.id, p.paymentStatus)}
+                    onClick={() => onChangePaymentStatus(p)}
                   >
                     상태 변경
                   </Button>

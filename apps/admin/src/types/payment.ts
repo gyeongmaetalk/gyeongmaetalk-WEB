@@ -6,4 +6,5 @@ export interface PaymentListItemProps {
   userName: string;
   payDate: string;
   cellPhone: string;
+  memberId: number;
 }

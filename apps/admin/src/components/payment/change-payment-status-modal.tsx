@@ -80,6 +80,7 @@ export default function ChangePaymentStatusModal({
     if (isPropertyPaymentType) {
       await changePropertyStatus({
         propertyId: changePaymentStatusModalState.id,
+        memberId: changePaymentStatusModalState.memberId,
         status: selectedPaymentStatus,
       });
       return;
@@ -87,6 +88,7 @@ export default function ChangePaymentStatusModal({
 
     await changeSubscriptionStatus({
       subscriptionId: changePaymentStatusModalState.id,
+      memberId: changePaymentStatusModalState.memberId,
       status: selectedPaymentStatus,
     });
   };

@@ -14,10 +14,12 @@ export interface PaymentListResponse {
 
 export interface ChangeSubscriptionStatusRequest {
   subscriptionId: number;
+  memberId: number;
   status: PaymentStatus;
 }
 
 export interface ChangePropertyStatusRequest {
   propertyId: number;
+  memberId: number;
   status: PaymentStatus;
 }
