@@ -81,7 +81,7 @@ export default function PaymentModal({ isOpen, amount, onClose, onConfirm }: Pay
         </div>
 
         <div className="bg-cool-neutral-99 rounded-lg p-3">
-          <ul className="text-label-neutral space-y-1 text-sm">
+          <ul className="text-label-neutral space-y-1 text-left text-sm">
             <li className="flex items-start gap-2">
               <span className="mt-0.5 shrink-0">•</span>
               <span>위 계좌로 입금하신 후 아래 버튼을 눌러주세요.</span>
