@@ -19,7 +19,7 @@ export default function AlarmPage() {
   const [isAlarmEnabled, setIsAlarmEnabled] = useState<boolean | null>(null);
   const isAuthenticated = useUserStore((state) => state.user) !== null;
 
-  const { data: notifications = [], isPending } = useGetNotifications();
+  const { data: notifications, isPending } = useGetNotifications();
 
   const navigate = useNavigate();
 
@@ -106,7 +106,7 @@ export default function AlarmPage() {
             로그인하고 알림 받기
           </Button>
         </div>
-      ) : notifications.length > 0 ? (
+      ) : notifications && notifications.length > 0 ? (
         <>
           {notifications.map((item) => (
             <AlarmItem key={item.id} {...item}>
