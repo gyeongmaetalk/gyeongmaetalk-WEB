@@ -6,7 +6,7 @@ interface StepperProps {
 
 const Stepper = ({ currentStep }: StepperProps) => {
   return (
-    <div className="mb-6 mt-5 flex items-center gap-2">
+    <div className="mt-5 mb-6 flex items-center gap-2">
       {Array.from({ length: 5 }).map((_, index) => (
         <div
           key={index}

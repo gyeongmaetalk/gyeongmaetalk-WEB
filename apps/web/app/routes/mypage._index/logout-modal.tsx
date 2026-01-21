@@ -1,8 +1,8 @@
 import { useOutsideClick } from "@gyeongmaetalk/hooks";
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button, Modal } from "@gyeongmaetalk/ui";
 
 import { Close } from "~/components/icons";
-import { resetUserQueries } from "~/lib/tanstack";
 import { useLogout } from "~/lib/tanstack/mutation/auth";
 import { useUserStore } from "~/lib/zustand/user";
 
@@ -17,7 +17,7 @@ export default function LogoutModal({ isOpen, onCancel }: LogoutModalProps) {
   const { mutate: logout, isPending } = useLogout({
     onSuccess: () => {
       reset();
-      resetUserQueries();
+      queryClient.resetQueries()
       onCancel();
     },
   });

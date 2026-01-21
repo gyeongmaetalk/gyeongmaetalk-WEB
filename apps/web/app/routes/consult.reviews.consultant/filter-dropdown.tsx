@@ -52,14 +52,14 @@ const FilterDropdown = (props: FilterDropdownProps) => {
   return (
     <div className="relative" ref={menuRef}>
       <button
-        className="border-cool-neutral-50/16 font-caption1-medium flex items-center gap-0.5 rounded-sm border py-1 pl-2 pr-1"
+        className="border-cool-neutral-50/16 font-caption1-medium flex items-center gap-0.5 rounded-sm border py-1 pr-1 pl-2"
         onClick={() => setIsOpen(!isOpen)}
       >
         {currentLabel}
         <ArrowDown />
       </button>
       {isOpen && (
-        <div className="font-body1-normal-regular border-cool-neutral-97 shadow-input z-100 absolute right-0 top-full mt-2 flex w-[140px] flex-col rounded-[12px] border bg-white p-2">
+        <div className="font-body1-normal-regular border-cool-neutral-97 shadow-input absolute top-full right-0 z-100 mt-2 flex w-[140px] flex-col rounded-[12px] border bg-white p-2">
           {SORT_OPTIONS.map((option) => (
             <button
               key={option.value}

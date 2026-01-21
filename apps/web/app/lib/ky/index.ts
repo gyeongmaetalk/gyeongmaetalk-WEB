@@ -1,9 +1,9 @@
 import { instance } from "@gyeongmaetalk/lib/ky";
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 
 import type { UserResponse } from "~/models/auth";
 
-import { resetUserQueries } from "../tanstack";
 import { useUserStore } from "../zustand/user";
 
 // 토큰 갱신 락 및 Promise 관리
@@ -30,7 +30,7 @@ const refreshAccessToken = async (): Promise<void> => {
     } catch (error) {
       console.error("Refresh 실패", error);
       useUserStore.getState().reset();
-      resetUserQueries();
+      queryClient.resetQueries()
       window.location.href = "/login";
       throw error;
     } finally {

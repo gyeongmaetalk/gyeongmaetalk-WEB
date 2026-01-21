@@ -34,4 +34,3 @@ export const convertImageToWebP = (file: File): Promise<File> => {
     reader.readAsDataURL(file);
   });
 };
-

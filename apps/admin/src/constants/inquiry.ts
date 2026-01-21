@@ -15,4 +15,3 @@ export const INQUIRY_STATUS_LABEL = {
     dot: "bg-blue-50",
   },
 };
-
