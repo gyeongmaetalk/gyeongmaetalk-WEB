@@ -3,11 +3,11 @@ import { Button, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
-import { useRevalidator } from "react-router";
+import { useNavigate, useRevalidator } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
 import { AUTH } from "~/constants/auth";
-import { useUpdateUserInfo } from "~/lib/tanstack/mutation/auth";
+import { useDeleteUser, useUpdateUserInfo } from "~/lib/tanstack/mutation/auth";
 import { useUserStore } from "~/lib/zustand/user";
 import type { MyInfoResponse } from "~/models/auth";
 import { type UpdateUserInfoForm, updateUserInfoFormSchema } from "~/routes/mypage.userinfo/schema";
@@ -19,6 +19,8 @@ interface UserInfoPageProps {
 
 const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
   const revalidator = useRevalidator();
+  const navigate = useNavigate();
+
   const defaultValues = {
     name: myInfo.name ?? "",
     cellPhone: myInfo.cellPhone ?? "",
@@ -58,10 +60,9 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
     birth === defaultValues.birth &&
     cellPhone === defaultValues.cellPhone;
 
-  const isSubmitDisabled =
-    !name || birth.length !== 8 || !cellPhone || formState.isSubmitting || isOrigin;
+  const isSubmitDisabled = !name || birth.length !== 8 || !cellPhone || isOrigin;
 
-  const { mutate: updateUserInfo } = useUpdateUserInfo({
+  const { mutateAsync: updateUserInfo } = useUpdateUserInfo({
     onSuccess: async () => {
       setIsRegistered(true);
       successToast("회원정보가 수정되었어요.");
@@ -73,14 +74,25 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
       console.error(error);
     },
   });
+  const { mutateAsync: deleteUser } = useDeleteUser({
+    onSuccess: async () => {
+      queryClient.resetQueries()
+      successToast("회원탈퇴가 완료되었어요.");
+      navigate("/", { replace: true });
+    },
+    onError: (error) => {
+      errorToast("회원탈퇴에 실패했어요.");
+      console.error(error);
+    },
+  });
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit(async (data) => {
     const year = data.birth.slice(0, 4);
     const month = data.birth.slice(4, 6);
     const day = data.birth.slice(6, 8);
     const birth = `${year}-${month}-${day}`;
 
-    updateUserInfo({
+    await updateUserInfo({
       name: data.name,
       birth,
       cellPhone: data.cellPhone,
@@ -116,10 +128,15 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
       </form>
 
       <FloatingContainer className="flex flex-col gap-2">
-        <Button type="submit" disabled={isSubmitDisabled} form="user-info-form">
+        <Button
+          type="submit"
+          disabled={isSubmitDisabled}
+          loading={formState.isSubmitting}
+          form="user-info-form"
+        >
           수정
         </Button>
-        <Button variant="text" theme="assistive">
+        <Button variant="text" theme="assistive" onClick={async () => await deleteUser()}>
           회원탈퇴
         </Button>
       </FloatingContainer>

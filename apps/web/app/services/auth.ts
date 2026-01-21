@@ -24,6 +24,10 @@ export const updateNotificationSetting = async (
   return api.patch("auth/notification/setting", { json: props }).json();
 };
 
-export const logout = async (): Promise<BaseResponse<void>> => {
+export const logout = async (): Promise<void> => {
   return api.post("auth/logout").json();
+};
+
+export const deleteUser = async (): Promise<void> => {
+  return api.post("auth/delete").json();
 };
