@@ -30,7 +30,7 @@ const refreshAccessToken = async (): Promise<void> => {
     } catch (error) {
       console.error("Refresh 실패", error);
       useUserStore.getState().reset();
-      queryClient.resetQueries()
+      queryClient.resetQueries();
       window.location.href = "/login";
       throw error;
     } finally {

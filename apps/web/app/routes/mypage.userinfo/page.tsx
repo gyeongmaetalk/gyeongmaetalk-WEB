@@ -1,25 +1,30 @@
+import { useState } from "react";
+
 import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
-import { useNavigate, useRevalidator } from "react-router";
+import { useRevalidator } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
 import { AUTH } from "~/constants/auth";
-import { useDeleteUser, useUpdateUserInfo } from "~/lib/tanstack/mutation/auth";
+import { useUpdateUserInfo } from "~/lib/tanstack/mutation/auth";
 import { useUserStore } from "~/lib/zustand/user";
 import type { MyInfoResponse } from "~/models/auth";
 import { type UpdateUserInfoForm, updateUserInfoFormSchema } from "~/routes/mypage.userinfo/schema";
 import { errorToast, successToast } from "~/utils/toast";
+
+import DeleteUserModal from "./delete-user-modal";
 
 interface UserInfoPageProps {
   myInfo: MyInfoResponse;
 }
 
 const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
+  const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState(false);
+
   const revalidator = useRevalidator();
-  const navigate = useNavigate();
 
   const defaultValues = {
     name: myInfo.name ?? "",
@@ -74,17 +79,6 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
       console.error(error);
     },
   });
-  const { mutateAsync: deleteUser } = useDeleteUser({
-    onSuccess: async () => {
-      queryClient.resetQueries()
-      successToast("회원탈퇴가 완료되었어요.");
-      navigate("/", { replace: true });
-    },
-    onError: (error) => {
-      errorToast("회원탈퇴에 실패했어요.");
-      console.error(error);
-    },
-  });
 
   const onSubmit = handleSubmit(async (data) => {
     const year = data.birth.slice(0, 4);
@@ -100,47 +94,53 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
   });
 
   return (
-    <div className="px-4 py-6">
-      <form id="user-info-form" onSubmit={onSubmit} className="flex flex-col gap-5">
-        <Textfield
-          label="이름"
-          required
-          placeholder="이름을 입력해주세요"
-          value={name}
-          onChange={(e) => setValue("name", e.target.value)}
-        />
-        <Textfield
-          label="생년월일"
-          required
-          placeholder="텍스트를 입력해주세요.(ex.19900123)"
-          maxLength={8}
-          value={birth}
-          onChange={(e) => onChangeNumber(e, "birth")}
-        />
-        <Textfield
-          label="전화번호"
-          required
-          placeholder="번호를 입력해주세요.(ex.01012345678)"
-          maxLength={11}
-          value={cellPhone}
-          onChange={(e) => onChangeNumber(e, "cellPhone")}
-        />
-      </form>
+    <>
+      <div className="px-4 py-6">
+        <form id="user-info-form" onSubmit={onSubmit} className="flex flex-col gap-5">
+          <Textfield
+            label="이름"
+            required
+            placeholder="이름을 입력해주세요"
+            value={name}
+            onChange={(e) => setValue("name", e.target.value)}
+          />
+          <Textfield
+            label="생년월일"
+            required
+            placeholder="텍스트를 입력해주세요.(ex.19900123)"
+            maxLength={8}
+            value={birth}
+            onChange={(e) => onChangeNumber(e, "birth")}
+          />
+          <Textfield
+            label="전화번호"
+            required
+            placeholder="번호를 입력해주세요.(ex.01012345678)"
+            maxLength={11}
+            value={cellPhone}
+            onChange={(e) => onChangeNumber(e, "cellPhone")}
+          />
+        </form>
 
-      <FloatingContainer className="flex flex-col gap-2">
-        <Button
-          type="submit"
-          disabled={isSubmitDisabled}
-          loading={formState.isSubmitting}
-          form="user-info-form"
-        >
-          수정
-        </Button>
-        <Button variant="text" theme="assistive" onClick={async () => await deleteUser()}>
-          회원탈퇴
-        </Button>
-      </FloatingContainer>
-    </div>
+        <FloatingContainer className="flex flex-col gap-2">
+          <Button
+            type="submit"
+            disabled={isSubmitDisabled}
+            loading={formState.isSubmitting}
+            form="user-info-form"
+          >
+            수정
+          </Button>
+          <Button variant="text" theme="assistive" onClick={() => setIsDeleteUserModalOpen(true)}>
+            회원탈퇴
+          </Button>
+        </FloatingContainer>
+      </div>
+      <DeleteUserModal
+        isOpen={isDeleteUserModalOpen}
+        onClose={() => setIsDeleteUserModalOpen(false)}
+      />
+    </>
   );
 };
 

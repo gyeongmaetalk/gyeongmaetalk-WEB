@@ -17,7 +17,7 @@ export default function LogoutModal({ isOpen, onCancel }: LogoutModalProps) {
   const { mutate: logout, isPending } = useLogout({
     onSuccess: () => {
       reset();
-      queryClient.resetQueries()
+      queryClient.resetQueries();
       onCancel();
     },
   });
