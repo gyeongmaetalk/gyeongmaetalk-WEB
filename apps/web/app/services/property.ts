@@ -39,5 +39,5 @@ export const requestPurchase = async (propertyId: number): Promise<void> => {
 
 // 입찰 요청
 export const requestBid = async (propertyId: string): Promise<BaseResponse<RequestBidResponse>> => {
-  return api.post(`properties/${propertyId}/purchase`).json();
+  return api.post(`properties/${propertyId}/purchases`).json();
 };
