@@ -23,7 +23,7 @@ export default function AgencyRecommendItem({
   images,
   buildingType,
   updateDate,
-  purchased,
+  payment,
 }: PropertyListItemProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const { mutateAsync: requestPurchase } = useRequestPurchase();
@@ -31,7 +31,7 @@ export default function AgencyRecommendItem({
   const navigate = useNavigate();
 
   const onRouteToApplyRecommendDetail = (id: number) => {
-    if (!purchased) {
+    if (!payment) {
       setIsPaymentModalOpen(true);
       return;
     }
@@ -55,7 +55,7 @@ export default function AgencyRecommendItem({
               {formatDate({ date: updateDate, shortYear: true })} 업데이트 매물
             </p>
             <p className="font-caption1-bold text-primary-normal">
-              {purchased ? "구매완료" : formatPrice(PROPERTY_AMOUNT)}
+              {payment ? "구매완료" : formatPrice(PROPERTY_AMOUNT)}
             </p>
           </div>
         </div>
@@ -98,10 +98,10 @@ export default function AgencyRecommendItem({
         </div>
         <Button
           className="w-full"
-          theme={purchased ? "assistive" : "default"}
+          theme={payment ? "assistive" : "default"}
           onClick={() => onRouteToApplyRecommendDetail(id)}
         >
-          {purchased ? "자세히 보기" : "구매하기"}
+          {payment ? "자세히 보기" : "구매하기"}
         </Button>
       </div>
       {isPaymentModalOpen && (
