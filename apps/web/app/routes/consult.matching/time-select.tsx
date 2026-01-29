@@ -60,9 +60,12 @@ const TimeSelect = ({
 
   const isPastTime = (time: string) => {
     const now = new Date();
-    const timeDate = new Date(
-      `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()} ${time}`
-    );
+
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const date = String(selectedDate.getDate()).padStart(2, "0");
+
+    const timeDate = new Date(`${year}-${month}-${date}T${time}`);
 
     return timeDate.getTime() < now.getTime();
   };
