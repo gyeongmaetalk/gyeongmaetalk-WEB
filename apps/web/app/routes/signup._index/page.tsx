@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 import { Button, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +10,7 @@ import { Navigate, useNavigate } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
 import PhoneVerification from "~/components/phone-verification";
+import { AUTH } from "~/constants";
 import { api } from "~/lib/ky";
 import { useUserStore } from "~/lib/zustand/user";
 import type { SignupResponse } from "~/models/auth";
@@ -87,6 +89,7 @@ export default function SignupPage() {
         successToast("회원가입이 완료되었어요.");
         setIsRegistered(true);
         navigate("/onboarding?mode=apply", { replace: true });
+        queryClient.invalidateQueries({ queryKey: [AUTH.MY_INFO] });
       } else {
         errorToast("회원가입에 실패했어요.");
         console.error(res);
