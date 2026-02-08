@@ -27,12 +27,12 @@ export interface MatchCounselResponse {
 }
 
 export interface AvailableTimesRequest {
-  counseldorId: number;
+  counselorId: number;
   date: string;
 }
 
 export interface ReserveConsultRequest {
-  counseldorId: number;
+  counselorId: number;
   counselFormCreateRequest: MatchCounselRequest;
   counselTime: string;
 }

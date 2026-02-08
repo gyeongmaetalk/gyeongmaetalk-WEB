@@ -26,19 +26,19 @@ export const changeMatchCounsel = async (
 };
 
 export const getAvailableTimes = async (props: {
-  counseldorId: number;
+  counselorId: number;
   date: string;
 }): Promise<BaseResponse<string[]>> => {
   return api
-    .get(`counsels/${props.counseldorId}/times`, { searchParams: { date: props.date } })
+    .get(`counsels/${props.counselorId}/times`, { searchParams: { date: props.date } })
     .json();
 };
 
 export const reserveConsult = async (
   props: ReserveConsultRequest
 ): Promise<BaseResponse<ReserveConsultResponse>> => {
-  const { counseldorId, ...restProps } = props;
-  return api.post(`counsels/${counseldorId}`, { json: restProps }).json();
+  const { counselorId, ...restProps } = props;
+  return api.post(`counsels/${counselorId}`, { json: restProps }).json();
 };
 
 export const changeReserveConsult = async (

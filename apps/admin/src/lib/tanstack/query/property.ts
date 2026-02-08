@@ -1,13 +1,13 @@
 import { PROPERTY } from "@/constants/property";
 import { getPropertyDetail, getPropertyList } from "@/service/property";
 import { useQuery, useSuspenseInfiniteQuery } from "@gyeongmaetalk/lib/tanstack";
-import { calculatePaigination } from "@gyeongmaetalk/utils";
+import { calculatePagination } from "@gyeongmaetalk/utils";
 
 export const useGetPropertyList = (memberId: number) => {
   return useSuspenseInfiniteQuery({
     queryKey: [PROPERTY.LIST, memberId],
     queryFn: ({ pageParam = 0 }) => getPropertyList({ page: pageParam, memberId }),
-    getNextPageParam: calculatePaigination,
+    getNextPageParam: calculatePagination,
     initialPageParam: 0,
     select: (data) => data.pages.flatMap((page) => page.result.properties),
   });

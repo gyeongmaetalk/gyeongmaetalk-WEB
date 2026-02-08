@@ -1,7 +1,7 @@
 import type { HTTPError } from "@gyeongmaetalk/lib/ky";
 import { useInfiniteQuery, useQuery } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
-import { calculatePaigination } from "@gyeongmaetalk/utils";
+import { calculatePagination } from "@gyeongmaetalk/utils";
 
 import { PROPERTY } from "~/constants";
 import type { PropertyDetailResponse } from "~/models/property";
@@ -11,7 +11,7 @@ export const useGetPropertyList = (isPurchased: string | null) => {
   return useInfiniteQuery({
     queryKey: [PROPERTY.PROPERTY_LIST, isPurchased],
     queryFn: ({ pageParam = 0 }) => getPropertyList(pageParam, isPurchased),
-    getNextPageParam: calculatePaigination,
+    getNextPageParam: calculatePagination,
     initialPageParam: 0,
     select: (data) => data.pages.flatMap((page) => page.result.properties),
   });

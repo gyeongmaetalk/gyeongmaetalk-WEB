@@ -7,7 +7,7 @@ import { getAvailableTimes, getCounselInfo, getReservedCounselData } from "~/ser
 
 export const useGetAvailableTimes = (props: AvailableTimesRequest) => {
   return useQuery({
-    queryKey: [COUNSEL.AVAILABLE_TIMES, props.counseldorId, props.date],
+    queryKey: [COUNSEL.AVAILABLE_TIMES, props.counselorId, props.date],
     queryFn: () => getAvailableTimes(props),
     select: (data) => data.result,
     enabled: !!props.date,

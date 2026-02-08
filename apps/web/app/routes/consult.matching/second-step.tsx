@@ -61,7 +61,7 @@ const SecondStep = ({
   const formatedDate = selectedDate ? formatDate(selectedDate) : "";
 
   const { data: availableTimes = [], isLoading } = useGetAvailableTimes({
-    counseldorId: consultant.counselorId,
+    counselorId: consultant.counselorId,
     date: formatedDate,
   });
 
@@ -105,7 +105,7 @@ const SecondStep = ({
     }
 
     await reserveConsult({
-      counseldorId: consultant.counselorId,
+      counselorId: consultant.counselorId,
       counselFormCreateRequest: matchCounselRequest,
       counselTime: `${formatedDate}T${selectedTime}`,
     });
