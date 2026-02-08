@@ -12,6 +12,7 @@ export default function RedirectPage() {
 
   const registered = searchParams.get("registered");
   const isRegistered = registered === "true";
+  const name = searchParams.get("name");
 
   const navigate = useNavigate();
 
@@ -26,7 +27,7 @@ export default function RedirectPage() {
         if (isRegistered) {
           navigate("/", { replace: true });
         } else {
-          navigate("/signup", { replace: true });
+          navigate("/signup", { replace: true, state: { name } });
         }
       } catch (error) {
         console.error(error);

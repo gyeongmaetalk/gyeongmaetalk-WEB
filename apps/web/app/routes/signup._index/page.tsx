@@ -6,7 +6,7 @@ import { Button, Textfield } from "@gyeongmaetalk/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
-import { Navigate, useNavigate } from "react-router";
+import { Navigate, useLocation, useNavigate } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
 import PhoneVerification from "~/components/phone-verification";
@@ -28,14 +28,15 @@ export default function SignupPage() {
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
-  const isRegistered = useUserStore((state) => state.isRegistered);
-  const setIsRegistered = useUserStore((state) => state.setIsRegistered);
+  const { state } = useLocation();
+
+  const userStore = useUserStore();
 
   const navigate = useNavigate();
 
   const { formState, watch, handleSubmit, setValue } = useForm<SignupForm>({
     resolver: zodResolver(signupFormSchema),
-    defaultValues: DEFAULT_VALUES,
+    defaultValues: {...DEFAULT_VALUES, name: state?.name || userStore.user?.name || ""},
   });
 
   const name = watch("name");
@@ -87,7 +88,7 @@ export default function SignupPage() {
 
       if (res.isSuccess) {
         successToast("회원가입이 완료되었어요.");
-        setIsRegistered(true);
+        userStore.setIsRegistered(true);
         navigate("/onboarding?mode=apply", { replace: true });
         queryClient.invalidateQueries({ queryKey: [AUTH.MY_INFO] });
       } else {
@@ -102,7 +103,7 @@ export default function SignupPage() {
     }
   });
 
-  if (isRegistered) {
+  if (userStore.isRegistered) {
     return <Navigate to="/" />;
   }
 
@@ -120,6 +121,7 @@ export default function SignupPage() {
           placeholder="이름을 입력해주세요."
           value={name}
           onChange={(e) => setValue("name", e.target.value)}
+          disabled
         />
         <Textfield
           label="생년월일"
