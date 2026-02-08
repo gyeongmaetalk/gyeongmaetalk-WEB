@@ -3,6 +3,8 @@ import "./app.css";
 import { isRouteErrorResponse, Links, Meta, Scripts, ScrollRestoration } from "react-router";
 
 import type { Route } from "./+types/root";
+import { DefaultErrorComponent } from "./components/layout/default-error-component";
+import { NotFoundComponent } from "./components/layout/not-found-component";
 import RootProvider from "./components/layout/root-provider";
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -31,28 +33,20 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  if (isRouteErrorResponse(error) && error.status === 404) {
+    return <NotFoundComponent />;
+  }
+
   let message = "Oops!";
-  let details = "An unexpected error occurred.";
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
-    details =
-      error.status === 404 ? "The requested page could not be found." : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
+    message = "Error";
+  } else if (error && error instanceof Error) {
+    stack = import.meta.env.DEV ? error.stack : undefined;
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full overflow-x-auto p-4">
-          <code>{stack}</code>
-        </pre>
-      )}
-    </main>
+    <DefaultErrorComponent message={message} stack={stack} />
   );
 }
