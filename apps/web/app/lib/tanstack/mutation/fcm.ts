@@ -7,7 +7,7 @@ import { readNotification, registerDeviceToken } from "~/services/fcm";
 export const useReadNotification = (
   options?: UseMutationOptions<BaseResponse<void>, HTTPError, number>
 ) => {
-  return useMutation<BaseResponse<void>, HTTPError, number>({
+  return useMutation({
     mutationFn: readNotification,
     ...options,
   });
@@ -16,7 +16,7 @@ export const useReadNotification = (
 export const useRegisterDeviceToken = (
   options?: UseMutationOptions<BaseResponse<void>, HTTPError, string>
 ) => {
-  return useMutation<BaseResponse<void>, HTTPError, string>({
+  return useMutation({
     mutationFn: registerDeviceToken,
     ...options,
   });

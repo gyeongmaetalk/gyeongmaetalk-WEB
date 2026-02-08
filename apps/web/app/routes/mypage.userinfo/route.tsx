@@ -3,7 +3,7 @@ import { Spinner } from "@gyeongmaetalk/ui";
 
 import { WithBackHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
-import { AUTH } from "~/constants";
+import { authKeys } from "~/lib/tanstack/keys/auth";
 import { getMyInfo } from "~/services/auth";
 
 import type { Route } from "./+types/route";
@@ -15,7 +15,7 @@ export function meta() {
 
 export async function clientLoader() {
   return queryClient.fetchQuery({
-    queryKey: [AUTH.MY_INFO],
+    queryKey: authKeys.getMyInfo(),
     queryFn: getMyInfo,
     staleTime: 1000 * 60,
   });

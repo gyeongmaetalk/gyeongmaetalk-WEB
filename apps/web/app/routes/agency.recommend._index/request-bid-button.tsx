@@ -8,7 +8,7 @@ import { useNavigate } from "react-router";
 
 import complete from "~/assets/complete.webp";
 import Image from "~/components/image";
-import { PROPERTY } from "~/constants";
+import { propertyKeys } from "~/lib/tanstack/keys/property";
 import { useRequestBid } from "~/lib/tanstack/mutation/property";
 import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
 
@@ -25,7 +25,7 @@ export default function RequestBidButton({ id, purchased }: RequestBidButtonProp
 
   const { mutate: requestBid, isPending } = useRequestBid({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [PROPERTY.PROPERTY_DETAIL, id] });
+      queryClient.invalidateQueries({ queryKey: propertyKeys.getPropertyDetail(id) });
       setIsOpen(true);
     },
   });

@@ -7,6 +7,7 @@ import { cn } from "@gyeongmaetalk/utils";
 import { api } from "~/lib/ky";
 import { STATUS } from "~/routes/signup._index/constant";
 import { formatRemainingTime } from "~/routes/signup._index/util";
+import { requestSmsCode } from "~/services/auth";
 import { errorToast } from "~/utils/toast";
 
 interface PhoneVerificationProps {
@@ -43,7 +44,7 @@ export default function PhoneVerification({
   const onRequestCode = async () => {
     setIsPending(true);
     try {
-      await api.post("auth/sms", { searchParams: { phoneNumber: phone } }).json();
+      await requestSmsCode(phone);
 
       // 기존 interval이 있다면 정리
       if (intervalRef.current) {

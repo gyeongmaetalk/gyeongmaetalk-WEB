@@ -2,13 +2,13 @@ import type { HTTPError } from "@gyeongmaetalk/lib/ky";
 import { useQuery } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 
-import { QNA } from "~/constants";
+import { qnaKeys } from "~/lib/tanstack/keys/qna";
 import type { FaqResponse, QnaResponse } from "~/models/qna";
 import { getFaq, getMyQna } from "~/services/qna";
 
 export const useGetMyQna = () => {
   return useQuery<BaseResponse<QnaResponse>, HTTPError, QnaResponse>({
-    queryKey: [QNA.MY_QNA],
+    queryKey: qnaKeys.getMyQna(),
     queryFn: getMyQna,
     select: (data) => data.result,
     staleTime: 1000 * 60 * 5,
@@ -17,7 +17,7 @@ export const useGetMyQna = () => {
 
 export const useGetFaq = () => {
   return useQuery<BaseResponse<FaqResponse>, HTTPError, FaqResponse>({
-    queryKey: [QNA.FAQ],
+    queryKey: qnaKeys.getFaq(),
     queryFn: getFaq,
     select: (data) => data.result,
     staleTime: 1000 * 60 * 5,

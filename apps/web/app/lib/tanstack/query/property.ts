@@ -3,13 +3,13 @@ import { useInfiniteQuery, useQuery } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 import { calculatePagination } from "@gyeongmaetalk/utils";
 
-import { PROPERTY } from "~/constants";
+import { propertyKeys } from "~/lib/tanstack/keys/property";
 import type { PropertyDetailResponse } from "~/models/property";
 import { getPropertyDetail, getPropertyList } from "~/services/property";
 
 export const useGetPropertyList = (isPurchased: string | null) => {
   return useInfiniteQuery({
-    queryKey: [PROPERTY.PROPERTY_LIST, isPurchased],
+    queryKey: propertyKeys.getPropertyList(isPurchased),
     queryFn: ({ pageParam = 0 }) => getPropertyList(pageParam, isPurchased),
     getNextPageParam: calculatePagination,
     initialPageParam: 0,
@@ -19,7 +19,7 @@ export const useGetPropertyList = (isPurchased: string | null) => {
 
 export const useGetPropertyDetail = (id: string) => {
   return useQuery<BaseResponse<PropertyDetailResponse>, HTTPError, PropertyDetailResponse>({
-    queryKey: [PROPERTY.PROPERTY_DETAIL, id],
+    queryKey: propertyKeys.getPropertyDetail(id),
     queryFn: () => getPropertyDetail(id),
     select: (data) => data.result,
   });

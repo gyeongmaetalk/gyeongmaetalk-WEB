@@ -4,7 +4,7 @@ import { useDebounce } from "@gyeongmaetalk/hooks";
 import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Label, Switch } from "@gyeongmaetalk/ui";
 
-import { FCM } from "~/constants";
+import { fcmKeys } from "~/lib/tanstack/keys/fcm";
 import { useUpdateNotificationSetting } from "~/lib/tanstack/mutation/auth";
 import { useGetNotificationSetting } from "~/lib/tanstack/query/fcm";
 
@@ -47,7 +47,7 @@ const MyPageAlarmPage = () => {
 
   const { mutate: updateNotificationSetting } = useUpdateNotificationSetting({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [FCM.NOTIFICATION_SETTING] });
+      queryClient.invalidateQueries({ queryKey: fcmKeys.getNotificationSetting() });
     },
   });
 

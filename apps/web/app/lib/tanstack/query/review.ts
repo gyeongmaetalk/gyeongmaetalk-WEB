@@ -3,7 +3,8 @@ import { useInfiniteQuery, useQuery } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 import { calculatePagination } from "@gyeongmaetalk/utils";
 
-import { REVIEW, type SortType } from "~/constants";
+import type { SortType } from "~/constants";
+import { reviewKeys } from "~/lib/tanstack/keys/review";
 import type { ReviewDetailResponse } from "~/models/review";
 import { getConsultantReviews, getMyReviews, getReviewById, getReviews } from "~/services/review";
 
@@ -15,7 +16,7 @@ export const useGetConsultantReviews = ({
   type: SortType;
 }) => {
   return useInfiniteQuery({
-    queryKey: [REVIEW.CONSULTANT_REVIEWS, type, consultantId],
+    queryKey: reviewKeys.getConsultantReviews(consultantId, type),
     queryFn: ({ pageParam = 0 }) =>
       getConsultantReviews({ consultantId, type, page: pageParam.toString() }),
     getNextPageParam: calculatePagination,
@@ -31,7 +32,7 @@ export const useGetConsultantReviews = ({
 
 export const useGetReviews = (type: SortType, size: string = "10") => {
   return useInfiniteQuery({
-    queryKey: [REVIEW.REVIEWS, type, size],
+    queryKey: reviewKeys.getReviews(type, size),
     queryFn: ({ pageParam = 0 }) => getReviews({ type, page: pageParam.toString(), size }),
     getNextPageParam: calculatePagination,
     initialPageParam: 0,
@@ -42,7 +43,7 @@ export const useGetReviews = (type: SortType, size: string = "10") => {
 
 export const useGetReviewById = (reviewId: string | null) => {
   return useQuery<BaseResponse<ReviewDetailResponse>, HTTPError, ReviewDetailResponse>({
-    queryKey: [REVIEW.REVIEW_DETAIL, reviewId],
+    queryKey: reviewKeys.getReviewById(reviewId),
     queryFn: () => getReviewById(reviewId as string),
     select: (data) => data.result,
     enabled: !!reviewId,
@@ -52,7 +53,7 @@ export const useGetReviewById = (reviewId: string | null) => {
 
 export const useGetMyReviews = () => {
   return useInfiniteQuery({
-    queryKey: [REVIEW.MY_REVIEWS],
+    queryKey: reviewKeys.getMyReviews(),
     queryFn: ({ pageParam = 0 }) => getMyReviews(pageParam),
     getNextPageParam: calculatePagination,
     initialPageParam: 0,

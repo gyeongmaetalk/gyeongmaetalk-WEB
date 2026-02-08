@@ -2,7 +2,7 @@ import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 import { Spinner } from "@gyeongmaetalk/ui";
 
-import { COUNSEL } from "~/constants";
+import { counselKeys } from "~/lib/tanstack/keys/counsel";
 import type { ReservedCounselDataResponse } from "~/models/counsel";
 
 import type { Route } from "./+types/route";
@@ -21,9 +21,9 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
       step,
     };
   }
-  const cachedData = queryClient.getQueryData<BaseResponse<ReservedCounselDataResponse>>([
-    COUNSEL.COUNSEL_STATUS,
-  ]);
+  const cachedData = queryClient.getQueryData<BaseResponse<ReservedCounselDataResponse>>(
+    counselKeys.getReservedCounselData()
+  );
   if (cachedData) {
     const { result } = cachedData;
     return {

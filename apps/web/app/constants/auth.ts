@@ -10,7 +10,3 @@ export enum AuctionStatus {
   PAYMENT_FAILED = "PAYMENT_FAILED",
   CANCELED = "CANCELED",
 }
-
-export const AUTH = {
-  MY_INFO: "my-info",
-};

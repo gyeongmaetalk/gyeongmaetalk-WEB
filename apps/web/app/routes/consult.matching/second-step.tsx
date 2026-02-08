@@ -10,7 +10,7 @@ import Image from "~/components/image";
 import { Header } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import CancelApplyConsult from "~/components/modal/cancel-apply-consult";
-import { COUNSEL } from "~/constants";
+import { counselKeys } from "~/lib/tanstack/keys/counsel";
 import { useChangeReserveConsult, useReserveConsult } from "~/lib/tanstack/mutation/counsel";
 import { useGetAvailableTimes } from "~/lib/tanstack/query/counsel";
 import type {
@@ -68,7 +68,7 @@ const SecondStep = ({
   const { mutateAsync: reserveConsult, isPending: isReservePending } = useReserveConsult({
     onSuccess: async (data) => {
       setReservationResult(data.result);
-      await queryClient.invalidateQueries({ queryKey: [COUNSEL.COUNSEL_STATUS] });
+      await queryClient.invalidateQueries({ queryKey: counselKeys.getReservedCounselData() });
       onChangeMode("complete");
     },
     onError: (error) => {
@@ -80,7 +80,7 @@ const SecondStep = ({
     {
       onSuccess: async (data) => {
         setReservationResult(data.result);
-        await queryClient.invalidateQueries({ queryKey: [COUNSEL.COUNSEL_STATUS] });
+        await queryClient.invalidateQueries({ queryKey: counselKeys.getReservedCounselData() });
         onChangeMode("complete");
       },
       onError: (error) => {

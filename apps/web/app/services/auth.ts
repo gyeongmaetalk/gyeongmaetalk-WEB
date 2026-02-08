@@ -31,3 +31,7 @@ export const logout = async (): Promise<void> => {
 export const deleteUser = async (): Promise<void> => {
   return api.post("auth/delete").json();
 };
+
+export const requestSmsCode = async (phoneNumber: string): Promise<void> => {
+  return api.post("auth/sms", { searchParams: { phoneNumber: phoneNumber } }).json();
+};

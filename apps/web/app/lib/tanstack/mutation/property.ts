@@ -22,7 +22,7 @@ export const useRequestPurchase = (options?: UseMutationOptions<void, HTTPError,
 export const useRequestBid = (
   options?: UseMutationOptions<BaseResponse<RequestBidResponse>, HTTPError, string>
 ) => {
-  return useMutation<BaseResponse<RequestBidResponse>, HTTPError, string>({
+  return useMutation({
     mutationFn: requestBid,
     ...options,
   });

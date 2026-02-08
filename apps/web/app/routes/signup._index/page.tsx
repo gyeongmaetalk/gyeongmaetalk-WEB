@@ -10,8 +10,8 @@ import { Navigate, useLocation, useNavigate } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
 import PhoneVerification from "~/components/phone-verification";
-import { AUTH } from "~/constants";
 import { api } from "~/lib/ky";
+import { authKeys } from "~/lib/tanstack/keys/auth";
 import { useUserStore } from "~/lib/zustand/user";
 import type { SignupResponse } from "~/models/auth";
 import { type SignupForm, signupFormSchema } from "~/routes/signup._index/schema";
@@ -36,7 +36,7 @@ export default function SignupPage() {
 
   const { formState, watch, handleSubmit, setValue } = useForm<SignupForm>({
     resolver: zodResolver(signupFormSchema),
-    defaultValues: {...DEFAULT_VALUES, name: state?.name || userStore.user?.name || ""},
+    defaultValues: { ...DEFAULT_VALUES, name: state?.name || userStore.user?.name || "" },
   });
 
   const name = watch("name");
@@ -90,7 +90,7 @@ export default function SignupPage() {
         successToast("회원가입이 완료되었어요.");
         userStore.setIsRegistered(true);
         navigate("/onboarding?mode=apply", { replace: true });
-        queryClient.invalidateQueries({ queryKey: [AUTH.MY_INFO] });
+        queryClient.invalidateQueries({ queryKey: authKeys.getMyInfo() });
       } else {
         errorToast("회원가입에 실패했어요.");
         console.error(res);

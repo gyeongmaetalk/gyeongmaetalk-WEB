@@ -3,7 +3,7 @@ import { Spinner } from "@gyeongmaetalk/ui";
 
 import { Navigate } from "react-router";
 
-import { REVIEW } from "~/constants";
+import { reviewKeys } from "~/lib/tanstack/keys/review";
 import { getReviewById } from "~/services/review";
 
 import type { Route } from "./+types/route";
@@ -21,7 +21,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   }
 
   return queryClient.fetchQuery({
-    queryKey: [REVIEW.REVIEW_DETAIL, reviewId],
+    queryKey: reviewKeys.getReviewById(reviewId),
     queryFn: () => getReviewById(reviewId),
     staleTime: 1000 * 60,
   });

@@ -1,13 +1,13 @@
 import { useQuery } from "@gyeongmaetalk/lib/tanstack";
 
-import { COUNSEL } from "~/constants";
+import { counselKeys } from "~/lib/tanstack/keys/counsel";
 import { useUserStore } from "~/lib/zustand/user";
 import type { AvailableTimesRequest } from "~/models/counsel";
 import { getAvailableTimes, getCounselInfo, getReservedCounselData } from "~/services/counsel";
 
 export const useGetAvailableTimes = (props: AvailableTimesRequest) => {
   return useQuery({
-    queryKey: [COUNSEL.AVAILABLE_TIMES, props.counselorId, props.date],
+    queryKey: counselKeys.getAvailableTimes(props),
     queryFn: () => getAvailableTimes(props),
     select: (data) => data.result,
     enabled: !!props.date,
@@ -18,7 +18,7 @@ export const useCheckCounselStatus = () => {
   const isLoggedIn = useUserStore((state) => state.isLoggedIn);
 
   return useQuery({
-    queryKey: [COUNSEL.COUNSEL_STATUS],
+    queryKey: counselKeys.getReservedCounselData(),
     queryFn: getReservedCounselData,
     select: (data) => data.result,
     enabled: isLoggedIn,
@@ -28,7 +28,7 @@ export const useCheckCounselStatus = () => {
 
 export const useGetCounselInfo = (counselorId: string | null) => {
   return useQuery({
-    queryKey: [COUNSEL.COUNSEL_INFO, counselorId],
+    queryKey: counselKeys.getCounselInfo(counselorId as string),
     queryFn: () => getCounselInfo(counselorId as string),
     select: (data) => data.result,
     enabled: !!counselorId,

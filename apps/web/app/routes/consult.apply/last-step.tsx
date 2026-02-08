@@ -9,7 +9,7 @@ import { useNavigate } from "react-router";
 import FloatingContainer from "~/components/container/floating-container";
 import SuggestLogin from "~/components/modal/suggest-login";
 import SuggestSignup from "~/components/modal/suggest-signup";
-import { COUNSEL } from "~/constants";
+import { counselKeys } from "~/lib/tanstack/keys/counsel";
 import { useChangeMatchCounsel, useMatchCounsel } from "~/lib/tanstack/mutation/counsel";
 import { useUserStore } from "~/lib/zustand/user";
 import { type ApplyConsultForm } from "~/routes/consult.apply/schema";
@@ -58,7 +58,7 @@ const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
 
   const { mutateAsync: changeMatchCounsel } = useChangeMatchCounsel({
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [COUNSEL.COUNSEL_STATUS] });
+      queryClient.invalidateQueries({ queryKey: counselKeys.getReservedCounselData() });
       navigate("/consult/matching?mode=change", {
         replace: true,
         state: { result: data.result },

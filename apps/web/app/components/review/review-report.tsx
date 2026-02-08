@@ -13,7 +13,7 @@ import {
   useDrawer,
 } from "@gyeongmaetalk/ui";
 
-import { REVIEW } from "~/constants";
+import { reviewKeys } from "~/lib/tanstack/keys/review";
 import { useReportReview } from "~/lib/tanstack/mutation/review";
 import { errorToast, successToast } from "~/utils/toast";
 
@@ -51,7 +51,7 @@ function ReviewReportContent({ reviewId, onMenuClose }: ReviewReportProps) {
   // 리뷰 신고 Mutation
   const { mutateAsync: reportReview, isPending: isReportReviewPending } = useReportReview({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [REVIEW.REVIEWS] });
+      queryClient.invalidateQueries({ queryKey: reviewKeys.all });
       successToast("리뷰가 신고되었어요.");
       onMenuClose();
       close();

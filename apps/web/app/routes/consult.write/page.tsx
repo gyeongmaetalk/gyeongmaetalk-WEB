@@ -25,7 +25,7 @@ import Image from "~/components/image";
 import { WithBackHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import StarRating from "~/components/star-rating";
-import { REVIEW } from "~/constants";
+import { reviewKeys } from "~/lib/tanstack/keys/review";
 import { useCreateReview, useUpdateReview } from "~/lib/tanstack/mutation/review";
 import { useGetCounselInfo } from "~/lib/tanstack/query/counsel";
 import type { ReviewDetailResponse } from "~/models/review";
@@ -84,7 +84,7 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
   // 리뷰 생성 Mutation
   const { mutateAsync: createReview } = useCreateReview({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [REVIEW.REVIEWS] });
+      queryClient.invalidateQueries({ queryKey: reviewKeys.all });
       successToast("리뷰가 등록되었어요.");
       navigate("/consult/reviews");
     },
@@ -97,8 +97,7 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
   // 리뷰 수정 Mutation
   const { mutateAsync: updateReview } = useUpdateReview({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [REVIEW.REVIEWS] });
-      queryClient.invalidateQueries({ queryKey: [REVIEW.REVIEW_DETAIL, reviewId] });
+      queryClient.invalidateQueries({ queryKey: reviewKeys.all });
       successToast("리뷰가 수정되었어요.");
       navigate(-1);
     },

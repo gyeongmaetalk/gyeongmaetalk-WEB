@@ -33,7 +33,7 @@ export const useChangeMatchCounsel = (
     ChangeMatchCounselRequest
   >
 ) => {
-  return useMutation<BaseResponse<MatchCounselResponse>, HTTPError, ChangeMatchCounselRequest>({
+  return useMutation({
     mutationFn: changeMatchCounsel,
     ...options,
   });
@@ -46,7 +46,7 @@ export const useReserveConsult = (
     ReserveConsultRequest
   >
 ) => {
-  return useMutation<BaseResponse<ReserveConsultResponse>, HTTPError, ReserveConsultRequest>({
+  return useMutation({
     mutationFn: reserveConsult,
     ...options,
   });
@@ -59,7 +59,7 @@ export const useChangeReserveConsult = (
     ChangeReserveConsultRequest
   >
 ) => {
-  return useMutation<BaseResponse<ReserveConsultResponse>, HTTPError, ChangeReserveConsultRequest>({
+  return useMutation({
     mutationFn: changeReserveConsult,
     ...options,
   });

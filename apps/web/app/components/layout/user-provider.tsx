@@ -19,7 +19,7 @@ export default function UserProvider({ children }: UserProviderProps) {
         auctionStatus: myInfo.auctionStatus,
       });
     }
-  }, [myInfo]);
+  }, [myInfo, setUser]);
 
   return children;
 }

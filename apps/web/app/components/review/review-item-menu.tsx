@@ -6,7 +6,7 @@ import { cn } from "@gyeongmaetalk/utils";
 
 import { useNavigate } from "react-router";
 
-import { REVIEW } from "~/constants";
+import { reviewKeys } from "~/lib/tanstack/keys/review";
 import { useRemoveReview } from "~/lib/tanstack/mutation/review";
 import { getReviewById } from "~/services/review";
 import { errorToast, successToast } from "~/utils/toast";
@@ -47,8 +47,7 @@ const ReviewItemMenu = ({ reviewId, isMyReview }: ReviewItemMenuProps) => {
   // 리뷰 삭제 Mutation
   const { mutateAsync: removeReview, isPending: isRemoveReviewPending } = useRemoveReview({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [REVIEW.REVIEWS] });
-      queryClient.invalidateQueries({ queryKey: [REVIEW.REVIEW_DETAIL, reviewId.toString()] });
+      queryClient.invalidateQueries({ queryKey: reviewKeys.all });
       successToast("리뷰가 삭제되었어요.");
     },
     onError: (error) => {
@@ -75,7 +74,7 @@ const ReviewItemMenu = ({ reviewId, isMyReview }: ReviewItemMenuProps) => {
   const onMouseEnter = (value: string) => {
     if (value === "edit") {
       queryClient.prefetchQuery({
-        queryKey: [REVIEW.REVIEW_DETAIL, reviewId.toString()],
+        queryKey: reviewKeys.getReviewById(reviewId.toString()),
         queryFn: () => getReviewById(reviewId.toString()),
         staleTime: 1000 * 60,
       });

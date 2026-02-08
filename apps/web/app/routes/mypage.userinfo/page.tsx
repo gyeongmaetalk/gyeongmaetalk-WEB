@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { useRevalidator } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
-import { AUTH } from "~/constants/auth";
+import { authKeys } from "~/lib/tanstack/keys/auth";
 import { useUpdateUserInfo } from "~/lib/tanstack/mutation/auth";
 import { useUserStore } from "~/lib/zustand/user";
 import type { MyInfoResponse } from "~/models/auth";
@@ -71,7 +71,7 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
     onSuccess: async () => {
       setIsRegistered(true);
       successToast("회원정보가 수정되었어요.");
-      queryClient.invalidateQueries({ queryKey: [AUTH.MY_INFO] });
+      queryClient.invalidateQueries({ queryKey: authKeys.getMyInfo() });
       revalidator.revalidate();
     },
     onError: (error) => {

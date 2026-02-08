@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 
-import { WebviewEvent } from "~/constants";
-
 type OnMessage = (data: { type: string; data: unknown }) => void;
 
 type WebViewMessageEvent = MessageEvent | (Event & { data?: unknown });
@@ -39,13 +37,6 @@ export const useWebView = (onMessage?: OnMessage) => {
 
     // Android
     document.addEventListener("message", onWebViewMessage);
-
-    // RN에게 "웹 준비됨" 신호 전송
-    try {
-      postMessage(WebviewEvent.WEB_READY);
-    } catch (error) {
-      console.error(error);
-    }
 
     return () => {
       window.removeEventListener("message", onWebViewMessage);

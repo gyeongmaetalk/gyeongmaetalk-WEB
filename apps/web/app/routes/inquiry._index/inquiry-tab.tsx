@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
 
-import { QNA } from "~/constants";
+import { qnaKeys } from "~/lib/tanstack/keys/qna";
 import { useRequestQna } from "~/lib/tanstack/mutation/qna";
 import { infoToast, successToast } from "~/utils/toast";
 import { errorToast } from "~/utils/toast";
@@ -33,7 +33,7 @@ export default function InquiryTab() {
   const { mutateAsync: requestQna } = useRequestQna({
     onSuccess: () => {
       successToast("문의가 접수되었어요.");
-      queryClient.invalidateQueries({ queryKey: [QNA.MY_QNA] });
+      queryClient.invalidateQueries({ queryKey: qnaKeys.getMyQna() });
       form.reset();
     },
     onError: (error) => {

@@ -4,7 +4,8 @@ import { cn } from "@gyeongmaetalk/utils";
 import { useNavigate } from "react-router";
 
 import { Bubble, Company } from "~/components/icons";
-import { FCM, NotificationType } from "~/constants";
+import { NotificationType } from "~/constants";
+import { fcmKeys } from "~/lib/tanstack/keys/fcm";
 import { useReadNotification } from "~/lib/tanstack/mutation/fcm";
 import type { NotificationItem } from "~/types/fcm";
 import { getTimeDisplay } from "~/utils/format";
@@ -25,7 +26,7 @@ export default function AlarmItem({
 
   const { mutate: readNotification } = useReadNotification({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [FCM.NOTIFICATIONS] });
+      queryClient.invalidateQueries({ queryKey: fcmKeys.getNotifications() });
     },
     onError: (error) => {
       console.error("알림 읽음 처리 실패", error);

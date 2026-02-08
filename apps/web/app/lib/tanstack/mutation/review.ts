@@ -35,7 +35,7 @@ export const useUpdateReview = (
 export const useRemoveReview = (
   options?: UseMutationOptions<BaseResponse<ReviewResponse>, HTTPError, number>
 ) => {
-  return useMutation<BaseResponse<ReviewResponse>, HTTPError, number>({
+  return useMutation({
     mutationFn: removeReview,
     ...options,
   });
@@ -44,7 +44,7 @@ export const useRemoveReview = (
 export const useReportReview = (
   options?: UseMutationOptions<BaseResponse<ReviewResponse>, HTTPError, ReviewReportRequest>
 ) => {
-  return useMutation<BaseResponse<ReviewResponse>, HTTPError, ReviewReportRequest>({
+  return useMutation({
     mutationFn: reportReview,
     ...options,
   });
