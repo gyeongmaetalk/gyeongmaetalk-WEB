@@ -12,6 +12,8 @@ interface LinkButtonProps {
   className?: string;
 }
 
+const googlePlayUrl = "https://play.google.com/store/apps/details?id=com.gyeongmaetalk.gyeongmaetalk&pcampaignid=web_share"
+
 export default function LinkButton({ type, text, className }: LinkButtonProps) {
   const isApple = type === StoreType.APP_STORE;
   const state = {
@@ -26,7 +28,7 @@ export default function LinkButton({ type, text, className }: LinkButtonProps) {
         "hover:bg-cool-neutral-99 flex w-40 flex-row items-center justify-center gap-3 rounded-lg bg-white p-3 text-black",
         className
       )}
-      href="#"
+      href={isApple ? "#" : googlePlayUrl}
     >
       <div className="relative size-4">
         <Image src={state.src} alt={state.alt} className="object-contain" fill />
