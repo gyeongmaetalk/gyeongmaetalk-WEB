@@ -37,16 +37,5 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     return <NotFoundComponent />;
   }
 
-  let message = "Oops!";
-  let stack: string | undefined;
-
-  if (isRouteErrorResponse(error)) {
-    message = "Error";
-  } else if (error && error instanceof Error) {
-    stack = import.meta.env.DEV ? error.stack : undefined;
-  }
-
-  return (
-    <DefaultErrorComponent message={message} stack={stack} />
-  );
+  return <DefaultErrorComponent />;
 }
