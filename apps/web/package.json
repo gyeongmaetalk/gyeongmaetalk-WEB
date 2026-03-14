@@ -20,6 +20,7 @@
     "@gyeongmaetalk/ui": "workspace:*",
     "@gyeongmaetalk/utils": "workspace:*",
     "@hookform/resolvers": "^5.2.1",
+    "@microsoft/clarity": "^1.0.2",
     "@react-router/fs-routes": "^7.6.3",
     "@react-router/node": "^7.5.3",
     "@react-router/serve": "^7.5.3",
