@@ -26,9 +26,7 @@ export default function ErrorBoundary({
         return (
           <ReactErrorBoundary
             onReset={reset}
-            fallbackRender={
-              errorFallback ?? ((props) => <DefaultErrorFallback {...props} onReset={reset} />)
-            }
+            fallbackRender={errorFallback ?? ((props) => <DefaultErrorFallback {...props} />)}
             resetKeys={resetKeys}
           >
             {suspenseFallback ? (
@@ -43,12 +41,12 @@ export default function ErrorBoundary({
   );
 }
 
-function DefaultErrorFallback({ error, onReset }: FallbackProps & { onReset: () => void }) {
+function DefaultErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   const { title, description } = getErrorMessage(error);
 
   return (
     <main
-      className="flex min-h-dvh flex-col items-center justify-center px-6"
+      className="flex flex-col items-center justify-center p-6"
       role="main"
       aria-label="오류 발생"
     >
@@ -56,11 +54,13 @@ function DefaultErrorFallback({ error, onReset }: FallbackProps & { onReset: () 
       <p className="font-body2-normal-regular text-label-alternative mt-1 text-center">
         {description}
       </p>
-      <div className="mt-8 flex gap-4">
-        <Link to="/" className="w-full" aria-label="홈으로 이동">
-          <Button className="w-full">홈으로 돌아가기</Button>
+      <div className="mt-4 flex gap-4">
+        <Link to="mailto:work@epqpf.com">
+          <Button theme="secondary" size="md">
+            문의하기
+          </Button>
         </Link>
-        <Button className="w-full" onClick={onReset}>
+        <Button size="md" onClick={resetErrorBoundary}>
           새로고침
         </Button>
       </div>

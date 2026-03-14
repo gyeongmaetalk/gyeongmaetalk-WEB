@@ -115,13 +115,6 @@ export default function HomePage() {
                   <Spinner className="mx-auto size-10" />
                 </div>
               }
-              errorFallback={() => (
-                <div className="flex h-full items-center justify-center py-10">
-                  <p className="font-label1-normal-medium text-label-neutral">
-                    오류가 발생했습니다.
-                  </p>
-                </div>
-              )}
             >
               <ReviewPreview />
             </ErrorBoundary>
