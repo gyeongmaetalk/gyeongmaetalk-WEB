@@ -3,6 +3,7 @@ import { Toaster } from "@gyeongmaetalk/ui";
 
 import { Outlet } from "react-router";
 
+import ClarityProvider from "./clarity-provider";
 import FcmTokenProvider from "./fcm-token-provider";
 import MixpanelProvider from "./mixpanel-provider";
 import UserProvider from "./user-provider";
@@ -21,6 +22,7 @@ const RootProvider = () => {
       </UserProvider>
       <Toaster position="bottom-center" duration={3000} closeButton />
       <MixpanelProvider />
+      <ClarityProvider />
     </TanstackProvider>
   );
 };
