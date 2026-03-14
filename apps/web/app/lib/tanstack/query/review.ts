@@ -1,5 +1,5 @@
 import type { HTTPError } from "@gyeongmaetalk/lib/ky";
-import { useInfiniteQuery, useQuery } from "@gyeongmaetalk/lib/tanstack";
+import { useInfiniteQuery, useQuery, useSuspenseQuery } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 import { calculatePagination } from "@gyeongmaetalk/utils";
 
@@ -27,6 +27,15 @@ export const useGetConsultantReviews = ({
         counselorInfo: data.pages[0].result.counselorInfo,
       };
     },
+  });
+};
+
+export const useGetReviewPreview = (type: SortType, size: string) => {
+  return useSuspenseQuery({
+    queryKey: reviewKeys.getReviews(type, size),
+    queryFn: () => getReviews({ type, page: "0", size }),
+    select: (data) => data.result.reviews,
+    staleTime: 1000 * 60 * 5,
   });
 };
 

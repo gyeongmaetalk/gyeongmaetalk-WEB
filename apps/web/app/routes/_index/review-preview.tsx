@@ -3,6 +3,8 @@ import { Link } from "react-router";
 import Dot from "~/components/icons/Dot";
 import Image from "~/components/image";
 import StarRating from "~/components/star-rating";
+import { SortType } from "~/constants/api";
+import { useGetReviewPreview } from "~/lib/tanstack/query/review";
 import type { ReviewListItemDTO } from "~/models/review";
 import { formatDate, maskUserName } from "~/utils/format";
 
@@ -28,7 +30,23 @@ const formatReviewDate = (date: string): string => {
   return formatDate({ date });
 };
 
-const ReviewPreview = ({
+export default function ReviewPreview() {
+  const { data: reviews = [] } = useGetReviewPreview(SortType.LATEST, "5");
+
+  return (
+    <div className="flex flex-col gap-4 px-4">
+      {reviews.length > 0 ? (
+        reviews.map((review) => <ReviewPreviewItem key={review.reviewId} {...review} />)
+      ) : (
+        <div className="flex h-full items-center justify-center py-10">
+          <p className="font-label1-normal-medium text-label-neutral">리뷰가 없어요.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const ReviewPreviewItem = ({
   reviewId,
   score,
   content,
@@ -60,5 +78,3 @@ const ReviewPreview = ({
     </Link>
   );
 };
-
-export default ReviewPreview;

@@ -9,11 +9,11 @@ import thumbnail1 from "~/assets/home-thumbnail1.webp";
 import thumbnail2 from "~/assets/home-thumbnail2.webp";
 import thumbnail3 from "~/assets/home-thumbnail3.webp";
 import Dot from "~/components/icons/Dot";
+import ErrorBoundary from "~/components/layout/error-boundary";
 import { DefaultHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
-import { CounselStatus, SortType } from "~/constants";
+import { CounselStatus } from "~/constants";
 import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
-import { useGetReviews } from "~/lib/tanstack/query/review";
 import { HOME_SECTION_TITLES } from "~/routes/_index/constant";
 import ReviewPreview from "~/routes/_index/review-preview";
 import SectionField from "~/routes/_index/section-field";
@@ -42,7 +42,6 @@ const contents = [
 
 export default function HomePage() {
   const { data: counselStatus } = useCheckCounselStatus();
-  const { data: reviews = [], isLoading, isError } = useGetReviews(SortType.LATEST, "5");
 
   const navigate = useNavigate();
 
@@ -110,25 +109,22 @@ export default function HomePage() {
             viewMore
             viewMoreLink="/consult/reviews"
           >
-            <div className="flex flex-col gap-4 px-4">
-              {isLoading ? (
+            <ErrorBoundary
+              suspenseFallback={
                 <div className="flex h-full items-center justify-center py-10">
                   <Spinner className="mx-auto size-10" />
                 </div>
-              ) : isError ? (
+              }
+              errorFallback={() => (
                 <div className="flex h-full items-center justify-center py-10">
                   <p className="font-label1-normal-medium text-label-neutral">
                     오류가 발생했습니다.
                   </p>
                 </div>
-              ) : reviews.length > 0 ? (
-                reviews.map((review) => <ReviewPreview key={review.reviewId} {...review} />)
-              ) : (
-                <div className="flex h-full items-center justify-center py-10">
-                  <p className="font-label1-normal-medium text-label-neutral">리뷰가 없어요.</p>
-                </div>
               )}
-            </div>
+            >
+              <ReviewPreview />
+            </ErrorBoundary>
           </SectionField>
         </div>
         <Footer />
