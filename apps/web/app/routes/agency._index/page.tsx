@@ -1,40 +1,28 @@
-import { Spinner } from "@gyeongmaetalk/ui";
-
-import { Navigate } from "react-router";
-
 import Divider from "~/components/divider";
 import { CounselStatus } from "~/constants";
-import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
+import type { ReservedCounselDataResponse } from "~/models/counsel";
 import AuctionExample from "~/routes/agency._index/auction-example";
 import Consulted from "~/routes/agency._index/consulted";
 import NotConsulted from "~/routes/agency._index/not-consulted";
 import NotPaid from "~/routes/agency._index/not-paid";
 
-const AgencyPage = () => {
-  const { data: reservedcCounselData, isLoading } = useCheckCounselStatus();
+interface AgencyPageProps {
+  loaderData: ReservedCounselDataResponse | null;
+}
 
-  if (isLoading) {
-    return (
-      <div className="flex h-full items-center">
-        <Spinner className="mx-auto size-10" />
-      </div>
-    );
-  }
-
+const AgencyPage = ({ loaderData }: AgencyPageProps) => {
   const renderConsultStatus = () => {
-    if (!reservedcCounselData) {
+    if (!loaderData) {
       return <NotConsulted />;
     }
 
-    switch (reservedcCounselData.status) {
+    switch (loaderData.status) {
       case CounselStatus.NONE:
         return <NotConsulted />;
       case CounselStatus.COUNSEL_BEFORE:
-        return <Consulted info={reservedcCounselData.info} />;
+        return <Consulted info={loaderData.info} />;
       case CounselStatus.COUNSEL_AFTER:
-        return <NotPaid info={reservedcCounselData.info} />;
-      case CounselStatus.SUBSCRIBE:
-        return <Navigate to="/agency/recommend" replace />;
+        return <NotPaid info={loaderData.info} />;
     }
   };
 

@@ -1,16 +1,56 @@
+import { Spinner } from "@gyeongmaetalk/ui";
+
+import { redirect } from "react-router";
+
 import { WithLeftTitleHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
+import { CounselStatus } from "~/constants";
+import { useUserStore } from "~/lib/zustand/user";
+import { getReservedCounselData } from "~/services/counsel";
 
+import type { Route } from "./+types/route";
 import AgencyPage from "./page";
 
 export function meta() {
   return [{ title: "경매대행" }, { name: "description", content: "경매대행" }];
 }
 
-export default function AgencyLayout() {
+export async function clientLoader({ request }: Route.ClientLoaderArgs) {
+  const isLoggedIn = useUserStore.getState().isLoggedIn;
+
+  if (!isLoggedIn) {
+    return null;
+  }
+
+  try {
+    const { result } = await getReservedCounselData();
+
+    if (result.status === CounselStatus.SUBSCRIBE) {
+      redirect("/agency/recommend");
+    }
+
+    return {
+      status: result.status,
+      info: result.info,
+    };
+  } catch (err) {
+    console.error("error", err);
+    return null;
+  }
+}
+
+export function HydrateFallback() {
+  return (
+    <main className="flex h-screen items-center">
+      <Spinner className="mx-auto size-10" />
+    </main>
+  );
+}
+
+export default function AgencyLayout({ loaderData }: Route.ComponentProps) {
   return (
     <PageLayout header={<WithLeftTitleHeader title="경매대행" />} showNav>
-      <AgencyPage />
+      <AgencyPage loaderData={loaderData} />
     </PageLayout>
   );
 }
