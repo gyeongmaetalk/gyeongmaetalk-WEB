@@ -26,7 +26,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
     const { result } = await getReservedCounselData();
 
     if (result.status === CounselStatus.SUBSCRIBE) {
-      redirect("/agency/recommend");
+      throw redirect("/agency/recommend");
     }
 
     return {
@@ -34,6 +34,9 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
       info: result.info,
     };
   } catch (err) {
+    if (err instanceof Response && err.status >= 300 && err.status < 400) {
+      throw err;
+    }
     console.error("error", err);
     return null;
   }
