@@ -1,6 +1,8 @@
 import mixpanel from "mixpanel-browser";
 
-const isProduction = process.env.NODE_ENV === "production";
+import { ENV } from "~/constants/env";
+
+const isProduction = ENV.IS_PROD;
 
 mixpanel.init("c32b81de65f6bb334a6cb411325572d2", {
   debug: !isProduction,

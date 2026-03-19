@@ -2,9 +2,10 @@ import { useEffect } from "react";
 
 import Clarity from "@microsoft/clarity";
 
+import { ENV } from "~/constants/env";
 import { useGetMyInfo } from "~/lib/tanstack/query/auth";
 
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = ENV.IS_PROD;
 
 if (isProduction) {
   Clarity.init("vvmc2weefe");
