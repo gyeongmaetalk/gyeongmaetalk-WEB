@@ -4,6 +4,7 @@ import { isRouteErrorResponse, Links, Meta, Scripts, ScrollRestoration } from "r
 
 import type { Route } from "./+types/root";
 import { DefaultErrorComponent } from "./components/layout/default-error-component";
+import { GoogleAnalyticsScript } from "./components/layout/google-analytics-provider";
 import { NotFoundComponent } from "./components/layout/not-found-component";
 import RootProvider from "./components/layout/root-provider";
 
@@ -18,6 +19,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
         <Meta />
         <Links />
+        <GoogleAnalyticsScript />
       </head>
       <body>
         {children}
