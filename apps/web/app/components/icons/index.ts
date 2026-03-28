@@ -23,4 +23,5 @@ export { default as Pencil } from "./Pencil";
 export { default as Person } from "./Person";
 export { default as Share } from "./Share";
 export { default as Star } from "./Star";
+export { default as Ticket } from "./Ticket";
 export { default as Verified } from "./Verified";
