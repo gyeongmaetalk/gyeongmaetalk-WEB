@@ -43,7 +43,7 @@ export default function AuctionExample() {
     <>
       {getAuctionExampleTitle(currentIndex)}
       <Carousel
-        className="mt-4 mb-2"
+        className="mt-4"
         opts={{ loop: true }}
         setApi={setApi}
         plugins={[Autoplay({ delay: 3000 })]}

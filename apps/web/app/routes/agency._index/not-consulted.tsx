@@ -14,9 +14,9 @@ export default function NotConsulted() {
       <p className="text-label-strong font-headline2-bold text-center">
         전문가와 상담하고,
         <br />
-        경매를 진행해보세요.
+        경매를 진행하세요
       </p>
-      <Button className="w-full" onClick={onRouteToConsultApply}>
+      <Button className="w-full" onClick={onRouteToConsultApply} theme="assistive">
         무료 상담 신청하기
       </Button>
     </div>
