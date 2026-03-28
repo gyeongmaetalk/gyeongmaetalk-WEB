@@ -82,7 +82,7 @@ export default function PaymentPackagePage() {
 
   return (
     <>
-      <div className="h-full">
+      <div className="flex h-full flex-col">
         <div className="flex flex-col gap-6 px-4 py-6">
           <section className="flex flex-col gap-1">
             <p className="font-heading2-bold text-label-strong">
@@ -118,9 +118,7 @@ export default function PaymentPackagePage() {
                       )}
                     >
                       {p.discountPrice ? (
-                        <span>
-                          정가 <span className="line-through">{formatPrice(p.originalPrice)}</span>
-                        </span>
+                        <span className="line-through">{formatPrice(p.originalPrice)}</span>
                       ) : (
                         formatPrice(p.originalPrice)
                       )}
