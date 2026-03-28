@@ -6,10 +6,10 @@ import { formatPrice } from "@gyeongmaetalk/utils";
 import { useNavigate } from "react-router";
 
 import Image from "~/components/image";
-import PaymentModal from "~/components/modal/payment-modal";
-import { useRequestPurchase } from "~/lib/tanstack/mutation/property";
 import type { PropertyListItemProps } from "~/types/property";
 import { formatArea, formatDate } from "~/utils/format";
+
+import TicketConsumeModal from "./ticket-consume-modal";
 
 const PROPERTY_AMOUNT = 30000;
 
@@ -25,21 +25,15 @@ export default function AgencyRecommendItem({
   updateDate,
   payment,
 }: PropertyListItemProps) {
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const { mutateAsync: requestPurchase } = useRequestPurchase();
-
+  const [isTicketConsumeModalOpen, setIsTicketConsumeModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const onRouteToApplyRecommendDetail = (id: number) => {
     if (!payment) {
-      setIsPaymentModalOpen(true);
+      setIsTicketConsumeModalOpen(true);
       return;
     }
     navigate(`/agency/recommend/${id}`);
-  };
-
-  const onConfirmPayment = async () => {
-    await requestPurchase(id);
   };
 
   return (
@@ -101,17 +95,14 @@ export default function AgencyRecommendItem({
           theme={payment ? "assistive" : "default"}
           onClick={() => onRouteToApplyRecommendDetail(id)}
         >
-          {payment ? "자세히 보기" : "구매하기"}
+          {/* 열람권이 0개면 열람권 구매하기로 표기 및 구매 페이지로 라우팅 */}
+          {payment ? "자세히 보기" : "열람권 사용하기"}
         </Button>
       </div>
-      {isPaymentModalOpen && (
-        <PaymentModal
-          isOpen={isPaymentModalOpen}
-          amount={PROPERTY_AMOUNT}
-          onClose={() => setIsPaymentModalOpen(false)}
-          onConfirm={onConfirmPayment}
-        />
-      )}
+      <TicketConsumeModal
+        isOpen={isTicketConsumeModalOpen}
+        onClose={() => setIsTicketConsumeModalOpen(false)}
+      />
     </>
   );
 }

@@ -43,7 +43,7 @@ export default function PaymentTicketPage() {
       <div className="flex flex-col gap-10 px-4 py-6">
         <section className="bg-cool-neutral-99 flex flex-col items-center gap-3 rounded-md p-3">
           <div className="flex items-center gap-1">
-            <Ticket />
+            <Ticket className="text-label-alternative" />
             <p className="text-label-alternative font-label2-bold">잔여 열람권</p>
           </div>
           <p className="font-label1-normal-bold text-label-normal">0개</p>
