@@ -15,7 +15,7 @@ export interface MyInfoResponse {
   loginType: AuthProvider;
   cellPhone: string | null;
   birth: string | null;
-  auctionStatus: AuctionStatus;
+  auctionStatus: AuctionStatus | null;
 }
 
 export interface UpdateNotificationSettingRequest {
