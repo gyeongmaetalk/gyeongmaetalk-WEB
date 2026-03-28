@@ -1,3 +1,7 @@
+import { Button } from "@gyeongmaetalk/ui";
+
+import { Link } from "react-router";
+
 import Divider from "~/components/divider";
 import { CounselStatus } from "~/constants";
 import type { ReservedCounselDataResponse } from "~/models/counsel";
@@ -28,9 +32,11 @@ const AgencyPage = ({ loaderData }: AgencyPageProps) => {
 
   return (
     <div>
-      <section className="px-4 py-6">
+      <section className="flex flex-col gap-4 px-4 py-6">
         <AuctionExample />
-        <p className="text-label-assistive font-caption1-regular">예시 이미지 입니다.</p>
+        <Link to="/agency/package">
+          <Button className="w-full">경매 대행 패키지 살펴보기</Button>
+        </Link>
       </section>
       <Divider className="h-2" />
       <section className="px-4 py-6">{renderConsultStatus()}</section>
