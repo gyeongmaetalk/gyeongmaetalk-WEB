@@ -16,8 +16,9 @@ interface BadgeProps extends React.ComponentProps<"div"> {
    * 뱃지 테마
    * default(neutral): 기본 뱃지
    * accent: 강조 색상
+   * primary: 프라이머리 색상
    */
-  theme?: "default" | "accent";
+  theme?: "default" | "accent" | "primary";
 
   /**
    * 뱃지 크기
@@ -64,6 +65,16 @@ const badgeCompoundVariants = [
     theme: "accent",
     class: "text-accent-fg-cyan bg-transparent border-accent-fg-cyan",
   } as const,
+  {
+    variant: "outlined",
+    theme: "primary",
+    class: "text-primary-normal bg-transparent border-primary-normal",
+  } as const,
+  {
+    variant: "default",
+    theme: "primary",
+    class: "text-primary-normal bg-primary-normal/8 border border-transparent",
+  } as const,
 ];
 
 const badgeVariants = cva(
@@ -77,6 +88,7 @@ const badgeVariants = cva(
       theme: {
         default: "",
         accent: "",
+        primary: "",
       },
       size: {
         default: "px-1.5 py-1 rounded-sm gap-[3px] font-caption1-medium",
