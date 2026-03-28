@@ -10,6 +10,7 @@ export { default as Close } from "./Close";
 export { default as Company } from "./Company";
 export { default as Document } from "./Document";
 export { default as Dot } from "./Dot";
+export { default as Info } from "./Info";
 export { default as Kakao } from "./Kakao";
 export { default as LogoIcon } from "./LogoIcon";
 export { default as LogoText } from "./LogoText";
