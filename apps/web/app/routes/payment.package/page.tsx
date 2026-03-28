@@ -65,7 +65,7 @@ const LINK_LIST = [
   },
 ];
 
-export default function AgencyPackagePage() {
+export default function PaymentPackagePage() {
   const { data } = useCheckCounselStatus();
 
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -34,7 +34,7 @@ const AgencyPage = ({ loaderData }: AgencyPageProps) => {
     <div>
       <section className="flex flex-col gap-4 px-4 py-6">
         <AuctionExample />
-        <Link to="/agency/package">
+        <Link to="/payment/package">
           <Button className="w-full">경매 대행 패키지 살펴보기</Button>
         </Link>
       </section>
