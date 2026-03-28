@@ -11,7 +11,7 @@ import { CounselStatus } from "~/constants";
 import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
 
 import CounselorAssignRequireModal from "./counselor-assign-require-modal";
-import PaymentCompleteModal from "./payment-complete-modal";
+import PaymentPackageCompleteModal from "./payment-package-complete-modal";
 
 const PACKAGE_LIST = [
   {
@@ -169,7 +169,7 @@ export default function PaymentPackagePage() {
         </section>
       </div>
       <CounselorAssignRequireModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      <PaymentCompleteModal
+      <PaymentPackageCompleteModal
         isOpen={isPaymentCompleteModalOpen}
         counselorName={data?.info.counselorName || ""}
       />
