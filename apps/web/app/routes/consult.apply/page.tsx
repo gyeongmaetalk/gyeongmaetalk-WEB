@@ -9,7 +9,6 @@ import { WithCloseHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import CancelApplyConsult from "~/components/modal/cancel-apply-consult";
 import { trackMixpanelEvent } from "~/lib/analytics/mixpanel-client";
-import { getConsultFormEntryPointLabel } from "~/lib/analytics/mixpanel-consult-form";
 import { MIXPANEL_EVENT } from "~/lib/analytics/mixpanel-events";
 import { useMixpanelSessionStore } from "~/lib/zustand/mixpanel-session";
 import ApplyConsultError from "~/routes/consult.apply/error";
