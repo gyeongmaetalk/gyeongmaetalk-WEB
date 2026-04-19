@@ -12,7 +12,8 @@ interface LinkButtonProps {
   className?: string;
 }
 
-const googlePlayUrl = "https://play.google.com/store/apps/details?id=com.gyeongmaetalk.gyeongmaetalk&pcampaignid=web_share"
+const googlePlayUrl =
+  "https://play.google.com/store/apps/details?id=com.gyeongmaetalk.gyeongmaetalk&pcampaignid=web_share";
 
 export default function LinkButton({ type, text, className }: LinkButtonProps) {
   const isApple = type === StoreType.APP_STORE;
