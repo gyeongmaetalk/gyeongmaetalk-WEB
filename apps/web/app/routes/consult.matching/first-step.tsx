@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { useScroll } from "@gyeongmaetalk/hooks";
 import { Button } from "@gyeongmaetalk/ui";
@@ -11,6 +11,9 @@ import Image from "~/components/image";
 import { WithCloseHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import CancelApplyConsult from "~/components/modal/cancel-apply-consult";
+import { trackMixpanelEvent } from "~/lib/analytics/mixpanel-client";
+import { MIXPANEL_EVENT } from "~/lib/analytics/mixpanel-events";
+import { useMixpanelSessionStore } from "~/lib/zustand/mixpanel-session";
 import type { MatchCounselResponse } from "~/models/counsel";
 
 import type { Mode } from "./page";
@@ -26,8 +29,25 @@ const FirstStep = ({ consultant, name, onChangeMode }: FirstStepProps) => {
 
   const isScrolled = useScroll();
 
+  const recordedMatchingResultRef = useRef<boolean>(false);
+  if (!recordedMatchingResultRef.current) {
+    recordedMatchingResultRef.current = true;
+    useMixpanelSessionStore.getState().setMatchingResultViewedAtNow();
+    trackMixpanelEvent(MIXPANEL_EVENT.MATCHING_RESULT_VIEWED, {
+      expert_id: consultant.counselorId,
+      expert_name: consultant.counselorName,
+    });
+  }
+
   const onMakeReservation = () => {
     onChangeMode("reservation");
+  };
+
+  const onOpenCancelModal = () => {
+    trackMixpanelEvent(MIXPANEL_EVENT.RESERVATION_EXIT_INTENT, {
+      trigger_point: "exit_modal",
+    });
+    setIsModalOpen(true);
   };
 
   return (
@@ -36,7 +56,7 @@ const FirstStep = ({ consultant, name, onChangeMode }: FirstStepProps) => {
         header={
           <WithCloseHeader
             className={cn(isScrolled ? "bg-white" : "bg-transparent")}
-            onClose={() => setIsModalOpen(true)}
+            onClose={onOpenCancelModal}
           />
         }
         className="from-blue-gradient-start bg-linear-to-b to-white to-10%"

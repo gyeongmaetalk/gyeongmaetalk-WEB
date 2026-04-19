@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 import { useScroll } from "@gyeongmaetalk/hooks";
 import { DragCarousel, DragCarouselItem, Spinner } from "@gyeongmaetalk/ui";
 import { cn } from "@gyeongmaetalk/utils";
@@ -13,7 +15,10 @@ import ErrorBoundary from "~/components/layout/error-boundary";
 import { DefaultHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import { CounselStatus } from "~/constants";
+import { buildCommonEventProperties, trackMixpanelEvent } from "~/lib/analytics/mixpanel-client";
+import { MIXPANEL_EVENT } from "~/lib/analytics/mixpanel-events";
 import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
+import { useUserStore } from "~/lib/zustand/user";
 import { HOME_SECTION_TITLES } from "~/routes/_index/constant";
 import ReviewPreview from "~/routes/_index/review-preview";
 import SectionField from "~/routes/_index/section-field";
@@ -45,9 +50,20 @@ export default function HomePage() {
 
   const navigate = useNavigate();
 
+  const isLoggedIn = useUserStore((state) => state.isLoggedIn);
+
   const status = counselStatus ? counselStatus.status : CounselStatus.NONE;
 
   const isScrolled = useScroll();
+
+  const hasTrackedLandingViewedRef = useRef<boolean>(false);
+  if (!hasTrackedLandingViewedRef.current) {
+    hasTrackedLandingViewedRef.current = true;
+    const common = buildCommonEventProperties(isLoggedIn);
+    trackMixpanelEvent(MIXPANEL_EVENT.LANDING_VIEWED, {
+      ...common,
+    });
+  }
 
   return (
     <PageLayout

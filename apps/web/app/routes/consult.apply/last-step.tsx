@@ -9,8 +9,11 @@ import { useNavigate } from "react-router";
 import FloatingContainer from "~/components/container/floating-container";
 import SuggestLogin from "~/components/modal/suggest-login";
 import SuggestSignup from "~/components/modal/suggest-signup";
+import { trackMixpanelEvent } from "~/lib/analytics/mixpanel-client";
+import { MIXPANEL_EVENT } from "~/lib/analytics/mixpanel-events";
 import { counselKeys } from "~/lib/tanstack/keys/counsel";
 import { useChangeMatchCounsel, useMatchCounsel } from "~/lib/tanstack/mutation/counsel";
+import { useMixpanelSessionStore } from "~/lib/zustand/mixpanel-session";
 import { useUserStore } from "~/lib/zustand/user";
 import { type ApplyConsultForm } from "~/routes/consult.apply/schema";
 import { errorToast } from "~/utils/toast";
@@ -45,6 +48,12 @@ const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
         interest: form.getValues("category"),
         participantType: selectedValue,
       };
+      const startedAtMs: number | null = useMixpanelSessionStore.getState().consultFormStartedAtMs;
+      const totalTimeTaken = startedAtMs !== null ? Date.now() - startedAtMs : 0;
+      trackMixpanelEvent(MIXPANEL_EVENT.CONSULTATION_FORM_SUBMITTED, {
+        total_time_taken: totalTimeTaken,
+        all_options_summary: JSON.stringify(body),
+      });
       navigate("/consult/matching", {
         replace: true,
         state: { result: data.result, matchCounselRequest: body },
@@ -58,6 +67,20 @@ const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
 
   const { mutateAsync: changeMatchCounsel } = useChangeMatchCounsel({
     onSuccess: (data) => {
+      const selectedValue = name === "개인" ? `개인,${innerOption}` : name;
+      const body = {
+        purpose: form.getValues("purpose"),
+        area: form.getValues("region"),
+        serviceType: form.getValues("service"),
+        interest: form.getValues("category"),
+        participantType: selectedValue,
+      };
+      const startedAtMs: number | null = useMixpanelSessionStore.getState().consultFormStartedAtMs;
+      const totalTimeTaken = startedAtMs !== null ? Date.now() - startedAtMs : 0;
+      trackMixpanelEvent(MIXPANEL_EVENT.CONSULTATION_FORM_SUBMITTED, {
+        total_time_taken: totalTimeTaken,
+        all_options_summary: JSON.stringify({ ...body, mode: "change" }),
+      });
       queryClient.invalidateQueries({ queryKey: counselKeys.getReservedCounselData() });
       navigate("/consult/matching?mode=change", {
         replace: true,
@@ -111,6 +134,18 @@ const LastStep = ({ form, isChangeMode, counselFormId }: LastStepProps) => {
         interest: data.category,
         participantType: selectedValue,
       };
+
+      trackMixpanelEvent(MIXPANEL_EVENT.CONSULTATION_STEP_COMPLETED, {
+        step_number: 5,
+        selected_option: selectedValue,
+        is_input_direct: false,
+      });
+
+      if (!isChangeMode && user) {
+        trackMixpanelEvent(MIXPANEL_EVENT.MATCHING_LOADING_VIEWED, {
+          matching_algorithm_version: "web-v1",
+        });
+      }
 
       if (isChangeMode && counselFormId) {
         await changeMatchCounsel({ ...body, counselFormId });

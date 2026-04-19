@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "@gyeongmaetalk/ui";
 
@@ -6,6 +6,10 @@ import type { UseFormReturn } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
+import { trackMixpanelEvent } from "~/lib/analytics/mixpanel-client";
+import { getConsultFormEntryPointLabel } from "~/lib/analytics/mixpanel-consult-form";
+import { MIXPANEL_EVENT } from "~/lib/analytics/mixpanel-events";
+import { useMixpanelSessionStore } from "~/lib/zustand/mixpanel-session";
 import { type ApplyConsultForm } from "~/routes/consult.apply/schema";
 
 import { PURPOSE_OPTIONS } from "./constant";
@@ -21,9 +25,28 @@ const FirstStep = ({ form, mode }: FirstStepProps) => {
 
   const navigate = useNavigate();
 
+  const recordedConsultFormStartRef = useRef<boolean>(false);
+  if (!recordedConsultFormStartRef.current) {
+    recordedConsultFormStartRef.current = true;
+    useMixpanelSessionStore.getState().setConsultFormStartedAtNow();
+    const previousPage: string | undefined =
+      typeof document !== "undefined" && document.referrer.length > 0
+        ? document.referrer
+        : undefined;
+    trackMixpanelEvent(MIXPANEL_EVENT.CONSULTATION_FORM_STARTED, {
+      entry_point: getConsultFormEntryPointLabel(mode),
+      previous_page: previousPage,
+    });
+  }
+
   const nextDisabled = !purpose;
 
   const onNext = () => {
+    trackMixpanelEvent(MIXPANEL_EVENT.CONSULTATION_STEP_COMPLETED, {
+      step_number: 1,
+      selected_option: purpose,
+      is_input_direct: false,
+    });
     const searchParams = new URLSearchParams();
     searchParams.set("step", "2");
     if (mode) {

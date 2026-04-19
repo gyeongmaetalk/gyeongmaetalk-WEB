@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   Button,
@@ -14,6 +14,8 @@ import { useNavigate, useSearchParams } from "react-router";
 import Image from "~/components/image";
 import { Header } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
+import { trackMixpanelEvent } from "~/lib/analytics/mixpanel-client";
+import { MIXPANEL_EVENT } from "~/lib/analytics/mixpanel-events";
 import { ONBOARDING_STEPS } from "~/routes/onboarding/constant";
 
 const OnboardingPage = () => {
@@ -27,11 +29,23 @@ const OnboardingPage = () => {
   const isLastStep = currentStep === ONBOARDING_STEPS.length - 1;
   const buttonText = isLastStep ? (isApplyMode ? "무료 상담 신청하기" : "경매톡 시작하기") : "다음";
 
+  const sessionStartedAtRef = useRef(0);
+  const previousStepIndexRef = useRef(0);
+  const stepEnteredAtRef = useRef(0);
+  const hasTrackedOnboardingStartedRef = useRef<boolean>(false);
+
   const onNext = () => {
     if (api?.canScrollNext() && !isLastStep) {
       api?.scrollNext();
     }
     if (isLastStep) {
+      const totalTimeTaken = Date.now() - sessionStartedAtRef.current;
+      const hasCompletedBefore = localStorage.getItem(MIXPANEL_EVENT.ONBOARDING_COMPLETED);
+      trackMixpanelEvent(MIXPANEL_EVENT.ONBOARDING_COMPLETED, {
+        total_time_taken: totalTimeTaken,
+        is_first_attempt: hasCompletedBefore !== "1",
+      });
+      localStorage.setItem(MIXPANEL_EVENT.ONBOARDING_COMPLETED, "1");
       const location = isApplyMode ? "/consult/apply" : "/";
       navigate(location);
     }
@@ -49,12 +63,42 @@ const OnboardingPage = () => {
   };
 
   useEffect(() => {
-    if (api) {
-      api.on("select", () => {
-        setCurrentStep(api.selectedScrollSnap());
+    if (!api) {
+      return;
+    }
+
+    if (!hasTrackedOnboardingStartedRef.current) {
+      hasTrackedOnboardingStartedRef.current = true;
+      sessionStartedAtRef.current = Date.now();
+      stepEnteredAtRef.current = Date.now();
+      previousStepIndexRef.current = api.selectedScrollSnap();
+      trackMixpanelEvent(MIXPANEL_EVENT.ONBOARDING_STARTED, {
+        entry_point: isApplyMode ? "mode_apply" : "default",
       });
     }
-  }, [api]);
+
+    const onCarouselSelect = (): void => {
+      const newIndex: number = api.selectedScrollSnap();
+      const prevIndex: number = previousStepIndexRef.current;
+      if (newIndex === prevIndex) {
+        return;
+      }
+      const timeSpentOnPreviousStep: number = Date.now() - stepEnteredAtRef.current;
+      trackMixpanelEvent(MIXPANEL_EVENT.ONBOARDING_STEPPED, {
+        step_number: prevIndex + 1,
+        step_name: ONBOARDING_STEPS[prevIndex].title,
+        time_spent_on_step: timeSpentOnPreviousStep,
+      });
+      stepEnteredAtRef.current = Date.now();
+      previousStepIndexRef.current = newIndex;
+      setCurrentStep(newIndex);
+    };
+
+    api.on("select", onCarouselSelect);
+    return () => {
+      api.off("select", onCarouselSelect);
+    };
+  }, [api, isApplyMode]);
 
   return (
     <PageLayout

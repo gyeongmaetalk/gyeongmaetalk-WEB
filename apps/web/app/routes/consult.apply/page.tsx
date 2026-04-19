@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -8,6 +8,10 @@ import { useNavigate } from "react-router";
 import { WithCloseHeader } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import CancelApplyConsult from "~/components/modal/cancel-apply-consult";
+import { trackMixpanelEvent } from "~/lib/analytics/mixpanel-client";
+import { getConsultFormEntryPointLabel } from "~/lib/analytics/mixpanel-consult-form";
+import { MIXPANEL_EVENT } from "~/lib/analytics/mixpanel-events";
+import { useMixpanelSessionStore } from "~/lib/zustand/mixpanel-session";
 import ApplyConsultError from "~/routes/consult.apply/error";
 import FirstStep from "~/routes/consult.apply/first-step";
 import FourthStep from "~/routes/consult.apply/fourth-step";
@@ -45,6 +49,20 @@ const ConsultApplyPage = ({ defaultValues, mode, step, counselFormId }: ConsultA
       searchParams.set("mode", mode);
     }
     navigate(`?${searchParams.toString()}`, { replace: true });
+  };
+
+  const onConfirmConsultFormAbandon = useCallback(() => {
+    const startedAtMs: number | null = useMixpanelSessionStore.getState().consultFormStartedAtMs;
+    const timeSpent: number = startedAtMs !== null ? Date.now() - startedAtMs : 0;
+    trackMixpanelEvent(MIXPANEL_EVENT.CONSULTATION_FORM_ABANDONED, {
+      last_step_number: step,
+      time_spent: timeSpent,
+    });
+  }, [step]);
+
+  const onOpenCancelModal = () => {
+    trackMixpanelEvent(MIXPANEL_EVENT.CONSULTATION_FORM_EXIT_INTENT);
+    setIsModalOpen(true);
   };
 
   const renderStep = () => {
@@ -90,10 +108,14 @@ const ConsultApplyPage = ({ defaultValues, mode, step, counselFormId }: ConsultA
   return isError ? (
     <ApplyConsultError onResetError={onResetError} />
   ) : (
-    <PageLayout header={<WithCloseHeader title="상담 신청" onClose={() => setIsModalOpen(true)} />}>
+    <PageLayout header={<WithCloseHeader title="상담 신청" onClose={onOpenCancelModal} />}>
       <Stepper currentStep={step} />
       {renderStep()}
-      <CancelApplyConsult isOpen={isModalOpen} onCancel={() => setIsModalOpen(false)} />
+      <CancelApplyConsult
+        isOpen={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        onConfirmLeave={onConfirmConsultFormAbandon}
+      />
     </PageLayout>
   );
 };

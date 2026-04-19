@@ -4,6 +4,7 @@ import { Spinner } from "@gyeongmaetalk/ui";
 
 import { useNavigate, useSearchParams } from "react-router";
 
+import { useMixpanelSessionStore } from "~/lib/zustand/mixpanel-session";
 import { useUserStore } from "~/lib/zustand/user";
 import { errorToast } from "~/utils/toast";
 
@@ -22,6 +23,7 @@ export default function RedirectPage() {
   useEffect(() => {
     const requestAccessToken = async () => {
       try {
+        useMixpanelSessionStore.getState().setLoginPending(true);
         setIsLoggedIn(true);
         setIsRegistered(isRegistered);
         if (isRegistered) {

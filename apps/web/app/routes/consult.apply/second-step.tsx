@@ -6,6 +6,8 @@ import type { UseFormReturn } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
+import { trackMixpanelEvent } from "~/lib/analytics/mixpanel-client";
+import { MIXPANEL_EVENT } from "~/lib/analytics/mixpanel-events";
 import { type ApplyConsultForm } from "~/routes/consult.apply/schema";
 
 import { REGION_OPTIONS } from "./constant";
@@ -39,6 +41,12 @@ const SecondStep = ({ form, mode }: SecondStepProps) => {
 
   const onNext = () => {
     const value = region === "직접 입력" ? customRegion : region;
+    const isInputDirect = region === "직접 입력";
+    trackMixpanelEvent(MIXPANEL_EVENT.CONSULTATION_STEP_COMPLETED, {
+      step_number: 2,
+      selected_option: value,
+      is_input_direct: isInputDirect,
+    });
     form.setValue("region", value);
     const searchParams = new URLSearchParams();
     searchParams.set("step", "3");

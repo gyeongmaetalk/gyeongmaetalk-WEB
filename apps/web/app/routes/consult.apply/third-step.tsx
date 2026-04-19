@@ -6,6 +6,8 @@ import type { UseFormReturn } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
+import { trackMixpanelEvent } from "~/lib/analytics/mixpanel-client";
+import { MIXPANEL_EVENT } from "~/lib/analytics/mixpanel-events";
 import { type ApplyConsultForm } from "~/routes/consult.apply/schema";
 
 import { SERVICE_OPTIONS } from "./constant";
@@ -32,6 +34,11 @@ const ThirdStep = ({ form, mode }: ThirdStepProps) => {
   };
 
   const onNext = () => {
+    trackMixpanelEvent(MIXPANEL_EVENT.CONSULTATION_STEP_COMPLETED, {
+      step_number: 3,
+      selected_option: service,
+      is_input_direct: false,
+    });
     form.setValue("service", service);
     const searchParams = new URLSearchParams();
     searchParams.set("step", "4");
