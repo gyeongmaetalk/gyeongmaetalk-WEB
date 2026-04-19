@@ -15,13 +15,13 @@ const RootProvider = () => {
   return (
     <TanstackProvider>
       <script type="text/javascript" src={naverMapScriptUrl} />
+      <MixpanelProvider />
       <UserProvider>
         <FcmTokenProvider>
           <Outlet />
         </FcmTokenProvider>
       </UserProvider>
       <Toaster position="bottom-center" duration={3000} closeButton />
-      <MixpanelProvider />
       <ClarityProvider />
     </TanstackProvider>
   );
