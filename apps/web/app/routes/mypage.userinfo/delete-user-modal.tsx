@@ -3,6 +3,7 @@ import { Button, Modal } from "@gyeongmaetalk/ui";
 
 import { useNavigate } from "react-router";
 
+import { resetMixpanel } from "~/lib/analytics/mixpanel-client";
 import { useDeleteUser } from "~/lib/tanstack/mutation/auth";
 import { useUserStore } from "~/lib/zustand/user";
 import { errorToast } from "~/utils/toast";
@@ -19,6 +20,7 @@ export default function DeleteUserModal({ isOpen, onClose }: DeleteUserModalProp
 
   const { mutateAsync: deleteUser, isPending: isDeleteUserPending } = useDeleteUser({
     onSuccess: () => {
+      resetMixpanel();
       queryClient.resetQueries();
       reset();
       successToast("회원탈퇴가 완료되었어요.");

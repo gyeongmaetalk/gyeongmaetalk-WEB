@@ -3,6 +3,7 @@ import { queryClient } from "@gyeongmaetalk/lib/tanstack";
 import { Button, Modal } from "@gyeongmaetalk/ui";
 
 import { Close } from "~/components/icons";
+import { resetMixpanel } from "~/lib/analytics/mixpanel-client";
 import { useLogout } from "~/lib/tanstack/mutation/auth";
 import { useUserStore } from "~/lib/zustand/user";
 
@@ -16,6 +17,7 @@ export default function LogoutModal({ isOpen, onCancel }: LogoutModalProps) {
 
   const { mutate: logout, isPending } = useLogout({
     onSuccess: () => {
+      resetMixpanel();
       reset();
       queryClient.resetQueries();
       onCancel();
