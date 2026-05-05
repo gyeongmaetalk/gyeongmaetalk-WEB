@@ -60,7 +60,7 @@ export const api = instance.extend({
     afterResponse: [
       async (request, options, response) => {
         // 응답 처리 로직 (예: 토큰 갱신)
-        if (response.status === 401 || response.status === 500) {
+        if (response.status === 401) {
           // 토큰 갱신 (이미 진행 중이면 기존 Promise 사용)
           await refreshAccessToken();
 

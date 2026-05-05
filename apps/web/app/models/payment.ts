@@ -1,10 +1,7 @@
-import type { Platform } from "~/types/platform";
-
 export interface PaymentConfirmRequest {
   orderId: number;
-  provider: Platform;
-  storeProductId: string;
-  providerVerificationData: string;
+  productIdentifier: string;
+  transactionIdentifier: string;
 }
 
 export interface PaymentConfirmResponse {

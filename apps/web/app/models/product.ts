@@ -1,18 +1,13 @@
 export interface ProductListItemProps {
   id: number;
   name: string;
-  description: string;
-  productType: string;
-  price: number;
-  components: [
-    {
-      productId: number;
-      componentType: string;
-      name: string;
-      description: string;
-      ticketCount: number;
-    },
-  ];
+  components: {
+    description: string;
+    quantity: number;
+  }[];
+  price: number | null;
+  originalPrice: number;
+  recommended: boolean;
 }
 
 export type ProductListResponse = ProductListItemProps[];
