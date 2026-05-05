@@ -6,9 +6,10 @@ import PaymentPackagePage from "./page";
 export function meta() {
   return [{ title: "경매대행 - 패키지" }, { name: "description", content: "경매대행 - 패키지" }];
 }
+
 export default function PaymentPackageLayout() {
   return (
-    <PageLayout header={<WithBackHeader title="경매대행 패키지" />} showNav>
+    <PageLayout header={<WithBackHeader title="경매대행 패키지" />}>
       <PaymentPackagePage />
     </PageLayout>
   );

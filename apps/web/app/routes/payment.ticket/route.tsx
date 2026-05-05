@@ -20,7 +20,7 @@ export function clientLoader() {
 
 export default function PaymentTicketLayout() {
   return (
-    <PageLayout header={<WithBackHeader title="추천 매물 열람권" />} showNav>
+    <PageLayout header={<WithBackHeader title="추천 매물 열람권" />}>
       <PaymentTicketPage />
     </PageLayout>
   );
