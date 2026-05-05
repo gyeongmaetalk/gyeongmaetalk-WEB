@@ -1,4 +1,5 @@
-import { Badge, Spinner } from "@gyeongmaetalk/ui";
+import { useQueryClient } from "@gyeongmaetalk/lib/tanstack";
+import { Badge, Spinner, toast } from "@gyeongmaetalk/ui";
 import { formatPrice } from "@gyeongmaetalk/utils";
 
 import { Copy } from "lucide-react";
@@ -8,6 +9,7 @@ import Divider from "~/components/divider";
 import { Header } from "~/components/layout/header";
 import PageLayout from "~/components/layout/page-layout";
 import { useGetPropertyDetail } from "~/lib/tanstack/query/property";
+import { VIEW_TICKET_QUERY_OPTIONS } from "~/lib/tanstack/query/view-ticket";
 import RequestBidButton from "~/routes/agency.recommend._index/request-bid-button";
 import GyeongmaeMap from "~/routes/agency.recommend.$id/gyeongmae-map";
 import ListingCarousel from "~/routes/agency.recommend.$id/listing-carousel";
@@ -21,7 +23,9 @@ const AgencyRecommendDetailPage = () => {
     return <Navigate to="/agency/recommend" />;
   }
 
-  const { data, isLoading } = useGetPropertyDetail(id);
+  const { data, isLoading, isError, isSuccess } = useGetPropertyDetail(id);
+
+  const queryClient = useQueryClient();
 
   const onCopy = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -71,6 +75,15 @@ const AgencyRecommendDetailPage = () => {
         <Spinner className="mx-auto size-10" />
       </div>
     );
+  }
+
+  if (isError) {
+    toast.error("열람권이 부족합니다.");
+    return <Navigate to="/agency/recommend" />;
+  }
+
+  if (isSuccess) {
+    queryClient.invalidateQueries(VIEW_TICKET_QUERY_OPTIONS.GetRemainingViewTickets());
   }
 
   return (

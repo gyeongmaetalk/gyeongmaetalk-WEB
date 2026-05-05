@@ -1,58 +1,18 @@
 import { useState } from "react";
 
-import { Badge } from "@gyeongmaetalk/ui";
+import { Badge, Spinner } from "@gyeongmaetalk/ui";
 import { cn, formatPrice } from "@gyeongmaetalk/utils";
 
 import { Link } from "react-router";
 
 import Divider from "~/components/divider";
 import { Info } from "~/components/icons";
-import { CounselStatus } from "~/constants";
-import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
+import PaymentLoading from "~/components/payments/payment-loading";
+import { usePaymentRequest } from "~/hooks/use-payment-request";
+import type { ProductListItemProps } from "~/models/product";
 
 import CounselorAssignRequireModal from "./counselor-assign-require-modal";
 import PaymentPackageCompleteModal from "./payment-package-complete-modal";
-
-const PACKAGE_LIST = [
-  {
-    isRecommended: true,
-    name: "프리미엄 패키지",
-    originalPrice: 400000,
-    discountPrice: 387000,
-    descriptions: [
-      "경매 대행 바로 시작",
-      "무료 매물 추천",
-      "매물 입찰 대행",
-      "추천 매물 열람권 3개",
-      "기간 제한 없는 무제한 케어 (낙찰 성공 까지)",
-    ],
-  },
-  {
-    isRecommended: false,
-    name: "베이직 패키지",
-    originalPrice: 330000,
-    discountPrice: 329000,
-    descriptions: [
-      "경매 대행 바로 시작",
-      "무료 매물 추천",
-      "매물 입찰 대행",
-      "추천 매물 열람권 1개",
-      "기간 제한 없는 무제한 케어 (낙찰 성공 까지)",
-    ],
-  },
-  {
-    isRecommended: false,
-    name: "라이트 패키지",
-    originalPrice: 300000,
-    discountPrice: null,
-    descriptions: [
-      "경매 대행 바로 시작",
-      "무료 매물 추천",
-      "매물 입찰 대행",
-      "기간 제한 없는 무제한 케어 (낙찰 성공 까지)",
-    ],
-  },
-];
 
 const LINK_LIST = [
   {
@@ -65,19 +25,30 @@ const LINK_LIST = [
   },
 ];
 
+const BASE_DESCRIPTIONS = [
+  "경매 대행 바로 시작",
+  "무료 매물 추천",
+  "매물 입찰 대행",
+  "기간 제한 없는 무제한 케어 (낙찰 성공 까지)",
+];
+
 export default function PaymentPackagePage() {
-  const { data } = useCheckCounselStatus();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // 추후 결제 성공 시 띄워주는 모달로 변경하기
-  const [isPaymentCompleteModalOpen, setIsPaymentCompleteModalOpen] = useState(false);
-  const isCounselorAssigned = data && data.status !== CounselStatus.NONE;
+  const {
+    products,
+    onRequestOrderProduct,
+    isPaymentComplete,
+    isRequestOrderLoading,
+    isCounselorAssigned,
+  } = usePaymentRequest("PACKAGE");
 
-  const onClickPackage = (selectedPackage: (typeof PACKAGE_LIST)[number]) => {
+  const onClickProduct = async (selectedProduct: ProductListItemProps) => {
     if (!isCounselorAssigned) {
       setIsModalOpen(true);
       return;
     }
+
+    onRequestOrderProduct(selectedProduct);
   };
 
   return (
@@ -95,54 +66,18 @@ export default function PaymentPackagePage() {
             </p>
           </section>
           <section className="flex flex-col gap-4">
-            {PACKAGE_LIST.map((p, idx) => (
-              <button
-                key={p.name}
-                className={cn(
-                  "border-cool-neutral-50/22 space-y-2 rounded-[12px] border p-3 text-left",
-                  idx === 0 && "border-primary-normal bg-primary-normal/3"
-                )}
-                onClick={() => onClickPackage(p)}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    {p.isRecommended ? <Badge theme="primary">추천</Badge> : null}
-                    <p className="font-label2-medium text-label-strong">{p.name}</p>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <p
-                      className={cn(
-                        p.discountPrice
-                          ? "font-caption1-regular text-label-alternative"
-                          : "font-body2-normal-bold text-label-normal"
-                      )}
-                    >
-                      {p.discountPrice ? (
-                        <span className="line-through">{formatPrice(p.originalPrice)}</span>
-                      ) : (
-                        formatPrice(p.originalPrice)
-                      )}
-                    </p>
-                    {p.discountPrice ? (
-                      <p className="font-body2-normal-bold text-accent-fg-red">
-                        {formatPrice(p.discountPrice)}
-                      </p>
-                    ) : null}
-                  </div>
-                </div>
-                <Divider className="bg-cool-neutral-50/22" />
-                <ul className="space-y-1">
-                  {p.descriptions.map((d) => (
-                    <li
-                      key={d}
-                      className="font-label2-regular text-label-normal list marker:text-label-assistive ml-3 list-disc"
-                    >
-                      {d}
-                    </li>
-                  ))}
-                </ul>
-              </button>
-            ))}
+            {products === undefined ? (
+              <div className="flex flex-col items-center justify-center gap-2">
+                <Spinner />
+                <p className="font-body2-normal-regular text-label-neutral">
+                  상품 정보를 불러오는 중입니다...
+                </p>
+              </div>
+            ) : (
+              products.map((p) => (
+                <ProductItem key={p.id} product={p} onClick={() => onClickProduct(p)} />
+              ))
+            )}
             <div className="text-label-neutral font-caption1-regular bg-cool-neutral-99 space-y-2 rounded-md p-4">
               <div className="flex items-center gap-1">
                 <Info />
@@ -169,10 +104,67 @@ export default function PaymentPackagePage() {
         </section>
       </div>
       <CounselorAssignRequireModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      <PaymentPackageCompleteModal
-        isOpen={isPaymentCompleteModalOpen}
-        counselorName={data?.info.counselorName || ""}
-      />
+      <PaymentPackageCompleteModal isOpen={isPaymentComplete} />
+      <PaymentLoading isOpen={isRequestOrderLoading} />
     </>
+  );
+}
+
+interface ProductItemProps {
+  product: ProductListItemProps;
+  onClick: () => void;
+}
+
+function ProductItem({ product, onClick }: ProductItemProps) {
+  console.log(product);
+  const viewTicket = product.components.find((c) => c.description.includes("열람권"));
+  const viewTicketDescription = viewTicket ? [`추천 매물 열람권 ${viewTicket.quantity}개`] : [];
+
+  return (
+    <button
+      className={cn(
+        "border-cool-neutral-50/22 space-y-2 rounded-[12px] border p-3 text-left",
+        product.recommended && "border-primary-normal bg-primary-normal/3"
+      )}
+      onClick={onClick}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1">
+          {product.recommended ? <Badge theme="primary">추천</Badge> : null}
+          <p className="font-label2-medium text-label-strong">{product.name}</p>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <p
+            className={cn(
+              product.price !== null
+                ? "font-caption1-regular text-label-alternative"
+                : "font-body2-normal-bold text-label-normal"
+            )}
+          >
+            {product.price !== null ? (
+              <span className="line-through">{formatPrice(product.originalPrice)}</span>
+            ) : (
+              formatPrice(product.originalPrice)
+            )}
+          </p>
+          {product.price !== null ? (
+            <p className="font-body2-normal-bold text-accent-fg-red">
+              {formatPrice(product.price)}
+            </p>
+          ) : null}
+        </div>
+      </div>
+      <Divider className="bg-cool-neutral-50/22" />
+      <ul className="space-y-1">
+        {[...BASE_DESCRIPTIONS, ...viewTicketDescription].map((d) => (
+          <li
+            key={d}
+            className="font-label2-regular text-label-normal list marker:text-label-assistive ml-3 list-disc"
+          >
+            {d}
+          </li>
+        ))}
+      </ul>
+    </button>
   );
 }

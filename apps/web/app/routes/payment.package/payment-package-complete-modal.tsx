@@ -4,17 +4,16 @@ import { useNavigate } from "react-router";
 
 import complete from "~/assets/complete.webp";
 import Image from "~/components/image";
+import { useCheckCounselStatus } from "~/lib/tanstack/query/counsel";
 
 interface PaymentPackageCompleteModalProps {
   isOpen: boolean;
-  counselorName: string;
 }
 
-export default function PaymentPackageCompleteModal({
-  isOpen,
-  counselorName,
-}: PaymentPackageCompleteModalProps) {
+export default function PaymentPackageCompleteModal({ isOpen }: PaymentPackageCompleteModalProps) {
   const navigate = useNavigate();
+  const { data } = useCheckCounselStatus();
+  const counselorName = data?.info.counselorName || "경매톡";
 
   const onRouteToRecommendList = () => {
     navigate("/agency/recommend");

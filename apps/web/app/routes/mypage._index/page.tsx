@@ -1,13 +1,15 @@
 import { useState } from "react";
 
+import { useQuery } from "@gyeongmaetalk/lib/tanstack";
 import { cn } from "@gyeongmaetalk/utils";
 
 import { Link } from "react-router";
 
 import Divider from "~/components/divider";
 import { Apple, Back, Gift, Kakao, Ticket } from "~/components/icons";
-import { AuthProvider, WebviewEvent } from "~/constants";
+import { AuctionStatus, AuthProvider, WebviewEvent } from "~/constants";
 import { useWebView } from "~/hooks/use-webview";
+import { VIEW_TICKET_QUERY_OPTIONS } from "~/lib/tanstack/query/view-ticket";
 import { useUserStore } from "~/lib/zustand/user";
 import LogoutModal from "~/routes/mypage._index/logout-modal";
 
@@ -15,6 +17,9 @@ const MyPagePage = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const user = useUserStore((state) => state.user);
+  const { data: remainingViewTickets } = useQuery(
+    VIEW_TICKET_QUERY_OPTIONS.GetRemainingViewTickets()
+  );
 
   const { postMessage } = useWebView();
 
@@ -53,37 +58,45 @@ const MyPagePage = () => {
             </Link>
             <Back className="h-3 w-[7px] -scale-x-100" />
           </div>
-          {user && user.auctionStatus && (
+          {user && user.auctionStatus !== null ? (
             <div className="flex h-5 items-center rounded-[6px] bg-[#e5f6fe] px-[6px]">
               <div className="font-caption2-medium text-primary-normal">경매 진행 중</div>
             </div>
-          )}
+          ) : null}
         </div>
         {/* 경매 진행 중이 아닐 때 보여주기 */}
-        {/* <div className="bg-cool-neutral-99 space-y-3 rounded-md py-3 text-center">
-          <p className="font-label2-bold text-label-strong">이용중인 패키지가 없습니다</p>
-          <p className="font-label2-regular text-label-strong">경매 대행 패키지를 이용해보세요</p>
-        </div> */}
-        {/* 경매 진행 중일 때 보여주기 */}
-        {/* <div className="flex items-center gap-3">
-          <div className="bg-cool-neutral-99 flex flex-1 flex-col items-center gap-3 rounded-md py-3">
-            <div className="flex items-center gap-1">
-              <Gift />
-              <p className="font-label2-bold text-label-alternative">이용중인 패키지</p>
-            </div>
-            <p className="font-label1-normal-bold text-label-normal">추천 패키지</p>
+        {user && user.auctionStatus === AuctionStatus.PENDING ? (
+          <div className="bg-cool-neutral-99 space-y-3 rounded-md py-3 text-center">
+            <p className="font-label2-bold text-label-strong">이용중인 패키지가 없습니다</p>
+            <p className="font-label2-regular text-label-strong">경매 대행 패키지를 이용해보세요</p>
           </div>
-          <Link
-            to="/payment/ticket"
-            className="bg-cool-neutral-99 flex flex-1 flex-col items-center gap-3 rounded-md py-3"
-          >
-            <div className="flex items-center gap-1">
-              <Ticket />
-              <p className="font-label2-bold text-label-alternative">잔여 열람권</p>
+        ) : null}
+        {/* 경매 진행 중일 때 보여주기 */}
+        {user && user.auctionStatus === AuctionStatus.IN_PROGRESS ? (
+          <div className="flex items-center gap-3">
+            <div className="bg-cool-neutral-99 flex flex-1 flex-col items-center gap-3 rounded-md py-3">
+              <div className="flex items-center gap-1">
+                <Gift />
+                <p className="font-label2-bold text-label-alternative">이용중인 패키지</p>
+              </div>
+              <p className="font-label1-normal-bold text-label-normal">
+                {remainingViewTickets?.packageName || "-"}
+              </p>
             </div>
-            <p className="font-label1-normal-bold text-label-normal">0개</p>
-          </Link>
-        </div> */}
+            <Link
+              to="/payment/ticket"
+              className="bg-cool-neutral-99 flex flex-1 flex-col items-center gap-3 rounded-md py-3"
+            >
+              <div className="flex items-center gap-1">
+                <Ticket />
+                <p className="font-label2-bold text-label-alternative">잔여 열람권</p>
+              </div>
+              <p className="font-label1-normal-bold text-label-normal">
+                {remainingViewTickets?.balance ?? 0}개
+              </p>
+            </Link>
+          </div>
+        ) : null}
       </div>
 
       {/* 구분선 */}

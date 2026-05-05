@@ -95,11 +95,11 @@ export default function AgencyRecommendItem({
           theme={payment ? "assistive" : "default"}
           onClick={() => onRouteToApplyRecommendDetail(id)}
         >
-          {/* 열람권이 0개면 열람권 구매하기로 표기 및 구매 페이지로 라우팅 */}
           {payment ? "자세히 보기" : "열람권 사용하기"}
         </Button>
       </div>
       <TicketConsumeModal
+        propertyId={id}
         isOpen={isTicketConsumeModalOpen}
         onClose={() => setIsTicketConsumeModalOpen(false)}
       />
