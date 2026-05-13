@@ -11,4 +11,5 @@ export interface RequestOrderResponse {
   productId: number;
   productName: string;
   storeProductId: string;
+  revenueCatAppUserId: string;
 }
