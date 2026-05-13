@@ -6,13 +6,14 @@ import { Apple, Kakao as KakaoIcon, LogoIcon, LogoText } from "~/components/icon
 import { AuthProvider } from "~/constants";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
+const phase = import.meta.env.VITE_PHASE;
 
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const onLogin = (provider: AuthProvider) => {
     setIsLoading(true);
-    window.location.href = `${baseUrl}/oauth2/authorization/${provider}`;
+    window.location.href = `${baseUrl}/oauth2/authorization/${provider}?env=${phase}`;
   };
 
   return (
