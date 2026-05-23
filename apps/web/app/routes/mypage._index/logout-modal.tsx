@@ -19,7 +19,7 @@ export default function LogoutModal({ isOpen, onCancel }: LogoutModalProps) {
     onSuccess: () => {
       resetMixpanel();
       reset();
-      queryClient.resetQueries();
+      queryClient.clear();
       onCancel();
     },
   });

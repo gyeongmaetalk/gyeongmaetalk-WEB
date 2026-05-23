@@ -6,5 +6,9 @@ import type { RemainingViewTicketsResponse } from "~/models/view-ticket";
 export const getRemainingViewTickets = async (): Promise<
   BaseResponse<RemainingViewTicketsResponse>
 > => {
-  return api.get("view-tickets/me/wallet").json();
+  return api
+    .get("view-tickets/me/wallet", {
+      context: { skipAuthRedirect: true },
+    })
+    .json();
 };

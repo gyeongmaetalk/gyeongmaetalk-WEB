@@ -15,7 +15,7 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const refreshAccessToken = async (): Promise<void> => {
   // 이미 refresh 중이면 기존 Promise 반환
   if (refreshPromise) {
-    return;
+    return refreshPromise;
   }
 
   // refresh 시작
@@ -30,8 +30,7 @@ const refreshAccessToken = async (): Promise<void> => {
     } catch (error) {
       console.error("Refresh 실패", error);
       useUserStore.getState().reset();
-      queryClient.resetQueries();
-      window.location.href = "/login";
+      queryClient.clear();
       throw error;
     } finally {
       // refresh 완료 후 상태 초기화
@@ -40,7 +39,7 @@ const refreshAccessToken = async (): Promise<void> => {
     }
   })();
 
-  return;
+  return refreshPromise;
 };
 
 export const api = instance.extend({
@@ -61,11 +60,19 @@ export const api = instance.extend({
       async (request, options, response) => {
         // 응답 처리 로직 (예: 토큰 갱신)
         if (response.status === 401) {
-          // 토큰 갱신 (이미 진행 중이면 기존 Promise 사용)
-          await refreshAccessToken();
+          try {
+            // 토큰 갱신 (이미 진행 중이면 기존 Promise 사용)
+            await refreshAccessToken();
+          } catch {
+            if (options.context.skipAuthRedirect !== true) {
+              window.location.href = "/login";
+            }
+
+            return response;
+          }
 
           // 새로운 토큰으로 기존 요청 재시도
-          return instance(request);
+          return instance(request, { throwHttpErrors: false });
         }
 
         return response;

@@ -25,7 +25,10 @@ export const updateNotificationSetting = async (
 };
 
 export const logout = async (): Promise<void> => {
-  return api.post("auth/logout").json();
+  await api.post("auth/logout", {
+    context: { skipAuthRedirect: true },
+    throwHttpErrors: (status) => status !== 401,
+  });
 };
 
 export const deleteUser = async (): Promise<void> => {

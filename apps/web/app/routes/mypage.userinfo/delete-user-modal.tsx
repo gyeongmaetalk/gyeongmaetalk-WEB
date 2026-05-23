@@ -21,8 +21,8 @@ export default function DeleteUserModal({ isOpen, onClose }: DeleteUserModalProp
   const { mutateAsync: deleteUser, isPending: isDeleteUserPending } = useDeleteUser({
     onSuccess: () => {
       resetMixpanel();
-      queryClient.resetQueries();
       reset();
+      queryClient.clear();
       successToast("회원탈퇴가 완료되었어요.");
       navigate("/", { replace: true });
     },
