@@ -15,6 +15,7 @@ const PROPERTY_AMOUNT = 30000;
 
 export default function AgencyRecommendItem({
   id,
+  name,
   address,
   area,
   biddingDate,
@@ -43,7 +44,7 @@ export default function AgencyRecommendItem({
           <Badge size="xs" theme="accent">
             {buildingType}
           </Badge>
-          <p className="font-headline1-bold text-label-strong">{address}</p>
+          <p className="font-headline1-bold text-label-strong">{name}</p>
           <div className="flex items-center justify-between">
             <p className="font-caption1-regular text-label-alternative">
               {formatDate({ date: updateDate, shortYear: true })} 업데이트 매물
