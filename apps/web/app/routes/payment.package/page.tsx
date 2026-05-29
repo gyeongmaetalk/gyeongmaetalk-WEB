@@ -116,7 +116,6 @@ interface ProductItemProps {
 }
 
 function ProductItem({ product, onClick }: ProductItemProps) {
-  console.log(product);
   const viewTicket = product.components.find((c) => c.description.includes("열람권"));
   const viewTicketDescription = viewTicket ? [`추천 매물 열람권 ${viewTicket.quantity}개`] : [];
 
