@@ -1,15 +1,27 @@
 import { useState } from "react";
 
+import { useQuery } from "@gyeongmaetalk/lib/tanstack";
 import { Button } from "@gyeongmaetalk/ui";
+
+import { useNavigate } from "react-router";
 
 import { Apple, Kakao as KakaoIcon, LogoIcon, LogoText } from "~/components/icons";
 import { AuthProvider } from "~/constants";
+import { CONFIG_QUERY_OPTIONS } from "~/lib/tanstack/query/config";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const phase = import.meta.env.VITE_PHASE;
 
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const { data: appConfig, isSuccess: isAppConfigSuccess } = useQuery(
+    CONFIG_QUERY_OPTIONS.GetAppConfig()
+  );
+
+  const isReviewLoginEnabled = isAppConfigSuccess && appConfig?.reviewLoginEnabled;
 
   const onLogin = (provider: AuthProvider) => {
     setIsLoading(true);
@@ -46,6 +58,9 @@ const LoginPage = () => {
             <KakaoIcon className="size-5" />
             <span className="font-body1-normal-medium">카카오로 계속하기</span>
           </Button>
+          {isReviewLoginEnabled ? (
+            <Button onClick={() => navigate("/review-login")}>Login for review</Button>
+          ) : null}
         </div>
       </section>
     </div>
