@@ -1,10 +1,16 @@
 import type { HTTPError } from "@gyeongmaetalk/lib/ky";
-import { useMutation, type UseMutationOptions } from "@gyeongmaetalk/lib/tanstack";
+import { mutationOptions, useMutation, type UseMutationOptions } from "@gyeongmaetalk/lib/tanstack";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 
 import type { SignupResponse, UpdateNotificationSettingRequest } from "~/models/auth";
 import type { UpdateUserInfoForm } from "~/routes/mypage.userinfo/schema";
-import { deleteUser, logout, updateNotificationSetting, updateUserInfo } from "~/services/auth";
+import {
+  deleteUser,
+  logout,
+  requestReviewLoginCode,
+  updateNotificationSetting,
+  updateUserInfo,
+} from "~/services/auth";
 
 export const useUpdateUserInfo = (
   options?: UseMutationOptions<BaseResponse<SignupResponse>, HTTPError, UpdateUserInfoForm>
@@ -36,4 +42,12 @@ export const useDeleteUser = (options?: UseMutationOptions<void, HTTPError>) => 
     mutationFn: deleteUser,
     ...options,
   });
+};
+
+export const AUTH_MUTATIONS = {
+  RequestReviewLoginCode: () => {
+    return mutationOptions({
+      mutationFn: requestReviewLoginCode,
+    });
+  },
 };

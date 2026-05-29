@@ -3,6 +3,7 @@ import type { BaseResponse } from "@gyeongmaetalk/types";
 import { api } from "~/lib/ky";
 import type {
   MyInfoResponse,
+  RequestReviewLoginCodeRequest,
   SignupResponse,
   UpdateNotificationSettingRequest,
 } from "~/models/auth";
@@ -37,4 +38,10 @@ export const deleteUser = async (): Promise<void> => {
 
 export const requestSmsCode = async (phoneNumber: string): Promise<void> => {
   return api.post("auth/sms", { searchParams: { phoneNumber: phoneNumber } }).json();
+};
+
+export const requestReviewLoginCode = async (
+  props: RequestReviewLoginCodeRequest
+): Promise<BaseResponse<MyInfoResponse>> => {
+  return api.post("admin/auth/login", { searchParams: props }).json();
 };

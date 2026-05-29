@@ -1,6 +1,7 @@
 export enum AuthProvider {
   KAKAO = "kakao",
   APPLE = "apple",
+  LOCAL = "LOCAL",
 }
 
 export enum AuctionStatus {

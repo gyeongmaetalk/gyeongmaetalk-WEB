@@ -22,3 +22,8 @@ export interface UpdateNotificationSettingRequest {
   reviewNotificationEnabled: boolean;
   propertyNotificationEnabled: boolean;
 }
+
+export type RequestReviewLoginCodeRequest = {
+  username: string;
+  password: string;
+};
