@@ -28,6 +28,7 @@ const MyPagePage = () => {
   };
 
   const isKakao = user?.loginType === AuthProvider.KAKAO.toUpperCase();
+  const isLocal = user?.loginType === AuthProvider.LOCAL.toUpperCase();
 
   return (
     <div className="flex flex-col">
@@ -35,7 +36,7 @@ const MyPagePage = () => {
       <div className="space-y-4 px-4 pb-[15px]">
         <div className="mt-6 flex items-center justify-between py-3">
           <div className="flex items-center gap-1">
-            {user && (
+            {user && !isLocal && (
               <div
                 className={cn(
                   "bg-kakao flex size-6 items-center justify-center rounded-[4px]",
