@@ -13,7 +13,7 @@ interface PaymentPackageCompleteModalProps {
 export default function PaymentPackageCompleteModal({ isOpen }: PaymentPackageCompleteModalProps) {
   const navigate = useNavigate();
   const { data } = useCheckCounselStatus();
-  const counselorName = data?.info.counselorName || "경매톡";
+  const counselorName = data?.info?.counselorName || "경매톡";
 
   const onRouteToRecommendList = () => {
     navigate("/agency/recommend");

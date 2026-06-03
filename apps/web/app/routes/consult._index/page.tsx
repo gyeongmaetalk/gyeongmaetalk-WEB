@@ -52,7 +52,7 @@ const ConsultPage = () => {
       theme: "assistive",
       label: "리뷰 작성",
       value: "review",
-      review: reservedcCounselData?.info.reviewed,
+      review: reservedcCounselData?.info?.reviewed,
     },
     {
       variant: "outlined",
@@ -69,7 +69,7 @@ const ConsultPage = () => {
       theme: "assistive",
       label: "리뷰 작성",
       value: "review",
-      review: reservedcCounselData?.info.reviewed,
+      review: reservedcCounselData?.info?.reviewed,
     },
     {
       variant: "outlined",
@@ -92,7 +92,7 @@ const ConsultPage = () => {
       navigate("/consult/apply?mode=change");
     }
     if (value === "review") {
-      navigate(`/consult/write?consultantId=${reservedcCounselData?.info.counselorId}`);
+      navigate(`/consult/write?consultantId=${reservedcCounselData?.info?.counselorId}`);
     }
     if (value === "auction") {
       navigate("/agency");
@@ -120,11 +120,11 @@ const ConsultPage = () => {
           <Divider className="bg-cool-neutral-99 h-2" />
           {/* 상담 정보 */}
           <ConsultInfoCard
-            purpose={reservedcCounselData.info.purpose}
-            area={reservedcCounselData.info.area}
-            serviceType={reservedcCounselData.info.serviceType}
-            interest={reservedcCounselData.info.interest}
-            participantType={reservedcCounselData.info.participantType}
+            purpose={reservedcCounselData.info?.purpose}
+            area={reservedcCounselData.info?.area}
+            serviceType={reservedcCounselData.info?.serviceType}
+            interest={reservedcCounselData.info?.interest}
+            participantType={reservedcCounselData.info?.participantType}
           />
 
           {/* 경매 정보 */}

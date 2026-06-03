@@ -19,7 +19,7 @@ interface RequestBidButtonProps {
 
 export default function RequestBidButton({ id, purchased }: RequestBidButtonProps) {
   const { data: counselInfoData } = useCheckCounselStatus();
-  const counselorName = counselInfoData?.info.counselorName || "";
+  const counselorName = counselInfoData?.info?.counselorName || "";
 
   const [isOpen, setIsOpen] = useState(false);
 
