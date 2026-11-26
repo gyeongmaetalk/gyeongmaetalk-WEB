@@ -43,5 +43,5 @@ export const requestSmsCode = async (phoneNumber: string): Promise<void> => {
 export const requestReviewLoginCode = async (
   props: RequestReviewLoginCodeRequest
 ): Promise<BaseResponse<MyInfoResponse>> => {
-  return api.post("admin/auth/login", { searchParams: props }).json();
+  return api.post("admin/auth/login", { json: props }).json();
 };

@@ -49,6 +49,8 @@ const DEFAULT_VALUES = {
 
 const MAX_IMAGES = 5;
 const MIN_CONTENT_LENGTH = 20;
+// 서버 검증(@Size(max=250))과 맞춘다.
+const MAX_CONTENT_LENGTH = 250;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const s3BaseUrl = "https://auctiontalk-s3.s3.ap-northeast-2.amazonaws.com";
@@ -218,6 +220,7 @@ export default function ConsultWriteReviewPage({ review }: ConsultWriteReviewPag
             label="후기작성"
             placeholder="진행하신 상담 경험을 20자 이상 공유해 주시면, 다른 분들에게 도움이 됩니다."
             minLength={MIN_CONTENT_LENGTH}
+            maxLength={MAX_CONTENT_LENGTH}
             additionalText="최소 20자"
           />
           <div className="flex flex-wrap gap-2">
