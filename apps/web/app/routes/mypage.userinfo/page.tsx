@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { useRevalidator } from "react-router";
 
 import FloatingContainer from "~/components/container/floating-container";
+import PhoneVerification from "~/components/phone-verification";
 import { authKeys } from "~/lib/tanstack/keys/auth";
 import { useUpdateUserInfo } from "~/lib/tanstack/mutation/auth";
 import { useUserStore } from "~/lib/zustand/user";
@@ -23,6 +24,8 @@ interface UserInfoPageProps {
 
 const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
   const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState(false);
+  const [code, setCode] = useState("");
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
 
   const revalidator = useRevalidator();
 
@@ -65,7 +68,11 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
     birth === defaultValues.birth &&
     cellPhone === defaultValues.cellPhone;
 
-  const isSubmitDisabled = !name || birth.length !== 8 || !cellPhone || isOrigin;
+  // 번호를 바꿀 때만 인증이 필요하다(서버도 번호가 바뀐 경우에만 인증 여부를 확인한다).
+  const isPhoneChanged = cellPhone !== defaultValues.cellPhone;
+
+  const isSubmitDisabled =
+    !name || birth.length !== 8 || !cellPhone || isOrigin || (isPhoneChanged && !isCodeVerified);
 
   const { mutateAsync: updateUserInfo } = useUpdateUserInfo({
     onSuccess: async () => {
@@ -81,6 +88,12 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
+    // 엔터로 제출하면 버튼 비활성화를 거치지 않으므로 여기서도 막는다.
+    if (isPhoneChanged && !isCodeVerified) {
+      errorToast("변경한 전화번호를 인증해주세요.");
+      return;
+    }
+
     const year = data.birth.slice(0, 4);
     const month = data.birth.slice(4, 6);
     const day = data.birth.slice(6, 8);
@@ -112,13 +125,12 @@ const UserInfoPage = ({ myInfo }: UserInfoPageProps) => {
             value={birth}
             onChange={(e) => onChangeNumber(e, "birth")}
           />
-          <Textfield
-            label="전화번호"
-            required
-            placeholder="번호를 입력해주세요.(ex.01012345678)"
-            maxLength={11}
-            value={cellPhone}
-            onChange={(e) => onChangeNumber(e, "cellPhone")}
+          <PhoneVerification
+            phone={cellPhone}
+            code={code}
+            onPhoneChange={(e) => onChangeNumber(e, "cellPhone")}
+            onCodeChange={(e) => setCode(e.target.value)}
+            onVerificationComplete={setIsCodeVerified}
           />
         </form>
 

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 
+import { HTTPError } from "@gyeongmaetalk/lib/ky";
 import type { BaseResponse } from "@gyeongmaetalk/types";
 import { Button, Textfield } from "@gyeongmaetalk/ui";
 import { cn } from "@gyeongmaetalk/utils";
@@ -19,6 +20,17 @@ interface PhoneVerificationProps {
 }
 
 const TIMEOUT_DURATION = 60 * 5;
+
+// 요청 제한(재전송 대기, 일일 한도, 시도 횟수 초과)처럼 서버가 이유를 알려주는 경우 그 메시지를 보여준다.
+const getServerMessage = async (error: unknown): Promise<string | null> => {
+  if (!(error instanceof HTTPError)) return null;
+  try {
+    const body = await error.response.json<BaseResponse>();
+    return body.message || null;
+  } catch {
+    return null;
+  }
+};
 
 export default function PhoneVerification({
   phone,
@@ -71,7 +83,9 @@ export default function PhoneVerification({
       }, 1000);
     } catch (error) {
       console.error(error);
-      errorToast("전화번호 인증 요청에 실패했습니다.\n다시 시도해주세요.");
+      errorToast(
+        (await getServerMessage(error)) ?? "전화번호 인증 요청에 실패했습니다.\n다시 시도해주세요."
+      );
     } finally {
       setIsPending(false);
     }
@@ -102,7 +116,9 @@ export default function PhoneVerification({
       }
     } catch (error) {
       console.error(error);
-      errorToast("인증번호 인증에 실패했습니다.\n다시 시도해주세요.");
+      errorToast(
+        (await getServerMessage(error)) ?? "인증번호 인증에 실패했습니다.\n다시 시도해주세요."
+      );
     } finally {
       setIsPending(false);
     }
@@ -121,6 +137,7 @@ export default function PhoneVerification({
             maxLength={11}
             value={phone}
             onChange={onPhoneChange}
+            disabled={isCodeVerified}
           />
         </div>
         <Button
@@ -153,6 +170,7 @@ export default function PhoneVerification({
         </div>
         {!isCodeVerified && (
           <Button
+            type="button"
             variant="outlined"
             theme="secondary"
             disabled={isCodeVerifyDisabled || isCodeVerified}
